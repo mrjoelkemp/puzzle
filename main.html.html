@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>HTML5 Video Puzzle</title>
+    <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
+    <script src='puzzle.js.js'></script>
+  </head>
+  <body>
+    <video autobuffer='' height='480' id='player' style='border:1px solid yellow;' width='854'>
+      <source src='assets/OldSpice.mp4' type='video/mp4'>
+      <source src='assets/OldSpice.ogv' type='video/ogg'>
+    </video>
+    <canvas height='480' id='back-canvas' style='border:1px solid red;' width='854'></canvas>
+    <div height='480' id='pieces-canvas' style='border:1px solid blue;' width='854'></div>
+  </body>
+</html>

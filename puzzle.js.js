@@ -1,1 +1,1 @@
-((function(){})).call(this);
+((function(){var a;a=function(){function a(){var a,b,c,d,e,f,g=this;e=2;c=3;a=$("#back-canvas");b=a[0].getContext("2d");d=$("#player");f=$("#player")[0];f.muted=!0;setInterval(function(){f.play();return b.drawImage(f,0,0)},33)}return a}();$(function(){return window.jigsaw=new a})})).call(this);

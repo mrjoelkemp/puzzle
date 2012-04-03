@@ -1,0 +1,12 @@
+!!! 5
+%html
+	%head
+		%title HTML5 Video Puzzle
+		%script{:src => "http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"}
+		%script{:src => "puzzle.js.js"}
+	%body
+		%video{:id=> "player", :autobuffer => "", :width=>"854", :height=>"480", :style=>"border:1px solid yellow;"}
+			%source{:src => "assets/OldSpice.mp4", :type => "video/mp4"}/
+			%source{:src => "assets/OldSpice.ogv", :type => "video/ogg"}/
+		%canvas{:id=> "back-canvas", :width=>"854", :height=>"480", :style=>"border:1px solid red;"}
+		#pieces-canvas{:width=>"854", :height=>"480", :style=>"border:1px solid blue;"}
