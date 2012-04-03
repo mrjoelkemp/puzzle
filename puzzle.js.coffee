@@ -43,9 +43,7 @@ class Jigsaw
 		# Since we're using a list, we need to know when to move the piece's top to the next row
 		# Ultimately, the pieces use their top and left to know which part of the video to render
 		back_canvas_top  = back_canvas.position().top
-		console.log "Back Canvas Top: ", back_canvas_top
 		back_canvas_left = back_canvas.position().left		
-		console.log "Back Canvas Left: ", back_canvas_left
 		
 		cur_row    = 0
 		cur_column = 0
@@ -57,15 +55,7 @@ class Jigsaw
 			cur_top  = back_canvas_top  + (piece_height * cur_row)
 			cur_left = back_canvas_left + (piece_width * cur_column) 
 			
-			piece = $("<canvas></canvas>").clone()
-			piece.attr({
-				'id': next_id,
-				'width': piece_width,
-				'height': piece_height,
-				'top': cur_top,
-				'left': cur_left
-			})
-			
+			piece = @createPiece(next_id, piece_width, piece_height, cur_top, cur_left)
 			next_id++
 			piece.appendTo('#pieces-canvas')
 			pieces.push(piece)
@@ -79,7 +69,20 @@ class Jigsaw
 				cur_column++
 				
 		return pieces
-			
+		
+	createPiece: (id, width, height, top, left) ->
+	# Purpose: 	Initializes a subcanvas with the passed dimensions
+	# Returns: 	A populated canvas instance 
+		piece = $("<canvas></canvas>").clone()
+		piece.attr({
+			'id': id,
+			'width': width,
+			'height': height,
+			'top': top,
+			'left': left
+		})
+		return piece
+		
 	initBoard: (rows, columns, starting_id) ->
 	# Purpose: 	Creates a num_rows x num_columns matrix of IDs.
 	# Notes: 	This is used to keep track of adjacency about the pieces in the game.
