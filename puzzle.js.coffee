@@ -1,5 +1,6 @@
 class Jigsaw
 	constructor: ->
+		# Din
 		rows = 2
 		columns = 3
 		
@@ -9,7 +10,18 @@ class Jigsaw
 		player = $('#player')
 		video_element = $('#player')[0]
 		video_element.muted = true
-
+		
+		# Initialize the pieces
+		num_pieces = rows * columns
+		pieces = []
+		for i in [1..num_pieces]
+			pieces.push($("<canvas></canvas>").clone())
+		
+		# Initialize a 2D board to retain neighbor information for snapping
+		board = []
+		
+		
+		# Render Loop
 		setInterval => 
 			video_element.play()
 		    # drawimage() only works for VideoElement, Canvas, of ImageElement
