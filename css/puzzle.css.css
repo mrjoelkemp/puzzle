@@ -1,0 +1,12 @@
+video {
+  overflow: hidden;
+  border: 1px solid yellow; }
+
+#back-canvas canvas {
+  z-index: 150;
+  border: 1px solid red; }
+
+#pieces-canvas {
+  border: 1px solid green; }
+  #pieces-canvas canvas {
+    border: 1px solid blue; }

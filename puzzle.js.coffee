@@ -2,47 +2,83 @@ class Jigsaw
 	constructor: ->
 		# Back canvas renders the video
 		back_canvas = $('#back-canvas')
-		back_canvas_context = back_canvas[0].getContext('2d')	
 		# Pieces canvas consists of smaller canvases that are each rendering parts of the back_canvas	
 		pieces_canvas = $("#pieces-canvas")
 		
 		# Dimensions of the board
 		rows = 2
 		columns = 3
-				
+		
+		# Pieces and the board are linked by IDs
+		# We can pass this to those functions to ensure a common starting id
+		starting_id = 1		
+		
+		# Initialize a 2D board to retain neighbor information for snapping
+		board = @initBoard(rows, columns, starting_id)
+		
+		pieces = @initPieces(rows, columns, back_canvas, starting_id)
+		
+		
+		# Prep the back canvas and video
+		player = $('#player')
+		video_element = $('#player')[0]
+		# DEBUG: Remove this
+		video_element.muted = true
+		
+		back_canvas_context = back_canvas[0].getContext('2d')	
+		@play(video_element, back_canvas_context)
+		
+	initPieces: (rows, columns, back_canvas, starting_id) ->
+	# Purpose:	Creates a list of pieces/sub-canvases that represent a portion of the back canvas.
+	# Precond:	back_canvas - an HTML5 Canvas Element whose dimensions are used to determine piece dimensions.
+	# Note:		Pieces are currently rectangular shapes about the back canvas.
+	# Returns:	A list of pieces/canvas objects
+	
+		pieces = []
+		next_id = starting_id
+		
 		# The max dimensions for each piece
 		piece_width = back_canvas.width() / columns
 		piece_height = back_canvas.height() / rows
 		
-		# Initialize a 2D board to retain neighbor information for snapping
+		num_pieces_needed = rows * columns
+		for i in [1 .. num_pieces_needed]
+			# TODO: Compute the top and left positions of the current piece
+			cur_top = 0
+			cur_left = 0
+			
+			piece = $("<canvas></canvas>").clone()
+			piece.attr({
+				'id': next_id,
+				'width': piece_width,
+				'height': piece_height,
+				'top': back_canvas.position().top,
+				'left': back_canvas.position().left
+			})
+			
+			next_id++
+			piece.appendTo('#pieces-canvas')
+			pieces.push(piece)
+		return pieces
+			
+	initBoard: (rows, columns, starting_id) ->
+	# Purpose: 	Creates a num_rows x num_columns matrix of IDs.
+	# Notes: 	This is used to keep track of adjacency about the pieces in the game.
+	# 			IDs range from starting_id to rows * columns
+	# Returns: 	A 2D array of IDs.
 		board = []
+		next_id = starting_id
+		
 		for i in [0 .. rows - 1]
 			board[i] = []
-			for j in [0 .. columns - 1] 
-				# TODO: Compute the top and left positions of the current piece
-				cur_top = 0
-				cur_left = 0
-				
-				piece = $("<canvas></canvas>").clone()
-				piece.attr({
-					'width': piece_width,
-					'height': piece_height,
-					'top': cur_top,
-					'left': cur_left
-				})
-	
-				piece.appendTo('#pieces-canvas')
-				board[i].push(piece)
+			for j in [0 .. columns - 1]
+				board[i].push(next_id)
+				next_id++
+		return board
 		
-		
-		# Prep the back canvas and video
-
-		player = $('#player')
-		video_element = $('#player')[0]
-		# FIXME: Remove this
-		video_element.muted = true
-		
-		# Render Loop
+	play: (video_element, back_canvas_context)->
+	# Initiates the render loop every 33ms (roughly 30FPS)
+	#TODO: Look into requestAnimationFrame() to replace setInterval()
 		setInterval => 
 			# Advance the video to provide new frames
 			video_element.play()
@@ -50,8 +86,7 @@ class Jigsaw
 			# Render the video to the back canvas
 			back_canvas_context.drawImage(video_element, 0, 0)   
 			# TODO: Render the back canvas to the pieces
-			
+		
 		, 33
-	
 $ ->
 	window.jigsaw = new Jigsaw()
