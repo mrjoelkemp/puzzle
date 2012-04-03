@@ -16,8 +16,7 @@ class Jigsaw
 		# Initialize a 2D board to retain neighbor information for snapping
 		board = @initBoard(rows, columns, starting_id)
 		
-		pieces = @initPieces(rows, columns, back_canvas, starting_id)
-		
+		pieces = @initPieces(rows, columns, back_canvas, starting_id)		
 		
 		# Prep the back canvas and video
 		player = $('#player')
@@ -38,27 +37,47 @@ class Jigsaw
 		next_id = starting_id
 		
 		# The max dimensions for each piece
-		piece_width = back_canvas.width() / columns
+		piece_width  = back_canvas.width() / columns
 		piece_height = back_canvas.height() / rows
+		
+		# Since we're using a list, we need to know when to move the piece's top to the next row
+		# Ultimately, the pieces use their top and left to know which part of the video to render
+		back_canvas_top  = back_canvas.position().top
+		console.log "Back Canvas Top: ", back_canvas_top
+		back_canvas_left = back_canvas.position().left		
+		console.log "Back Canvas Left: ", back_canvas_left
+		
+		cur_row    = 0
+		cur_column = 0
 		
 		num_pieces_needed = rows * columns
 		for i in [1 .. num_pieces_needed]
-			# TODO: Compute the top and left positions of the current piece
-			cur_top = 0
-			cur_left = 0
+			
+			# Moves the top value to that of the current row (based on the number of rows and columns)
+			cur_top  = back_canvas_top  + (piece_height * cur_row)
+			cur_left = back_canvas_left + (piece_width * cur_column) 
 			
 			piece = $("<canvas></canvas>").clone()
 			piece.attr({
 				'id': next_id,
 				'width': piece_width,
 				'height': piece_height,
-				'top': back_canvas.position().top,
-				'left': back_canvas.position().left
+				'top': cur_top,
+				'left': cur_left
 			})
 			
 			next_id++
 			piece.appendTo('#pieces-canvas')
 			pieces.push(piece)
+			
+			# If the index exceeds the last column	
+			should_move_to_next_row = i % (columns + 1) == 0
+			if should_move_to_next_row
+				cur_row++
+				cur_column = 0
+			else
+				cur_column++
+				
 		return pieces
 			
 	initBoard: (rows, columns, starting_id) ->

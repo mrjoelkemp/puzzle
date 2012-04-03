@@ -6,8 +6,7 @@ video{
 	border: 1px solid yellow;
 }
 
-#back-canvas {
-  canvas{
+canvas{
     //position: absolute;
     z-index: 150; 
     // Source canvas must mirror video dimensions
@@ -15,7 +14,6 @@ video{
     //height: 480px;
     border: 1px solid red;
     //display: none;
-  }
 }
 
 #pieces-canvas{
