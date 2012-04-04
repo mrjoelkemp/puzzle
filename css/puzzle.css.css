@@ -1,5 +1,5 @@
 video {
-  //overflow: hidden;
+  display: none;
   border: 1px solid yellow; }
 
 #back-canvas {

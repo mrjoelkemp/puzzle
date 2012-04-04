@@ -27,9 +27,10 @@ class Jigsaw
 	
 		# The refresh delay between setInterval() calls
 		refresh_rate = 33
-		back_canvas_context = back_canvas[0].getContext('2d')	
+		back_canvas_element = back_canvas[0]
+		back_canvas_context = back_canvas_element.getContext('2d')	
 		@renderVideoToBackCanvas(video_element, back_canvas_context, refresh_rate)
-		@renderBackCanvasToPieces(back_canvas, pieces, refresh_rate)
+		@renderBackCanvasToPieces(back_canvas_element, pieces, refresh_rate)
 		
 	initPieces: (rows, columns, back_canvas, starting_id) ->
 	# Purpose:	Creates a list of pieces/sub-canvases that represent a portion of the back canvas.
@@ -49,17 +50,26 @@ class Jigsaw
 		back_canvas_top  = back_canvas.position().top
 		back_canvas_left = back_canvas.position().left		
 		
-		cur_row    = 0
-		cur_column = 0
+		# FIXME: Clean this up
+		pieces_canvas = $("#pieces-canvas")
+		pieces_top = pieces_canvas.position().top
+		pieces_left = pieces_canvas.position().left
+		
+		cur_row_top     = 0
+		cur_column_left = 0
 		
 		num_pieces_needed = rows * columns
 		for i in [1 .. num_pieces_needed]
+			# TODO: Move this logic into createPiece(). Change arguments and params to createPiece(back_canvas, pieces_canvas, rows, columns)
+			# The coordinates of the current piece about the back canvas
+			videox = back_canvas_left + cur_column_left
+			videoy  = back_canvas_top  + cur_row_top
 			
-			# Moves the top value to that of the current row (based on the number of rows and columns)
-			cur_top  = back_canvas_top  + (piece_height * cur_row)
-			cur_left = back_canvas_left + (piece_width * cur_column) 
+			# # The coordinates of the current piece about the pieces canvas
+			originx = pieces_left + cur_column_left
+			originy = pieces_top + cur_row_top
 			
-			piece = @createPiece(next_id, piece_width, piece_height, cur_top, cur_left)
+			piece = @createPiece(next_id, piece_width, piece_height, videox, videoy, originx, originy)
 			next_id++
 			piece.appendTo('#pieces-canvas')
 			pieces.push(piece)
@@ -67,23 +77,27 @@ class Jigsaw
 			# If the index exceeds the last column	
 			should_move_to_next_row = i % (columns + 1) == 0
 			if should_move_to_next_row
-				cur_row++
+				cur_row_top += piece_height
 				cur_column = 0
 			else
-				cur_column++
+				cur_column_left += piece_width
 				
 		return pieces
 		
-	createPiece: (id, width, height, top, left) ->
+	createPiece: (id, width, height, videox, videoy, originx, originy) ->
 	# Purpose: 	Initializes a subcanvas with the passed dimensions
+	# Preconds:	videox and videoy are the piece's position atop the back canvas playing the video
+	#			originx and originy are the piece's location
 	# Returns: 	A populated canvas instance 
 		piece = $("<canvas></canvas>").clone()
 		piece.attr({
 			'id': id,
 			'width': width,
 			'height': height,
-			'top': top,
-			'left': left
+			'videox': videox,
+			'videoy': videoy,
+			'originx': originx,
+			'originy': originy
 		})
 		
 		return piece
@@ -103,9 +117,10 @@ class Jigsaw
 				next_id++
 		return board
 		
-	renderVideoToBackCanvas: (video_element, back_canvas_context, refresh_rate)->
+	renderVideoToBackCanvas: (video_element, back_canvas_context, refresh_rate, pieces)->
 	# Purpose: 	Renders the playing video (via the video_element) to the back canvas
 	# Precond:	refresh_rate is the millisecond delay between render calls.
+	#			pieces is initialized in this function when the video is actually playing
 	# NOTE: 	FPS = 1000 ms / refresh_rate
 	# 			drawimage() only works for VideoElement, Canvas, of ImageElement
 	# TODO: Look into requestAnimationFrame() to replace setInterval()
@@ -116,7 +131,7 @@ class Jigsaw
 			back_canvas_context.drawImage(video_element, 0, 0)		
 		, refresh_rate
 
-	renderBackCanvasToPieces: (back_canvas, pieces, refresh_rate) ->
+	renderBackCanvasToPieces: (back_canvas_element, pieces, refresh_rate) ->
 	# Purpose:	Renders the frame from the back canvas to the pieces canvas.
 		setInterval => 	   
 			debugger
@@ -124,13 +139,16 @@ class Jigsaw
 				piece = pieces[i]
 				piece_context = piece[0].getContext('2d')
 				# TODO: Maybe use piece.getAttributes() and use access operator for speed
-				left   = parseFloat(piece.attr("left"))
-				top    = parseFloat(piece.attr("top"))
-				width  = parseFloat(piece.attr("width"))
-				height = parseFloat(piece.attr("height"))
+				videox  = parseFloat(piece.attr("videox"))
+				videoy  = parseFloat(piece.attr("videoy"))
+				originx = parseFloat(piece.attr("originx"))
+				originy = parseFloat(piece.attr("originy"))
+				width   = parseFloat(piece.attr("width"))
+				height  = parseFloat(piece.attr("height"))
 			
 				# Render the proper portion of the back canvas to the current piece
-				piece_context.drawImage(back_canvas, top, left, width, height, top, left, width, height)		
+				#piece_context.drawImage(back_canvas_element, videox, videoy, width, height, originx, originy, width, height)
+				piece_context.drawImage(back_canvas_element, 0, 0)			
 		, refresh_rate
 $ ->
 	window.jigsaw = new Jigsaw()
