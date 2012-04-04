@@ -5,6 +5,9 @@
 
     function Jigsaw() {
       var back_canvas, back_canvas_context, board, columns, pieces, pieces_canvas, player, refresh_rate, rows, starting_id, video_element;
+      player = $('#player');
+      video_element = $('#player')[0];
+      video_element.muted = true;
       back_canvas = $('#back-canvas');
       pieces_canvas = $("#pieces-canvas");
       rows = 2;
@@ -12,9 +15,6 @@
       starting_id = 1;
       board = this.initBoard(rows, columns, starting_id);
       pieces = this.initPieces(rows, columns, back_canvas, starting_id);
-      player = $('#player');
-      video_element = $('#player')[0];
-      video_element.muted = true;
       refresh_rate = 33;
       back_canvas_context = back_canvas[0].getContext('2d');
       this.renderVideoToBackCanvas(video_element, back_canvas_context, refresh_rate);

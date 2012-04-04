@@ -1,7 +1,14 @@
 class Jigsaw
 	constructor: ->
+		# Prep the back canvas and video
+		player = $('#player')
+		video_element = $('#player')[0]
+		# DEBUG: Remove this
+		video_element.muted = true
+		
 		# Back canvas renders the video
 		back_canvas = $('#back-canvas')
+		
 		# Pieces canvas consists of smaller canvases that are each rendering parts of the back_canvas	
 		pieces_canvas = $("#pieces-canvas")
 		
@@ -17,12 +24,7 @@ class Jigsaw
 		board = @initBoard(rows, columns, starting_id)
 		pieces = @initPieces(rows, columns, back_canvas, starting_id)		
 		
-		# Prep the back canvas and video
-		player = $('#player')
-		video_element = $('#player')[0]
-		# DEBUG: Remove this
-		video_element.muted = true
-		
+	
 		# The refresh delay between setInterval() calls
 		refresh_rate = 33
 		back_canvas_context = back_canvas[0].getContext('2d')	
