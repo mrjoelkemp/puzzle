@@ -15,7 +15,6 @@ class Jigsaw
 		
 		# Initialize a 2D board to retain neighbor information for snapping
 		board = @initBoard(rows, columns, starting_id)
-		
 		pieces = @initPieces(rows, columns, back_canvas, starting_id)		
 		
 		# Prep the back canvas and video
@@ -24,8 +23,12 @@ class Jigsaw
 		# DEBUG: Remove this
 		video_element.muted = true
 		
+		# The refresh delay between setInterval() calls
+		refresh_rate = 33
 		back_canvas_context = back_canvas[0].getContext('2d')	
-		@play(video_element, back_canvas_context)
+		@renderVideoToBackCanvas(video_element, back_canvas_context, refresh_rate)
+		pieces_canvas_context = pieces_canvas[0].getContext('2d')
+		@renderBackCanvasToPieces(back_canvas, pieces, refresh_rate)
 		
 	initPieces: (rows, columns, back_canvas, starting_id) ->
 	# Purpose:	Creates a list of pieces/sub-canvases that represent a portion of the back canvas.
@@ -81,6 +84,7 @@ class Jigsaw
 			'top': top,
 			'left': left
 		})
+		
 		return piece
 		
 	initBoard: (rows, columns, starting_id) ->
@@ -98,17 +102,34 @@ class Jigsaw
 				next_id++
 		return board
 		
-	play: (video_element, back_canvas_context)->
-	# Initiates the render loop every 33ms (roughly 30FPS)
-	#TODO: Look into requestAnimationFrame() to replace setInterval()
+	renderVideoToBackCanvas: (video_element, back_canvas_context, refresh_rate)->
+	# Purpose: 	Renders the playing video (via the video_element) to the back canvas
+	# Precond:	refresh_rate is the millisecond delay between render calls.
+	# NOTE: 	FPS = 1000 ms / refresh_rate
+	# 			drawimage() only works for VideoElement, Canvas, of ImageElement
+	# TODO: Look into requestAnimationFrame() to replace setInterval()
 		setInterval => 
 			# Advance the video to provide new frames
-			video_element.play()
-		    # NOTE: drawimage() only works for VideoElement, Canvas, of ImageElement
+			video_element.play()		   
 			# Render the video to the back canvas
-			back_canvas_context.drawImage(video_element, 0, 0)   
-			# TODO: Render the back canvas to the pieces
-		
-		, 33
+			back_canvas_context.drawImage(video_element, 0, 0)		
+		, refresh_rate
+
+	renderBackCanvasToPieces: (back_canvas, pieces, refresh_rate) ->
+	# Purpose:	Renders the frame from the back canvas to the pieces canvas.
+		setInterval => 	   
+			debugger
+			for i in [0 .. pieces.length - 1]
+				piece = pieces[i]
+				piece_context = piece.getContext('2d')
+				# TODO: Maybe use piece.getAttributes() and use access operator for speed
+				left   = parseFloat(piece.attr("left"))
+				top    = parseFloat(piece.attr("top"))
+				width  = parseFloat(piece.attr("width"))
+				height = parseFloat(piece.attr("height"))
+			
+				# Render the proper portion of the back canvas to the current piece
+				piece_context.drawImage(back_canvas, top, left, width, height, top left, width, height)		
+		, refresh_rate
 $ ->
 	window.jigsaw = new Jigsaw()
