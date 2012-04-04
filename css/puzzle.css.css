@@ -2,7 +2,7 @@ video {
   overflow: hidden;
   border: 1px solid yellow; }
 
-canvas {
+#back-canvas {
   z-index: 150;
   border: 1px solid red; }
 

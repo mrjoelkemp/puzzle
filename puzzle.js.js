@@ -4,7 +4,7 @@
   Jigsaw = (function() {
 
     function Jigsaw() {
-      var back_canvas, back_canvas_context, board, columns, pieces, pieces_canvas, pieces_canvas_context, player, refresh_rate, rows, starting_id, video_element;
+      var back_canvas, back_canvas_context, board, columns, pieces, pieces_canvas, player, refresh_rate, rows, starting_id, video_element;
       back_canvas = $('#back-canvas');
       pieces_canvas = $("#pieces-canvas");
       rows = 2;
@@ -18,7 +18,6 @@
       refresh_rate = 33;
       back_canvas_context = back_canvas[0].getContext('2d');
       this.renderVideoToBackCanvas(video_element, back_canvas_context, refresh_rate);
-      pieces_canvas_context = pieces_canvas[0].getContext('2d');
       this.renderBackCanvasToPieces(back_canvas, pieces, refresh_rate);
     }
 
@@ -94,12 +93,12 @@
         _results = [];
         for (i = 0, _ref = pieces.length - 1; 0 <= _ref ? i <= _ref : i >= _ref; 0 <= _ref ? i++ : i--) {
           piece = pieces[i];
-          piece_context = piece.getContext('2d');
+          piece_context = piece[0].getContext('2d');
           left = parseFloat(piece.attr("left"));
           top = parseFloat(piece.attr("top"));
           width = parseFloat(piece.attr("width"));
           height = parseFloat(piece.attr("height"));
-          _results.push(piece_context.drawImage(back_canvas, top, left, width, height, top(left, width, height)));
+          _results.push(piece_context.drawImage(back_canvas, top, left, width, height, top, left, width, height));
         }
         return _results;
       }, refresh_rate);
