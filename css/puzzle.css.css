@@ -7,6 +7,8 @@ video {
   border: 1px solid red; }
 
 #pieces-canvas {
-  border: 1px solid green; }
+  border: 1px solid green;
+  width: 640px;
+  height: 360px; }
   #pieces-canvas canvas {
-    border: 1px solid blue; }
+    float: left; }

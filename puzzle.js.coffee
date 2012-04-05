@@ -41,13 +41,9 @@ class Jigsaw
 		pieces = []
 		next_id = starting_id
 		
-		# FIXME: Clean this up
-		pieces_canvas = $("#pieces-canvas")
-		pieces_top = pieces_canvas.position().top
-		pieces_left = pieces_canvas.position().left
-		
 		back_width = back_canvas.width()
 		back_height = back_canvas.height()
+		
 		# The max dimensions for each piece
 		piece_width  = back_width / columns
 		piece_height = back_height / rows
@@ -57,31 +53,29 @@ class Jigsaw
 		
 		num_pieces_needed = rows * columns
 		
-		for i in [1 .. num_pieces_needed]
+		for i in [1 .. num_pieces_needed]							
 			# The coordinates of the current piece about the back canvas
 			videox = cur_column_left
 			videoy = cur_row_top
 			
-			# # The coordinates of the current piece about the pieces canvas
-			originx = pieces_left + cur_column_left
-			originy = pieces_top + cur_row_top
-			
-			piece = @createPiece(next_id, piece_width, piece_height, videox, videoy, originx, originy)
+			piece = @createPiece(next_id, piece_width, piece_height, videox, videoy)
 			next_id++
+			# TODO: This breaks if we change the div name...
 			piece.appendTo('#pieces-canvas')
 			pieces.push(piece)
 			
+			# After creation, set up the starting position for the next piece
+			cur_column_left += piece_width
+			
 			# Check how far we're moving to the right	
 			should_move_to_next_row = cur_column_left >= back_width
-			if should_move_to_next_row
+			if should_move_to_next_row				
 				cur_row_top += piece_height
 				cur_column_left = 0
-			else
-				cur_column_left += piece_width
 				
 		return pieces
 		
-	createPiece: (id, width, height, videox, videoy, originx, originy) ->
+	createPiece: (id, width, height, videox, videoy) ->
 	# Purpose: 	Initializes a subcanvas with the passed dimensions
 	# Preconds:	videox and videoy are the piece's position atop the back canvas playing the video
 	#			originx and originy are the piece's location
@@ -92,9 +86,7 @@ class Jigsaw
 			'width': width,
 			'height': height,
 			'videox': videox,
-			'videoy': videoy,
-			'originx': originx,
-			'originy': originy
+			'videoy': videoy
 		})
 		
 		return piece
@@ -131,21 +123,18 @@ class Jigsaw
 	renderBackCanvasToPieces: (back_canvas_element, pieces, refresh_rate) ->
 	# Purpose:	Renders the frame from the back canvas to the pieces canvas.
 		setInterval => 	   
-			debugger
+			#debugger
 			for i in [0 .. pieces.length - 1]
 				piece = pieces[i]
 				piece_context = piece[0].getContext('2d')
 				# TODO: Maybe use piece.getAttributes() and use access operator for speed
 				videox  = parseFloat(piece.attr("videox"))
 				videoy  = parseFloat(piece.attr("videoy"))
-				originx = parseFloat(piece.attr("originx"))
-				originy = parseFloat(piece.attr("originy"))
 				width   = parseFloat(piece.attr("width"))
 				height  = parseFloat(piece.attr("height"))
 			
 				# Render the proper portion of the back canvas to the current piece
-				#piece_context.drawImage(back_canvas_element, videox, videoy, width, height, originx, originy, width, height)
-				piece_context.drawImage(back_canvas_element, videox, videoy, width, height, 0, 0, width, height)			
+				piece_context.drawImage(back_canvas_element, videox, videoy, width, height, 0, 0, width, height)							
 		, refresh_rate
 $ ->
 	window.jigsaw = new Jigsaw()
