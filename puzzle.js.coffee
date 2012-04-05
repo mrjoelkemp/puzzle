@@ -88,7 +88,10 @@ class Jigsaw
 			'height': height,
 			'videox': videox,
 			'videoy': videoy
-		})
+			})
+			.draggable({
+				snap: false
+			})
 		
 		return piece
 		
