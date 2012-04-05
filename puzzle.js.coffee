@@ -1,4 +1,5 @@
 class Jigsaw
+	# TODO: Accept strings of div IDs for video player, back canvas, and pieces canvas. This way, the id changes are limited to one location.
 	constructor: ->
 		# Prep the back canvas and video
 		player = $('#player')

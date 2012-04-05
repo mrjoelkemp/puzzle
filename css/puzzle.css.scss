@@ -17,12 +17,14 @@ video{
 }
 
 #pieces-canvas{
-   	border: 1px solid green;
-	width: 640px;
+   	//border: 1px solid green;
+	//TODO: Make width 640. 2px added for debug border
+	width: 642px;
 	height: 360px;
   canvas{
     float: left;
     //position: absolute;
-    //border: 1px solid blue;
+    border-right: 1px solid blue;
+	border-bottom: 1px solid blue;
     }
 }
