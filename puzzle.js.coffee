@@ -60,11 +60,9 @@ class Jigsaw
 			videoy = cur_row_top
 			
 			piece = @createPiece(next_id, piece_width, piece_height, videox, videoy)
-			next_id++
-			# TODO: This breaks if we change the div name...
-			piece.appendTo('#pieces-canvas')
 			pieces.push(piece)
 			
+			next_id++
 			# After creation, set up the starting position for the next piece
 			cur_column_left += piece_width
 			
@@ -88,9 +86,13 @@ class Jigsaw
 			'height': height,
 			'videox': videox,
 			'videoy': videoy
-			})
+			})			
+			.appendTo('#pieces-canvas')		# FIXME: This breaks if we change the div name...
+			.addClass("piece")				# Added for ease of finding similar objects
 			.draggable({
-				snap: false
+				snap: false,
+				snapMode: "inner",
+				stack: ".piece"
 			})
 		
 		return piece
