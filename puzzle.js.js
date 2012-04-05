@@ -23,32 +23,32 @@
     }
 
     Jigsaw.prototype.initPieces = function(rows, columns, back_canvas, starting_id) {
-      var back_canvas_left, back_canvas_top, cur_column, cur_column_left, cur_row_top, i, next_id, num_pieces_needed, originx, originy, piece, piece_height, piece_width, pieces, pieces_canvas, pieces_left, pieces_top, should_move_to_next_row, videox, videoy;
+      var back_height, back_width, cur_column_left, cur_row_top, i, next_id, num_pieces_needed, originx, originy, piece, piece_height, piece_width, pieces, pieces_canvas, pieces_left, pieces_top, should_move_to_next_row, videox, videoy;
       pieces = [];
       next_id = starting_id;
-      piece_width = back_canvas.width() / columns;
-      piece_height = back_canvas.height() / rows;
-      back_canvas_top = back_canvas.position().top;
-      back_canvas_left = back_canvas.position().left;
       pieces_canvas = $("#pieces-canvas");
       pieces_top = pieces_canvas.position().top;
       pieces_left = pieces_canvas.position().left;
+      back_width = back_canvas.width();
+      back_height = back_canvas.height();
+      piece_width = back_width / columns;
+      piece_height = back_height / rows;
       cur_row_top = 0;
       cur_column_left = 0;
       num_pieces_needed = rows * columns;
       for (i = 1; 1 <= num_pieces_needed ? i <= num_pieces_needed : i >= num_pieces_needed; 1 <= num_pieces_needed ? i++ : i--) {
-        videox = back_canvas_left + cur_column_left;
-        videoy = back_canvas_top + cur_row_top;
+        videox = cur_column_left;
+        videoy = cur_row_top;
         originx = pieces_left + cur_column_left;
         originy = pieces_top + cur_row_top;
         piece = this.createPiece(next_id, piece_width, piece_height, videox, videoy, originx, originy);
         next_id++;
         piece.appendTo('#pieces-canvas');
         pieces.push(piece);
-        should_move_to_next_row = i % (columns + 1) === 0;
+        should_move_to_next_row = cur_column_left >= back_width;
         if (should_move_to_next_row) {
           cur_row_top += piece_height;
-          cur_column = 0;
+          cur_column_left = 0;
         } else {
           cur_column_left += piece_width;
         }
@@ -108,7 +108,7 @@
           originy = parseFloat(piece.attr("originy"));
           width = parseFloat(piece.attr("width"));
           height = parseFloat(piece.attr("height"));
-          _results.push(piece_context.drawImage(back_canvas_element, 0, 0));
+          _results.push(piece_context.drawImage(back_canvas_element, videox, videoy, width, height, 0, 0, width, height));
         }
         return _results;
       }, refresh_rate);

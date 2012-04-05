@@ -41,29 +41,26 @@ class Jigsaw
 		pieces = []
 		next_id = starting_id
 		
-		# The max dimensions for each piece
-		piece_width  = back_canvas.width() / columns
-		piece_height = back_canvas.height() / rows
-		
-		# Since we're using a list, we need to know when to move the piece's top to the next row
-		# Ultimately, the pieces use their top and left to know which part of the video to render
-		back_canvas_top  = back_canvas.position().top
-		back_canvas_left = back_canvas.position().left		
-		
 		# FIXME: Clean this up
 		pieces_canvas = $("#pieces-canvas")
 		pieces_top = pieces_canvas.position().top
 		pieces_left = pieces_canvas.position().left
 		
+		back_width = back_canvas.width()
+		back_height = back_canvas.height()
+		# The max dimensions for each piece
+		piece_width  = back_width / columns
+		piece_height = back_height / rows
+		
 		cur_row_top     = 0
 		cur_column_left = 0
 		
 		num_pieces_needed = rows * columns
+		
 		for i in [1 .. num_pieces_needed]
-			# TODO: Move this logic into createPiece(). Change arguments and params to createPiece(back_canvas, pieces_canvas, rows, columns)
 			# The coordinates of the current piece about the back canvas
-			videox = back_canvas_left + cur_column_left
-			videoy  = back_canvas_top  + cur_row_top
+			videox = cur_column_left
+			videoy = cur_row_top
 			
 			# # The coordinates of the current piece about the pieces canvas
 			originx = pieces_left + cur_column_left
@@ -74,11 +71,11 @@ class Jigsaw
 			piece.appendTo('#pieces-canvas')
 			pieces.push(piece)
 			
-			# If the index exceeds the last column	
-			should_move_to_next_row = i % (columns + 1) == 0
+			# Check how far we're moving to the right	
+			should_move_to_next_row = cur_column_left >= back_width
 			if should_move_to_next_row
 				cur_row_top += piece_height
-				cur_column = 0
+				cur_column_left = 0
 			else
 				cur_column_left += piece_width
 				
@@ -148,7 +145,7 @@ class Jigsaw
 			
 				# Render the proper portion of the back canvas to the current piece
 				#piece_context.drawImage(back_canvas_element, videox, videoy, width, height, originx, originy, width, height)
-				piece_context.drawImage(back_canvas_element, 0, 0)			
+				piece_context.drawImage(back_canvas_element, videox, videoy, width, height, 0, 0, width, height)			
 		, refresh_rate
 $ ->
 	window.jigsaw = new Jigsaw()
