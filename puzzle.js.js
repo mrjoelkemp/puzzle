@@ -62,6 +62,7 @@
         snapMode: "inner",
         stack: ".piece",
         snapTolerance: 20,
+        opacity: 0.75,
         start: function(e, ui) {},
         drag: function(e, ui) {},
         stop: function(e, ui) {

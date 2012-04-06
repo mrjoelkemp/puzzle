@@ -101,8 +101,8 @@ class Jigsaw
 				snap	: false,
 				snapMode: "inner",
 				stack	: ".piece",				# Dragged piece has a higher z-index
-				#cursor: "pointer",				# Hand pointer grabs the pieces
 				snapTolerance: 20,				# Pixel distance to initiate snapping
+				opacity: 0.75,					# Make the dragged piece lighter for now. TODO: Remove when we have collision detection.
 				start	: (e, ui) ->
 				drag	: (e, ui) ->
 					# Drag every piece in the group
