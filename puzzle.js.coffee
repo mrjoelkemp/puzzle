@@ -79,24 +79,54 @@ class Jigsaw
 	# Preconds:	videox and videoy are the piece's position atop the back canvas playing the video
 	#			originx and originy are the piece's location
 	# Returns: 	A populated canvas instance 
+		
+		# TODO: Generate a random top and left location for the piece and use movePiece() with the generated location.
+		# 		This will mean that the pieces start randomized and don't move into place. We'd have to trigger piece creation during the
+		#		start of movie playback if we want that type of transition.
+		
 		piece = $("<canvas></canvas>").clone()
 		piece.attr({
-			'id': id,
-			'width': width,
+			'id'	: id,
+			'width'	: width,
 			'height': height,
 			'videox': videox,
 			'videoy': videoy
 			})			
-			.appendTo('#pieces-canvas')		# FIXME: This breaks if we change the div name...
-			.addClass("piece")				# Added for ease of finding similar objects
+			.appendTo('#pieces-canvas')			# FIXME: This breaks if we change the div name...
+			.addClass("piece")					# Added for ease of finding similar objects
 			.draggable({
-				snap: false,
+				snap	: false,
 				snapMode: "inner",
-				stack: ".piece"
-			})
+				stack	: ".piece",				# Dragged piece has a higher z-index
+				start	: (e, ui) ->
+				drag	: (e, ui) ->
+				stop	: (e, ui) ->
+					console.log("Dragging Stopped!")
+			})	#end draggable()		
 		
+			###
+			TODO: 
+				During drag:
+				 	have collision detection with other pieces. If dragged piece collides, push the other pieces.
+				On drag end:
+				 	Find neighbors within the board matrix
+					For each neighbor,
+						Determine how close a neighbor is and then check for snapping? Or is there a way to tell Jquery about an inner snapping distance
+						Make sure the snapped pieces travel together
+					Check for a win condition: all pieces are snapped together		
+			###
 		return piece
 		
+	movePiece: (piece, x, y) ->
+	# Purpose:	Animates the passed piece to the passed location.
+	# Precond:	piece is a jquery canvas object
+	# Notes:	uses jquery animate with a predefined duration
+	# TODO: This should be a member of a Piece class.
+		piece.animate({
+		'left' : x,
+		'top' : y
+		}, 1900)	
+				
 	initBoard: (rows, columns, starting_id) ->
 	# Purpose: 	Creates a num_rows x num_columns matrix of IDs.
 	# Notes: 	This is used to keep track of adjacency about the pieces in the game.
