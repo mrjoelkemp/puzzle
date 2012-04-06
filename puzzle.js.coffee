@@ -23,7 +23,8 @@ class Jigsaw
 		
 		# Initialize a 2D board to retain neighbor information for snapping
 		board = @initBoard(rows, columns, starting_id)
-		pieces = @initPieces(rows, columns, back_canvas, starting_id)		
+		# We pass the board to tell pieces who they snap to
+		pieces = @initPieces(rows, columns, back_canvas, starting_id, board)		
 		
 	
 		# The refresh delay between setInterval() calls
@@ -33,7 +34,7 @@ class Jigsaw
 		@renderVideoToBackCanvas(video_element, back_canvas_context, refresh_rate)
 		@renderBackCanvasToPieces(back_canvas_element, pieces, refresh_rate)
 		
-	initPieces: (rows, columns, back_canvas, starting_id) ->
+	initPieces: (rows, columns, back_canvas, starting_id, board) ->
 	# Purpose:	Creates a list of pieces/sub-canvases that represent a portion of the back canvas.
 	# Precond:	back_canvas - an HTML5 Canvas Element whose dimensions are used to determine piece dimensions.
 	# Note:		Pieces are currently rectangular shapes about the back canvas.
@@ -74,32 +75,37 @@ class Jigsaw
 				
 		return pieces
 		
-	createPiece: (id, width, height, videox, videoy) ->
+	createPiece: (id, width, height, videox, videoy, board) ->
 	# Purpose: 	Initializes a subcanvas with the passed dimensions
 	# Preconds:	videox and videoy are the piece's position atop the back canvas playing the video
 	#			originx and originy are the piece's location
+	# 			board is a list of ids for canvas elements the piece should snap to
 	# Returns: 	A populated canvas instance 
 		
 		# TODO: Generate a random top and left location for the piece and use movePiece() with the generated location.
 		# 		This will mean that the pieces start randomized and don't move into place. We'd have to trigger piece creation during the
 		#		start of movie playback if we want that type of transition.
-		
+				
 		piece = $("<canvas></canvas>").clone()
 		piece.attr({
-			'id'	: id,
 			'width'	: width,
 			'height': height,
 			'videox': videox,
 			'videoy': videoy
 			})			
+			.css("cursor", "pointer")
+			.data("id", id)						# Keeps ID hidden from user
 			.appendTo('#pieces-canvas')			# FIXME: This breaks if we change the div name...
 			.addClass("piece")					# Added for ease of finding similar objects
 			.draggable({
 				snap	: false,
 				snapMode: "inner",
 				stack	: ".piece",				# Dragged piece has a higher z-index
+				#cursor: "pointer",				# Hand pointer grabs the pieces
+				snapTolerance: 20,				# Pixel distance to initiate snapping
 				start	: (e, ui) ->
 				drag	: (e, ui) ->
+					# Drag every piece in the group
 				stop	: (e, ui) ->
 					console.log("Dragging Stopped!")
 			})	#end draggable()		

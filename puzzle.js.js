@@ -14,7 +14,7 @@
       columns = 3;
       starting_id = 1;
       board = this.initBoard(rows, columns, starting_id);
-      pieces = this.initPieces(rows, columns, back_canvas, starting_id);
+      pieces = this.initPieces(rows, columns, back_canvas, starting_id, board);
       refresh_rate = 33;
       back_canvas_element = back_canvas[0];
       back_canvas_context = back_canvas_element.getContext('2d');
@@ -22,7 +22,7 @@
       this.renderBackCanvasToPieces(back_canvas_element, pieces, refresh_rate);
     }
 
-    Jigsaw.prototype.initPieces = function(rows, columns, back_canvas, starting_id) {
+    Jigsaw.prototype.initPieces = function(rows, columns, back_canvas, starting_id, board) {
       var back_height, back_width, cur_column_left, cur_row_top, i, next_id, num_pieces_needed, piece, piece_height, piece_width, pieces, should_move_to_next_row, videox, videoy;
       pieces = [];
       next_id = starting_id;
@@ -49,19 +49,19 @@
       return pieces;
     };
 
-    Jigsaw.prototype.createPiece = function(id, width, height, videox, videoy) {
+    Jigsaw.prototype.createPiece = function(id, width, height, videox, videoy, board) {
       var piece;
       piece = $("<canvas></canvas>").clone();
       piece.attr({
-        'id': id,
         'width': width,
         'height': height,
         'videox': videox,
         'videoy': videoy
-      }).appendTo('#pieces-canvas').addClass("piece").draggable({
+      }).css("cursor", "pointer").data("id", id).appendTo('#pieces-canvas').addClass("piece").draggable({
         snap: false,
         snapMode: "inner",
         stack: ".piece",
+        snapTolerance: 20,
         start: function(e, ui) {},
         drag: function(e, ui) {},
         stop: function(e, ui) {
