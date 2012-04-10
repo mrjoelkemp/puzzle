@@ -23,8 +23,12 @@ class Jigsaw
 		
 		# Initialize a 2D board to retain neighbor information for snapping
 		board = @initBoard(rows, columns, starting_id)
+		debugger
+		# Generate a lookup table for finding a piece's list of neighbors
+		neighbors = @initNeighbors(rows, columns, board)
+		
 		# We pass the board to tell pieces who they snap to
-		pieces = @initPieces(rows, columns, back_canvas, starting_id, board)		
+		pieces = @initPieces(rows, columns, back_canvas, starting_id, neighbors)		
 		
 	
 		# The refresh delay between setInterval() calls
@@ -33,7 +37,29 @@ class Jigsaw
 		back_canvas_context = back_canvas_element.getContext('2d')	
 		@renderVideoToBackCanvas(video_element, back_canvas_context, refresh_rate)
 		@renderBackCanvasToPieces(back_canvas_element, pieces, refresh_rate)
-		
+	
+	initNeighbors: (rows, columns, board) ->
+	# Purpose:	Creates a neighbor (top, bottom, left, and right) hash for each (piece) board position
+	# Returns:	A hash or board index -> neighbor indices object 
+	# Notes: 	This creates a lookup table that can save us from traversing the board to find the neighbors 
+	#			for a given piece on every mouseup event (drag end).
+	# 			We're leveraging the fact that seg faults are masked as "undefined." If a neighbor is undefined, then 
+	#			the current piece is on the boundary of the board.
+		neighbors = {}
+		for i in [0 .. rows - 1]
+			for j in [0 .. columns - 1]
+				id 		= board[i][j]
+				
+				# Grab the IDs of the neighbors
+				left 	= board[i-1][j]
+				right 	= board[i+1][j]
+				top 	= board[i][j-1]
+				bottom 	= board[i][j+1]
+				
+				# Set the current board position's neighbors
+				neighbors[id] = {"left": left, "right": right, "top": top, "bottom": bottom}
+		return neighbors
+				 
 	initPieces: (rows, columns, back_canvas, starting_id, board) ->
 	# Purpose:	Creates a list of pieces/sub-canvases that represent a portion of the back canvas.
 	# Precond:	back_canvas - an HTML5 Canvas Element whose dimensions are used to determine piece dimensions.

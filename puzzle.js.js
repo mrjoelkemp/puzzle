@@ -4,7 +4,7 @@
   Jigsaw = (function() {
 
     function Jigsaw() {
-      var back_canvas, back_canvas_context, back_canvas_element, board, columns, pieces, pieces_canvas, player, refresh_rate, rows, starting_id, video_element;
+      var back_canvas, back_canvas_context, back_canvas_element, board, columns, neighbors, pieces, pieces_canvas, player, refresh_rate, rows, starting_id, video_element;
       player = $('#player');
       video_element = $('#player')[0];
       video_element.muted = true;
@@ -14,13 +14,36 @@
       columns = 3;
       starting_id = 1;
       board = this.initBoard(rows, columns, starting_id);
-      pieces = this.initPieces(rows, columns, back_canvas, starting_id, board);
+      debugger;
+      neighbors = this.initNeighbors(rows, columns, board);
+      pieces = this.initPieces(rows, columns, back_canvas, starting_id, neighbors);
       refresh_rate = 33;
       back_canvas_element = back_canvas[0];
       back_canvas_context = back_canvas_element.getContext('2d');
       this.renderVideoToBackCanvas(video_element, back_canvas_context, refresh_rate);
       this.renderBackCanvasToPieces(back_canvas_element, pieces, refresh_rate);
     }
+
+    Jigsaw.prototype.initNeighbors = function(rows, columns, board) {
+      var bottom, i, id, j, left, neighbors, right, top, _ref, _ref2;
+      neighbors = {};
+      for (i = 0, _ref = rows - 1; 0 <= _ref ? i <= _ref : i >= _ref; 0 <= _ref ? i++ : i--) {
+        for (j = 0, _ref2 = columns - 1; 0 <= _ref2 ? j <= _ref2 : j >= _ref2; 0 <= _ref2 ? j++ : j--) {
+          id = board[i][j];
+          left = board[i - 1][j];
+          right = board[i + 1][j];
+          top = board[i][j - 1];
+          bottom = board[i][j + 1];
+          neighbors[id] = {
+            "left": left,
+            "right": right,
+            "top": top,
+            "bottom": bottom
+          };
+        }
+      }
+      return neighbors;
+    };
 
     Jigsaw.prototype.initPieces = function(rows, columns, back_canvas, starting_id, board) {
       var back_height, back_width, cur_column_left, cur_row_top, i, next_id, num_pieces_needed, piece, piece_height, piece_width, pieces, should_move_to_next_row, videox, videoy;
