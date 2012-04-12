@@ -14,8 +14,8 @@
       columns = 3;
       starting_id = 1;
       board = this.initBoard(rows, columns, starting_id);
-      debugger;
       neighbors = this.initNeighbors(rows, columns, board);
+      debugger;
       pieces = this.initPieces(rows, columns, back_canvas, starting_id, neighbors);
       snapping_threshold = 20;
       this.setDraggingEvents(pieces, snapping_threshold);
@@ -40,6 +40,7 @@
           },
           drag: function(e, ui) {},
           stop: function(e, ui) {
+            debugger;
             var neighbors_objects;
             this.updateDetailedPosition(piece);
             neighbors_objects = this.getNeighborObjects(piece, pieces);
@@ -80,7 +81,9 @@
 
     Jigsaw.prototype.findSnappableNeighbors = function(current_piece, neighbors_objects, snapping_threshold) {};
 
-    Jigsaw.prototype.canSnap = function() {};
+    Jigsaw.prototype.canSnap = function() {
+      return false;
+    };
 
     Jigsaw.prototype.initNeighbors = function(rows, columns, board) {
       var bottom, bottom_bound, col, current_position_id, left, left_bound, neighbors, right, right_bound, row, top, top_bound, _ref, _ref2;
@@ -183,18 +186,17 @@
     Jigsaw.prototype.renderBackCanvasToPieces = function(back_canvas_element, pieces, refresh_rate) {
       var _this = this;
       return setInterval(function() {
-        var height, i, piece, piece_context, videox, videoy, width, _ref, _results;
-        _results = [];
-        for (i = 0, _ref = pieces.length - 1; 0 <= _ref ? i <= _ref : i >= _ref; 0 <= _ref ? i++ : i--) {
-          piece = pieces[i];
+        var pieces_objects;
+        pieces_objects = _.values(pieces);
+        return _.each(pieces_objects, function(piece) {
+          var height, piece_context, videox, videoy, width;
           piece_context = piece[0].getContext('2d');
           videox = parseFloat(piece.attr("videox"));
           videoy = parseFloat(piece.attr("videoy"));
           width = parseFloat(piece.attr("width"));
           height = parseFloat(piece.attr("height"));
-          _results.push(piece_context.drawImage(back_canvas_element, videox, videoy, width, height, 0, 0, width, height));
-        }
-        return _results;
+          return piece_context.drawImage(back_canvas_element, videox, videoy, width, height, 0, 0, width, height);
+        });
       }, refresh_rate);
     };
 
