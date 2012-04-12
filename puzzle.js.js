@@ -25,15 +25,23 @@
     }
 
     Jigsaw.prototype.initNeighbors = function(rows, columns, board) {
-      var bottom, current_position_id, i, j, left, neighbors, right, top, _ref, _ref2;
+      var bottom, bottom_bound, col, current_position_id, left, left_bound, neighbors, right, right_bound, row, top, top_bound, _ref, _ref2;
       neighbors = {};
-      for (i = 0, _ref = rows - 1; 0 <= _ref ? i <= _ref : i >= _ref; 0 <= _ref ? i++ : i--) {
-        for (j = 0, _ref2 = columns - 1; 0 <= _ref2 ? j <= _ref2 : j >= _ref2; 0 <= _ref2 ? j++ : j--) {
-          left = board[i - 1][j];
-          right = board[i + 1][j];
-          top = board[i][j - 1];
-          bottom = board[i][j + 1];
-          current_position_id = board[i][j];
+      left_bound = 0;
+      top_bound = 0;
+      right_bound = columns - 1;
+      bottom_bound = rows - 1;
+      for (row = 0, _ref = rows - 1; 0 <= _ref ? row <= _ref : row >= _ref; 0 <= _ref ? row++ : row--) {
+        left = void 0;
+        right = void 0;
+        top = void 0;
+        bottom = void 0;
+        for (col = 0, _ref2 = columns - 1; 0 <= _ref2 ? col <= _ref2 : col >= _ref2; 0 <= _ref2 ? col++ : col--) {
+          left = col !== left_bound ? board[row][col - 1] : void 0;
+          top = row !== top_bound ? board[row - 1][col] : void 0;
+          right = col !== right_bound ? board[row][col + 1] : void 0;
+          bottom = row !== bottom_bound ? board[row + 1][col] : void 0;
+          current_position_id = board[row][col];
           neighbors[current_position_id] = {
             "left": left,
             "right": right,
@@ -88,21 +96,8 @@
         opacity: 0.75,
         start: function(e, ui) {},
         drag: function(e, ui) {},
-        stop: function(e, ui) {
-          return console.log("Dragging Stopped!");
-        }
+        stop: function(e, ui) {}
       });
-      /*
-      			TODO: 
-      				During drag:
-      				 	have collision detection with other pieces. If dragged piece collides, push the other pieces.
-      				On drag end:
-      				 	Find neighbors within the board matrix
-      					For each neighbor,
-      						Determine how close a neighbor is and then check for snapping? Or is there a way to tell Jquery about an inner snapping distance
-      						Make sure the snapped pieces travel together
-      					Check for a win condition: all pieces are snapped together
-      */
       return piece;
     };
 
