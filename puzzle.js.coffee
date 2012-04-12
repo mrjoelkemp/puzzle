@@ -28,8 +28,10 @@ class Jigsaw
 		neighbors = @initNeighbors(rows, columns, board)
 		
 		# We pass the board to tell pieces who they snap to
-		pieces = @initPieces(rows, columns, back_canvas, starting_id, neighbors)		
-		
+		pieces = @initPieces(rows, columns, back_canvas, starting_id, neighbors)
+				
+		# Set up the draggable actions and events for each piece
+		@setDraggingEvents(pieces)
 	
 		# The refresh delay between setInterval() calls
 		refresh_rate = 33
@@ -38,21 +40,47 @@ class Jigsaw
 		@renderVideoToBackCanvas(video_element, back_canvas_context, refresh_rate)
 		@renderBackCanvasToPieces(back_canvas_element, pieces, refresh_rate)
 	
+	setDraggingEvents: (pieces) ->
+	# Purpose: 	Initializes the dragging events for each piece in the passed list
+		_.each(pieces, (piece) ->
+			piece.draggable({
+				snap	: false,
+				snapMode: "inner",
+				stack	: ".piece",				# Dragged piece has a higher z-index
+				snapTolerance: 20,				# Pixel distance to initiate snapping
+				opacity: 0.75,					# Make the dragged piece lighter for now. TODO: Remove when we have collision detection.
+				start	: (e, ui) ->
+					# Remember where you are so the movement distance can be computed
+					piece.data("old_top", piece.position().top)
+					piece.data("old_left", piece.position().left)
+				drag	: (e, ui) ->
+					# Drag every (snapped) piece in the group
+					# dragGroup(group_id)
+				stop	: (e, ui) ->
+					# Find neighbors within the board matrix
+					#findCloseNeighbors(piece, neighbors)
+					#snapToCloseNeighbors(piece, neighbors)
+										
+					# Check for a win condition: all pieces are snapped together
+					
+			})	#end draggable()
+		)
+		
 	initNeighbors: (rows, columns, board) ->
-	# Purpose:	Creates a neighbor (top, bottom, left, and right) hash for each (piece) board position
-	# Returns:	A hash or board index -> neighbor indices object 
-	# Notes: 	This creates a lookup table that can save us from traversing the board to find the neighbors 
-	#			for a given piece on every mouseup event (drag end).
-	# 			We're leveraging the fact that seg faults are masked as "undefined." If a neighbor is undefined, then 
-	#			the current piece is on the boundary of the board.
-	# Board boundary indices
-	# 			top				
-	# left	---------------	right
-	# 		|	   |	  |
-	#		---------------
-	# 		|	   |	  |
-	#		---------------
-	# 			bottom
+		# Purpose:	Creates a neighbor (top, bottom, left, and right) hash for each (piece) board position
+		# Returns:	A hash or board index -> neighbor indices object 
+		# Notes: 	This creates a lookup table that can save us from traversing the board to find the neighbors 
+		#			for a given piece on every mouseup event (drag end).
+		# 			We're leveraging the fact that seg faults are masked as "undefined." If a neighbor is undefined, then 
+		#			the current piece is on the boundary of the board.
+		# Board boundary indices
+		# 			top				
+		# left	---------------	right
+		# 		|	   |	  |
+		#		---------------
+		# 		|	   |	  |
+		#		---------------
+		# 			bottom
 	
 		neighbors = {}
 		
@@ -61,8 +89,7 @@ class Jigsaw
 		right_bound 	= columns - 1 
 		bottom_bound	= rows - 1
 		
-		for row in [0 .. rows - 1]
-			
+		for row in [0 .. rows - 1]			
 			# We want border positions to have undefined neighbors
 			left 	= undefined
 			right 	= undefined
@@ -70,8 +97,7 @@ class Jigsaw
 			bottom 	= undefined
 				
 			# Grab the IDs of the neighbors
-			for col in [0 .. columns - 1]			
-				
+			for col in [0 .. columns - 1]				
 				# Avoid boundaries. Can't access subelement of undefined...				
 				left   = if (col != left_bound) then board[row][col - 1]
 				top    = if (row != top_bound)  then board[row - 1][col]
@@ -150,27 +176,27 @@ class Jigsaw
 			.css("cursor", "pointer")
 			.data("id", id)						# Keeps ID hidden from user
 			.data("neighbors", neighbors)		# List of neighbors by canvas id
+			.data("group", -1)					# Default group id. Group used for snapping multiple pieces together.
 			.appendTo('#pieces-canvas')			# FIXME: This breaks if we change the div name...
 			.addClass("piece")					# Added for ease of finding similar objects
-			.draggable({
-				snap	: false,
-				snapMode: "inner",
-				stack	: ".piece",				# Dragged piece has a higher z-index
-				snapTolerance: 20,				# Pixel distance to initiate snapping
-				opacity: 0.75,					# Make the dragged piece lighter for now. TODO: Remove when we have collision detection.
-				start	: (e, ui) ->
-				drag	: (e, ui) ->
-					# Drag every piece in the group
-				stop	: (e, ui) ->
-					# Find neighbors within the board matrix
-					# For each neighbor,
-					# Determine how close a neighbor is and then check for snapping? Or is there a way to tell Jquery about an inner snapping distance
-					# Make sure the snapped pieces travel together
-					# Check for a win condition: all pieces are snapped together
-					
-			})	#end draggable()		
 		
 		return piece
+	
+	findCloseNeighbors: (piece, neighbors) ->
+	# Purpose:	Determines the snappable neighbors that are within a snapping, pixel tolerance
+	# Precond:	neighbors is an object with position -> id mappings
+	# Returns:	A list of neighbor ids that are within snapping range
+		# Get neighbor ids
+		ids = _.values(neighbors)
+		positions = _.each(ids, (id)) 
+		# For each neighbor
+		_.filter(neighbors, (n) ->
+			# Get neighbor id
+			
+			# Get neighbor position
+			
+			)
+		# Determine how close a neighbor is and then check for snapping? Or is there a way to tell Jquery about an inner snapping distance
 		
 	movePiece: (piece, x, y) ->
 	# Purpose:	Animates the passed piece to the passed location.

@@ -17,12 +17,31 @@
       debugger;
       neighbors = this.initNeighbors(rows, columns, board);
       pieces = this.initPieces(rows, columns, back_canvas, starting_id, neighbors);
+      this.setDraggingEvents(pieces);
       refresh_rate = 33;
       back_canvas_element = back_canvas[0];
       back_canvas_context = back_canvas_element.getContext('2d');
       this.renderVideoToBackCanvas(video_element, back_canvas_context, refresh_rate);
       this.renderBackCanvasToPieces(back_canvas_element, pieces, refresh_rate);
     }
+
+    Jigsaw.prototype.setDraggingEvents = function(pieces) {
+      return _.each(pieces, function(piece) {
+        return piece.draggable({
+          snap: false,
+          snapMode: "inner",
+          stack: ".piece",
+          snapTolerance: 20,
+          opacity: 0.75,
+          start: function(e, ui) {
+            piece.data("old_top", piece.position().top);
+            return piece.data("old_left", piece.position().left);
+          },
+          drag: function(e, ui) {},
+          stop: function(e, ui) {}
+        });
+      });
+    };
 
     Jigsaw.prototype.initNeighbors = function(rows, columns, board) {
       var bottom, bottom_bound, col, current_position_id, left, left_bound, neighbors, right, right_bound, row, top, top_bound, _ref, _ref2;
@@ -89,17 +108,15 @@
         'height': height,
         'videox': videox,
         'videoy': videoy
-      }).css("cursor", "pointer").data("id", id).data("neighbors", neighbors).appendTo('#pieces-canvas').addClass("piece").draggable({
-        snap: false,
-        snapMode: "inner",
-        stack: ".piece",
-        snapTolerance: 20,
-        opacity: 0.75,
-        start: function(e, ui) {},
-        drag: function(e, ui) {},
-        stop: function(e, ui) {}
-      });
+      }).css("cursor", "pointer").data("id", id).data("neighbors", neighbors).data("group", -1).appendTo('#pieces-canvas').addClass("piece");
       return piece;
+    };
+
+    Jigsaw.prototype.findCloseNeighbors = function(piece, neighbors) {
+      var ids, positions;
+      ids = _.values(neighbors);
+      positions = _.each(ids, id);
+      return _.filter(neighbors, function(n) {});
     };
 
     Jigsaw.prototype.movePiece = function(piece, x, y) {
