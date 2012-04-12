@@ -184,10 +184,10 @@
     };
 
     Jigsaw.prototype.renderBackCanvasToPieces = function(back_canvas_element, pieces, refresh_rate) {
-      var _this = this;
+      var pieces_objects,
+        _this = this;
+      pieces_objects = _.values(pieces);
       return setInterval(function() {
-        var pieces_objects;
-        pieces_objects = _.values(pieces);
         return _.each(pieces_objects, function(piece) {
           var height, piece_context, videox, videoy, width;
           piece_context = piece[0].getContext('2d');

@@ -283,9 +283,10 @@ class Jigsaw
 	renderBackCanvasToPieces: (back_canvas_element, pieces, refresh_rate) ->
 	# Purpose:	Renders the frame from the back canvas to the pieces canvas.
 	# Precond:	pieces is a hash of an id -> piece object 
+		pieces_objects = _.values(pieces)
+		
 		setInterval => 	   
 			#debugger
-			pieces_objects = _.values(pieces)
 			_.each(pieces_objects, (piece) ->
 				piece_context = piece[0].getContext('2d')
 				# TODO: Maybe use piece.getAttributes() and use access operator for speed
