@@ -53,8 +53,8 @@
       return neighbors;
     };
 
-    Jigsaw.prototype.initPieces = function(rows, columns, back_canvas, starting_id, board) {
-      var back_height, back_width, cur_column_left, cur_row_top, i, next_id, num_pieces_needed, piece, piece_height, piece_width, pieces, should_move_to_next_row, videox, videoy;
+    Jigsaw.prototype.initPieces = function(rows, columns, back_canvas, starting_id, neighbors) {
+      var back_height, back_width, cur_column_left, cur_row_top, i, neighbor_hash, next_id, num_pieces_needed, piece, piece_height, piece_width, pieces, should_move_to_next_row, videox, videoy;
       pieces = [];
       next_id = starting_id;
       back_width = back_canvas.width();
@@ -67,7 +67,8 @@
       for (i = 1; 1 <= num_pieces_needed ? i <= num_pieces_needed : i >= num_pieces_needed; 1 <= num_pieces_needed ? i++ : i--) {
         videox = cur_column_left;
         videoy = cur_row_top;
-        piece = this.createPiece(next_id, piece_width, piece_height, videox, videoy);
+        neighbor_hash = neighbors[next_id];
+        piece = this.createPiece(next_id, piece_width, piece_height, videox, videoy, neighbor_hash);
         pieces.push(piece);
         next_id++;
         cur_column_left += piece_width;
@@ -80,7 +81,7 @@
       return pieces;
     };
 
-    Jigsaw.prototype.createPiece = function(id, width, height, videox, videoy, board) {
+    Jigsaw.prototype.createPiece = function(id, width, height, videox, videoy, neighbors) {
       var piece;
       piece = $("<canvas></canvas>").clone();
       piece.attr({
@@ -88,7 +89,7 @@
         'height': height,
         'videox': videox,
         'videoy': videoy
-      }).css("cursor", "pointer").data("id", id).appendTo('#pieces-canvas').addClass("piece").draggable({
+      }).css("cursor", "pointer").data("id", id).data("neighbors", neighbors).appendTo('#pieces-canvas').addClass("piece").draggable({
         snap: false,
         snapMode: "inner",
         stack: ".piece",

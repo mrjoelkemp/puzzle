@@ -86,7 +86,7 @@ class Jigsaw
 				
 		return neighbors
 				 
-	initPieces: (rows, columns, back_canvas, starting_id, board) ->
+	initPieces: (rows, columns, back_canvas, starting_id, neighbors) ->
 	# Purpose:	Creates a list of pieces/sub-canvases that represent a portion of the back canvas.
 	# Precond:	back_canvas - an HTML5 Canvas Element whose dimensions are used to determine piece dimensions.
 	# Note:		Pieces are currently rectangular shapes about the back canvas.
@@ -112,7 +112,9 @@ class Jigsaw
 			videox = cur_column_left
 			videoy = cur_row_top
 			
-			piece = @createPiece(next_id, piece_width, piece_height, videox, videoy)
+			# Grab the list of neighbors for the current piece to be generated
+			neighbor_hash = neighbors[next_id]
+			piece = @createPiece(next_id, piece_width, piece_height, videox, videoy, neighbor_hash)
 			pieces.push(piece)
 			
 			next_id++
@@ -127,11 +129,11 @@ class Jigsaw
 				
 		return pieces
 		
-	createPiece: (id, width, height, videox, videoy, board) ->
+	createPiece: (id, width, height, videox, videoy, neighbors) ->
 	# Purpose: 	Initializes a subcanvas with the passed dimensions
 	# Preconds:	videox and videoy are the piece's position atop the back canvas playing the video
 	#			originx and originy are the piece's location
-	# 			board is a list of ids for canvas elements the piece should snap to
+	# 			neighbors is a hash of positions -> ids of canvas elements the piece should snap to
 	# Returns: 	A populated canvas instance 
 		
 		# TODO: Generate a random top and left location for the piece and use movePiece() with the generated location.
@@ -147,6 +149,7 @@ class Jigsaw
 			})			
 			.css("cursor", "pointer")
 			.data("id", id)						# Keeps ID hidden from user
+			.data("neighbors", neighbors)		# List of neighbors by canvas id
 			.appendTo('#pieces-canvas')			# FIXME: This breaks if we change the div name...
 			.addClass("piece")					# Added for ease of finding similar objects
 			.draggable({
