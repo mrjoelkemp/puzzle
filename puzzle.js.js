@@ -25,16 +25,16 @@
     }
 
     Jigsaw.prototype.initNeighbors = function(rows, columns, board) {
-      var bottom, i, id, j, left, neighbors, right, top, _ref, _ref2;
+      var bottom, current_position_id, i, j, left, neighbors, right, top, _ref, _ref2;
       neighbors = {};
       for (i = 0, _ref = rows - 1; 0 <= _ref ? i <= _ref : i >= _ref; 0 <= _ref ? i++ : i--) {
         for (j = 0, _ref2 = columns - 1; 0 <= _ref2 ? j <= _ref2 : j >= _ref2; 0 <= _ref2 ? j++ : j--) {
-          id = board[i][j];
           left = board[i - 1][j];
           right = board[i + 1][j];
           top = board[i][j - 1];
           bottom = board[i][j + 1];
-          neighbors[id] = {
+          current_position_id = board[i][j];
+          neighbors[current_position_id] = {
             "left": left,
             "right": right,
             "top": top,

@@ -47,17 +47,17 @@ class Jigsaw
 	#			the current piece is on the boundary of the board.
 		neighbors = {}
 		for i in [0 .. rows - 1]
-			for j in [0 .. columns - 1]
-				id 		= board[i][j]
-				
+			for j in [0 .. columns - 1]				
 				# Grab the IDs of the neighbors
 				left 	= board[i-1][j]
 				right 	= board[i+1][j]
 				top 	= board[i][j-1]
 				bottom 	= board[i][j+1]
 				
+				current_position_id = board[i][j]
+				
 				# Set the current board position's neighbors
-				neighbors[id] = {"left": left, "right": right, "top": top, "bottom": bottom}
+				neighbors[current_position_id] = {"left": left, "right": right, "top": top, "bottom": bottom}
 		return neighbors
 				 
 	initPieces: (rows, columns, back_canvas, starting_id, board) ->
