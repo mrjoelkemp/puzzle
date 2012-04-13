@@ -99,7 +99,7 @@
     };
 
     Jigsaw.prototype.findSnappableNeighbors = function(current_piece, neighbors_objects, snapping_threshold) {
-      var cp_neighbors_object, i, neighbor_id, neighbor_object, neighbor_relation, neighbors_objects_ids, neighbors_relations, snappable, _ref,
+      var cp_neighbors_object, i, neighbor_id, neighbor_object, neighbor_relation, neighbors_objects_ids, neighbors_relations, snappable, snaps, _ref,
         _this = this;
       cp_neighbors_object = current_piece.data("neighbors");
       neighbors_objects_ids = _.map(neighbors_objects, function(n) {
@@ -113,9 +113,8 @@
         neighbor_id = neighbors_objects_ids[i];
         neighbor_object = neighbors_objects[i];
         neighbor_relation = neighbors_relations[i];
-        if (this.canSnap(current_piece, neighbor_object, neighbor_relation, snapping_threshold)) {
-          snappable.push(neighbor_id);
-        }
+        snaps = this.canSnap(current_piece, neighbor_object, neighbor_relation, snapping_threshold);
+        if (snaps) snappable.push(neighbor_id);
       }
       return snappable;
     };
@@ -130,24 +129,40 @@
     };
 
     Jigsaw.prototype.canSnap = function(current_piece, neighbor_object, neighbor_relation, snapping_threshold) {
-      var current_position, neighbor_position, snappable;
-      current_position = current_piece.data("position");
-      neighbor_position = neighbor_object.data("position");
-      snappable = false;
+      var cp, np, points, snappable;
+      cp = current_piece.data("position");
+      np = neighbor_object.data("position");
+      points = [];
       switch (neighbor_relation) {
         case "right":
-          console.log("yah");
+          points = [cp.top_right, cp.bottom_right, np.top_left, np.bottom_left];
           break;
         case "left":
-          console.log("yah");
+          points = [cp.top_left, cp.bottom_left, np.top_right, np.bottom_right];
           break;
         case "top":
-          console.log("yah");
+          points = [cp.top_left, cp.top_right, np.bottom_left, np.bottom_right];
           break;
         case "bottom":
-          console.log("yah");
+          points = [cp.bottom_left, cp.bottom_right, np.top_left, np.top_right];
       }
+      snappable = this.isWithinThreshold(points[0], points[1], points[2], points[3]);
       return snappable;
+    };
+
+    Jigsaw.prototype.isWithinThreshold = function(cp1, cp2, np1, np2, snapping_threshold) {
+      var dist1, dist2, is_within;
+      dist1 = this.euclideanDistance(cp1.x, cp1.y, np1.x, np1.y);
+      dist2 = this.euclideanDistance(cp2.x, cp2.y, np2.x, np2.y);
+      is_within = dist1 <= snapping_threshold && dist2 <= snapping_threshold;
+      return is_within;
+    };
+
+    Jigsaw.prototype.euclideanDistance = function(x1, y1, x2, y1) {
+      var xs, ys;
+      xs = Math.pow(x2 - x1, 2);
+      ys = Math.pow(y2 - y1, 2);
+      return Math.sqrt(xs + ys);
     };
 
     Jigsaw.prototype.initNeighbors = function(rows, columns, board) {
