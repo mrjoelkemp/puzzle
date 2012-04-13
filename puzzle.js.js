@@ -15,7 +15,6 @@
       starting_id = 1;
       board = this.initBoard(rows, columns, starting_id);
       neighbors = this.initNeighbors(rows, columns, board);
-      debugger;
       pieces = this.initPieces(rows, columns, back_canvas, starting_id, neighbors);
       snapping_threshold = 20;
       this.setDraggingEvents(pieces, snapping_threshold);
@@ -40,7 +39,6 @@
           },
           drag: function(e, ui) {},
           stop: function(e, ui) {
-            debugger;
             var neighbors_objects;
             this.updateDetailedPosition(piece);
             neighbors_objects = this.getNeighborObjects(piece, pieces);
@@ -79,7 +77,35 @@
       });
     };
 
-    Jigsaw.prototype.findSnappableNeighbors = function(current_piece, neighbors_objects, snapping_threshold) {};
+    Jigsaw.prototype.findSnappableNeighbors = function(current_piece, neighbors_objects, snapping_threshold) {
+      var cp_neighbors_object, i, neighbor_id, neighbor_object, neighbors_objects_ids, position_relation, position_relations, snappable, _ref;
+      cp_neighbors_object = current_piece.data("neighbors");
+      neighbors_objects_ids = _.each(neighbors_objects, function(n) {
+        return n.data("id");
+      });
+      position_relations = _.each(neighbors_objects_id, function(nid) {
+        return this.getKeyFromValue(cp_neighbors_object, nid);
+      });
+      snappable = [];
+      for (i = 0, _ref = neighbors_objects_ids.length - 1; 0 <= _ref ? i <= _ref : i >= _ref; 0 <= _ref ? i++ : i--) {
+        neighbor_id = neighbors_objects_ids[i];
+        neighbor_object = neighbors_objects[i];
+        position_relation = position_relations[i];
+        if (this.canSnap(current_piece, neighbor_object, position_relation)) {
+          snappable.push(neighbor_id);
+        }
+      }
+      return snappable;
+    };
+
+    Jigsaw.prototype.getKeyFromValue = function(obj, value) {
+      var desired_key, keys;
+      keys = _.keys(obj);
+      desired_key = _.find(keys, function(k) {
+        return obj[k] === value;
+      });
+      return desired_key;
+    };
 
     Jigsaw.prototype.canSnap = function() {
       return false;

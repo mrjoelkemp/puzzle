@@ -26,7 +26,7 @@ class Jigsaw
 		
 		# Generate a lookup table for finding a piece's list of neighbors
 		neighbors = @initNeighbors(rows, columns, board)
-		debugger
+		#debugger
 		# We pass the board to tell pieces who they snap to
 		pieces = @initPieces(rows, columns, back_canvas, starting_id, neighbors)
 		
@@ -59,11 +59,13 @@ class Jigsaw
 					# Drag every (snapped) piece in the group
 					# dragGroup(group_id)
 				stop	: (e, ui) ->
-					debugger
+					#debugger
 					# Update detailed positional information for current piece
 					@updateDetailedPosition(piece)
 					
 					# Grab neighboring pieces
+					# Note: we know that we're connected to at most 3 other pieces, so it's not expensive to 
+					#	fetch the neighbors on every mouseup
 					neighbors_objects = @getNeighborObjects(piece, pieces)
 					
 					# Update detailed positional info of neighboring pieces 
@@ -115,19 +117,41 @@ class Jigsaw
 	# Precond:	neighbors_objects is a list of piece objects neighboring the current piece
 	#			snapping_threshold is an integer, lower-bound amount of pixels for snapping between neighbors 
 	# Returns:	A list of neighbor ids that are within snapping range
+		cp_neighbors_object = current_piece.data("neighbors")
 		
-		# Get the neighbor objects that are within snapping distance
-		#snappable_neighbors = _.each(neighbors_pieces, (n) ->
-		#	return @canSnap(current_piece, n) 
-		#)
-		return
+		# For the case when the neighbors are out of order in the passed objects list
+		neighbors_objects_ids = _.each(neighbors_objects, (n) -> return n.data("id"))
+		
+		# Find the positional neighbor relation (left, top, bottom, right) for each neighbor
+		position_relations = _.each(neighbors_objects_id, (nid) -> return @getKeyFromValue(cp_neighbors_object, nid))
+		
+		snappable = []
+		# Determine the IDs of the pieces that are witihin snapping range and in the proper snapping position
+		# in reference to the current piece.
+		# TODO: Possible use _.zip() to combine the neighbor_objects and position_relations sets into tuples.
+		for i in [0 .. neighbors_objects_ids.length - 1]
+			neighbor_id = neighbors_objects_ids[i]
+			neighbor_object = neighbors_objects[i]
+			position_relation = position_relations[i]
+			if @canSnap(current_piece, neighbor_object, position_relation)
+				snappable.push neighbor_id
+				
+		return snappable
+	
+	getKeyFromValue: (obj, value) ->
+	# Purpose: 	Helper that finds and returns the first key from the passed object with a value matching the passed value.
+	# Returns:	The key with the matching value.
+	# Usage:	getKeyFromValue({1: "some", 2: "related", 3: "val"}, "val")  	returns 3
+		keys = _.keys(obj)
+		desired_key = _.find(keys, (k) -> return obj[k] == value)   
+		return desired_key
 		
 	canSnap: () ->
 		return false
 		
 	initNeighbors: (rows, columns, board) ->
 	# Purpose:	Creates a neighbor (top, bottom, left, and right) hash for each (piece) board position
-	# Returns:	A hash or board index -> neighbor indices object 
+	# Returns:	An object of board index -> neighbor indices object 
 	# Notes: 	This creates a lookup table that can save us from traversing the board to find the neighbors 
 	#			for a given piece on every mouseup event (drag end).
 	# 			We're leveraging the fact that seg faults are masked as "undefined." If a neighbor is undefined, then 
