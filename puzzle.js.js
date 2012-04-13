@@ -67,18 +67,34 @@
     };
 
     Jigsaw.prototype.updateDetailedPosition = function(piece) {
-      var p_bottom, p_height, p_left, p_right, p_top, p_width;
-      p_width = parseFloat(piece.attr("width"));
-      p_height = parseFloat(piece.attr("height"));
-      p_top = parseFloat(piece.position().top);
-      p_left = parseFloat(piece.position().left);
-      p_right = p_left + p_width;
-      p_bottom = p_top + p_height;
+      var bottom, bottom_left, bottom_right, height, left, right, top, top_left, top_right, width;
+      width = parseFloat(piece.attr("width"));
+      height = parseFloat(piece.attr("height"));
+      top = parseFloat(piece.position().top);
+      left = parseFloat(piece.position().left);
+      right = left + width;
+      bottom = top + height;
+      top_left = {
+        "x": left,
+        "y": top
+      };
+      top_right = {
+        "x": right,
+        "y": top
+      };
+      bottom_left = {
+        "x": left,
+        "y": bottom
+      };
+      bottom_right = {
+        "x": right,
+        "y": bottom
+      };
       piece.data("position", {
-        "top": p_top,
-        "left": p_left,
-        "right": p_right,
-        "bottom": p_bottom
+        "top_left": top_left,
+        "top_right": top_right,
+        "bottom_left": bottom_left,
+        "bottom_right": bottom_right
       });
     };
 
@@ -119,10 +135,10 @@
       neighbor_position = neighbor_object.data("position");
       snappable = false;
       switch (neighbor_relation) {
-        case "left":
+        case "right":
           console.log("yah");
           break;
-        case "right":
+        case "left":
           console.log("yah");
           break;
         case "top":

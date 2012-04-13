@@ -100,19 +100,25 @@ class Jigsaw
 	updateDetailedPosition: (piece) ->
 	# Purpose: 	Updates the hidden positional (top, left, bottom, right) data of the passed piece
 	# TODO: Move this to the piece class
-		p_width 	= parseFloat(piece.attr("width"))
-		p_height	= parseFloat(piece.attr("height"))
-		p_top 		= parseFloat(piece.position().top)
-		p_left 		= parseFloat(piece.position().left)
-
-		# Compute the right and bottom locations
-		p_right 	= p_left + p_width		# Top-right
-		p_bottom 	= p_top  + p_height		# Bottom-left
+		width 	= parseFloat(piece.attr("width"))
+		height	= parseFloat(piece.attr("height"))
+		
+		top 	= parseFloat(piece.position().top)
+		left 	= parseFloat(piece.position().left)
+		right 	= left + width		# Top-right
+		bottom 	= top  + height		# Bottom-left
+		
+		# Compute the four corners of the piece
+		top_left 	= {"x": left, 	"y": top}
+		top_right 	= {"x": right, 	"y": top}
+		bottom_left = {"x": left, 	"y": bottom}
+		bottom_right= {"x": right, 	"y": bottom}
+		
 		piece.data("position", {
-			"top"	: p_top,
-			"left"	: p_left,
-			"right"	: p_right,
-			"bottom": p_bottom
+			"top_left"		: top_left,
+			"top_right"		: top_right,
+			"bottom_left" 	: bottom_left,
+			"bottom_right"	: bottom_right
 		})
 		return	# Void function
 		
@@ -167,8 +173,9 @@ class Jigsaw
 		# The orientation of the neighbor about the piece in the original board. 
 		#	i.e., was the neighbor to the right, left, top, or bottom of the current piece?
 		switch neighbor_relation
-			when "left" 	then console.log "yah"
 			when "right" 	then console.log "yah"
+			when "left" 	then console.log "yah"
+			
 			when "top" 		then console.log "yah"
 			when "bottom" 	then console.log "yah"
 				
