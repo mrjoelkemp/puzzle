@@ -16,7 +16,7 @@
       board = this.initBoard(rows, columns, starting_id);
       neighbors = this.initNeighbors(rows, columns, board);
       pieces = this.initPieces(rows, columns, back_canvas, starting_id, neighbors);
-      snapping_threshold = 20;
+      snapping_threshold = 30;
       this.setDraggingEvents(pieces, snapping_threshold);
       refresh_rate = 33;
       back_canvas_element = back_canvas[0];
@@ -146,7 +146,7 @@
         case "bottom":
           points = [cp.bottom_left, cp.bottom_right, np.top_left, np.top_right];
       }
-      snappable = this.isWithinThreshold(points[0], points[1], points[2], points[3]);
+      snappable = this.isWithinThreshold(points[0], points[1], points[2], points[3], snapping_threshold);
       return snappable;
     };
 

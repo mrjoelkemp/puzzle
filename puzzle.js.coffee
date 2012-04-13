@@ -31,7 +31,7 @@ class Jigsaw
 		pieces = @initPieces(rows, columns, back_canvas, starting_id, neighbors)
 		
 		# Pixel distance for snapping between neighbors
-		snapping_threshold = 20
+		snapping_threshold = 30
 		# Set up the draggable actions and events for each piece
 		@setDraggingEvents(pieces, snapping_threshold)
 	
@@ -193,7 +193,7 @@ class Jigsaw
 			# Then my bottom side must be within range of your top side
 			when "bottom" 	then points = [cp.bottom_left, cp.bottom_right, np.top_left, np.top_right]
 		
-		snappable = @isWithinThreshold(points[0], points[1], points[2], points[3])		
+		snappable = @isWithinThreshold(points[0], points[1], points[2], points[3], snapping_threshold)		
 		return snappable
 	
 	isWithinThreshold: (cp1, cp2, np1, np2, snapping_threshold) ->
@@ -202,9 +202,9 @@ class Jigsaw
 	#			points are objects with an x and y value
 	# Returns:	True if the both distances between the sets of points are within the threshold
 	
-		#TODO: Should this be euclidean or manhattan?
-		#dist1 = @euclideanDistance(cp1.x, cp1.y, np1.x, np1.y)
-		#dist2 = @euclideanDistance(cp2.x, cp2.y, np2.x, np2.y)
+		# TODO: The distance between points is symmetrical due to the equi-sized, square nature of the pieces
+		#		The distance between one set of points should be enough to determine snapping ability
+		
 		dist1 = @manhattanDistance(cp1.x, cp1.y, np1.x, np1.y)
 		dist2 = @manhattanDistance(cp2.x, cp2.y, np2.x, np2.y)
 		
