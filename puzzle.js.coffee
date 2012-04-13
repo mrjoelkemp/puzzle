@@ -88,8 +88,12 @@ class Jigsaw
 		neighbors_obj = current_piece.data("neighbors")
 		neighbors_ids = _.values(neighbors_obj)
 		
+		# Remove the undefined ids for boundary pieces
+		neighbors_ids = _.reject(neighbors_ids, (id) -> return !id?)
+		
 		# Grab pieces associated with neighbor ids
-		neighbors_pieces = _.each(neighbors_ids, (id) -> return pieces[id])
+		neighbors_pieces = _.map(neighbors_ids, (id) -> return pieces[id])
+		
 		return neighbors_pieces
 		
 	updateDetailedPosition: (piece) ->
@@ -122,7 +126,10 @@ class Jigsaw
 		neighbors_objects_ids = _.each(neighbors_objects, (n) -> return n.data("id"))
 		
 		# Find the positional neighbor relation (left, top, bottom, right) for each neighbor
-		neighbors_relations = _.each(neighbors_objects_ids, (nid) -> return @getKeyFromValue(cp_neighbors_object, nid))
+		neighbors_relations = _.each(neighbors_objects_ids, (nid) -> 
+			# If the value (id) isn't null or undefined then get they key for that value
+			if nid? then return @getKeyFromValue(cp_neighbors_object, nid)
+		)
 		
 		snappable = []
 		# Determine the IDs of the pieces that are witihin snapping range and in the proper snapping position

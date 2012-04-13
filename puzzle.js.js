@@ -57,7 +57,10 @@
       var neighbors_ids, neighbors_obj, neighbors_pieces;
       neighbors_obj = current_piece.data("neighbors");
       neighbors_ids = _.values(neighbors_obj);
-      neighbors_pieces = _.each(neighbors_ids, function(id) {
+      neighbors_ids = _.reject(neighbors_ids, function(id) {
+        return !(id != null);
+      });
+      neighbors_pieces = _.map(neighbors_ids, function(id) {
         return pieces[id];
       });
       return neighbors_pieces;
@@ -86,7 +89,7 @@
         return n.data("id");
       });
       neighbors_relations = _.each(neighbors_objects_ids, function(nid) {
-        return this.getKeyFromValue(cp_neighbors_object, nid);
+        if (nid != null) return this.getKeyFromValue(cp_neighbors_object, nid);
       });
       snappable = [];
       for (i = 0, _ref = neighbors_objects_ids.length - 1; 0 <= _ref ? i <= _ref : i >= _ref; 0 <= _ref ? i++ : i--) {
