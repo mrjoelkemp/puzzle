@@ -123,17 +123,18 @@ class Jigsaw
 		neighbors_objects_ids = _.each(neighbors_objects, (n) -> return n.data("id"))
 		
 		# Find the positional neighbor relation (left, top, bottom, right) for each neighbor
-		position_relations = _.each(neighbors_objects_id, (nid) -> return @getKeyFromValue(cp_neighbors_object, nid))
+		neighbors_relations = _.each(neighbors_objects_id, (nid) -> return @getKeyFromValue(cp_neighbors_object, nid))
 		
 		snappable = []
 		# Determine the IDs of the pieces that are witihin snapping range and in the proper snapping position
 		# in reference to the current piece.
 		# TODO: Possible use _.zip() to combine the neighbor_objects and position_relations sets into tuples.
 		for i in [0 .. neighbors_objects_ids.length - 1]
-			neighbor_id = neighbors_objects_ids[i]
-			neighbor_object = neighbors_objects[i]
-			position_relation = position_relations[i]
-			if @canSnap(current_piece, neighbor_object, position_relation)
+			neighbor_id 		= neighbors_objects_ids[i]
+			neighbor_object 	= neighbors_objects[i]
+			neighbor_relation 	= neighbors_relations[i]
+			
+			if @canSnap(current_piece, neighbor_object, neighbors_relation, snapping_threshold)
 				snappable.push neighbor_id
 				
 		return snappable
@@ -146,7 +147,18 @@ class Jigsaw
 		desired_key = _.find(keys, (k) -> return obj[k] == value)   
 		return desired_key
 		
-	canSnap: () ->
+	canSnap: (current_piece, neighbor_object, position_relation, snapping_threshold) ->
+	# Purpose: 	Determines if the neighbor is within snapping distance
+	#			and snapping orientation about the current piece.
+	# Returns:	True if the neighbor is snappable. False otherwise.
+	# Note:		We're relying on the detailed positional data since it also includes bottom and right
+	#			which are valid snappable orientations.	
+		current_position = current_piece.data("position")
+		neighbor_position = neighbor_object.data("position")
+		
+		switch position_relation
+			when "left"
+				
 		return false
 		
 	initNeighbors: (rows, columns, board) ->
