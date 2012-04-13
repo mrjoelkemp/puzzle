@@ -95,15 +95,14 @@ class Jigsaw
 	updateDetailedPosition: (piece) ->
 	# Purpose: 	Updates the hidden positional (top, left, bottom, right) data of the passed piece
 	# TODO: Move this to the piece class
-		p_width = piece.attr("width")
-		p_height = piece.attr("height")
-		
-		p_top = piece.position().top
-		p_left = piece.position().left
+		p_width 	= parseFloat(piece.attr("width"))
+		p_height	= parseFloat(piece.attr("height"))
+		p_top 		= parseFloat(piece.position().top)
+		p_left 		= parseFloat(piece.position().left)
 
 		# Compute the right and bottom locations
-		p_right = p_left + p_width		# Top-right
-		p_bottom = p_top + p_height		# Bottom-left
+		p_right 	= p_left + p_width		# Top-right
+		p_bottom 	= p_top  + p_height		# Bottom-left
 		piece.data({
 			"top"	: p_top,
 			"left"	: p_left,

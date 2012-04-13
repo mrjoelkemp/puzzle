@@ -65,10 +65,10 @@
 
     Jigsaw.prototype.updateDetailedPosition = function(piece) {
       var p_bottom, p_height, p_left, p_right, p_top, p_width;
-      p_width = piece.attr("width");
-      p_height = piece.attr("height");
-      p_top = piece.position().top;
-      p_left = piece.position().left;
+      p_width = parseFloat(piece.attr("width"));
+      p_height = parseFloat(piece.attr("height"));
+      p_top = parseFloat(piece.position().top);
+      p_left = parseFloat(piece.position().left);
       p_right = p_left + p_width;
       p_bottom = p_top + p_height;
       piece.data({
