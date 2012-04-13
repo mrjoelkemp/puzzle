@@ -40,14 +40,13 @@
           },
           drag: function(e, ui) {},
           stop: function(e, ui) {
-            var neighbors_objects;
+            var neighbors_objects, snappable_neighbors;
             _this.updateDetailedPosition(piece);
             neighbors_objects = _this.getNeighborObjects(piece, pieces);
             _.each(neighbors_objects, function(n) {
               return _this.updateDetailedPosition(n);
             });
-            debugger;
-            return _this.findSnappableNeighbors(piece, neighbors_objects, snapping_threshold);
+            return snappable_neighbors = _this.findSnappableNeighbors(piece, neighbors_objects, snapping_threshold);
           }
         });
       });

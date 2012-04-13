@@ -71,12 +71,15 @@ class Jigsaw
 					# Update detailed positional info of neighboring pieces 
 					# FIXME: Should this always be a just-in-case, or do the neighbors update their own positions?
 					_.each(neighbors_objects, (n) => @updateDetailedPosition(n))
-					debugger
+					
 					# Find and extract snappable neighbor(s)
-					@findSnappableNeighbors(piece, neighbors_objects, snapping_threshold)
+					snappable_neighbors = @findSnappableNeighbors(piece, neighbors_objects, snapping_threshold)
+					
+					#debugger
 					
 					# Trigger snapping of the current piece to the snappable neighbor(s)
-					#snapToCloseNeighbors(piece, neighbors)
+					# TODO: Implement next
+					#snapToCloseNeighbors(piece, snappable_neighbors)
 										
 					# Check for a win condition: all pieces are snapped together
 					
