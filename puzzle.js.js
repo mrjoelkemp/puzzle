@@ -152,8 +152,8 @@
 
     Jigsaw.prototype.isWithinThreshold = function(cp1, cp2, np1, np2, snapping_threshold) {
       var dist1, dist2, is_within;
-      dist1 = this.euclideanDistance(cp1.x, cp1.y, np1.x, np1.y);
-      dist2 = this.euclideanDistance(cp2.x, cp2.y, np2.x, np2.y);
+      dist1 = this.manhattanDistance(cp1.x, cp1.y, np1.x, np1.y);
+      dist2 = this.manhattanDistance(cp2.x, cp2.y, np2.x, np2.y);
       is_within = dist1 <= snapping_threshold && dist2 <= snapping_threshold;
       return is_within;
     };

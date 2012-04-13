@@ -203,8 +203,10 @@ class Jigsaw
 	# Returns:	True if the both distances between the sets of points are within the threshold
 	
 		#TODO: Should this be euclidean or manhattan?
-		dist1 = @euclideanDistance(cp1.x, cp1.y, np1.x, np1.y)
-		dist2 = @euclideanDistance(cp2.x, cp2.y, np2.x, np2.y)
+		#dist1 = @euclideanDistance(cp1.x, cp1.y, np1.x, np1.y)
+		#dist2 = @euclideanDistance(cp2.x, cp2.y, np2.x, np2.y)
+		dist1 = @manhattanDistance(cp1.x, cp1.y, np1.x, np1.y)
+		dist2 = @manhattanDistance(cp2.x, cp2.y, np2.x, np2.y)
 		
 		is_within = dist1 <= snapping_threshold && dist2 <= snapping_threshold
 		return is_within
