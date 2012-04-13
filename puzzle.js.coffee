@@ -209,7 +209,7 @@ class Jigsaw
 		is_within = dist1 <= snapping_threshold && dist2 <= snapping_threshold
 		return is_within
 		
-	euclideanDistance: (x1, y1, x2, y1) ->
+	euclideanDistance: (x1, y1, x2, y2) ->
 	# Purpose: 	Computes the euclidean distance of the passed point information
 	# Returns: 	The floating point distance
 		xs = Math.pow((x2 - x1), 2)

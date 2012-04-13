@@ -158,7 +158,7 @@
       return is_within;
     };
 
-    Jigsaw.prototype.euclideanDistance = function(x1, y1, x2, y1) {
+    Jigsaw.prototype.euclideanDistance = function(x1, y1, x2, y2) {
       var xs, ys;
       xs = Math.pow(x2 - x1, 2);
       ys = Math.pow(y2 - y1, 2);
