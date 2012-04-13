@@ -165,6 +165,13 @@
       return Math.sqrt(xs + ys);
     };
 
+    Jigsaw.prototype.manhattanDistance = function(x1, y1, x2, y2) {
+      var xs, ys;
+      xs = Math.abs(x2 - x1);
+      ys = Math.abs(y2 - y1);
+      return xs + ys;
+    };
+
     Jigsaw.prototype.initNeighbors = function(rows, columns, board) {
       var bottom, bottom_bound, col, current_position_id, left, left_bound, neighbors, right, right_bound, row, top, top_bound, _ref, _ref2;
       neighbors = {};

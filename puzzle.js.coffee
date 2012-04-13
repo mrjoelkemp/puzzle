@@ -210,11 +210,18 @@ class Jigsaw
 		return is_within
 		
 	euclideanDistance: (x1, y1, x2, y2) ->
-	# Purpose: 	Computes the euclidean distance of the passed point information
+	# Purpose: 	Computes the euclidean distance of the passed points
 	# Returns: 	The floating point distance
 		xs = Math.pow((x2 - x1), 2)
 		ys = Math.pow((y2 - y1), 2)
 		return Math.sqrt(xs + ys)
+	
+	manhattanDistance: (x1, y1, x2, y2) ->
+	# Purpose: 	Computes the manhattan distance of the passed points
+	# Returns: 	The floating point distance
+		xs = Math.abs(x2 - x1)
+		ys = Math.abs(y2 - y1)
+		return xs + ys
 		
 	initNeighbors: (rows, columns, board) ->
 	# Purpose:	Creates a neighbor (top, bottom, left, and right) hash for each (piece) board position
