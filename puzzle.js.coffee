@@ -202,9 +202,6 @@ class Jigsaw
 	#			points are objects with an x and y value
 	# Returns:	True if the both distances between the sets of points are within the threshold
 	
-		# TODO: The distance between points is symmetrical due to the equi-sized, square nature of the pieces
-		#		The distance between one set of points should be enough to determine snapping ability
-		
 		dist1 = @manhattanDistance(cp1.x, cp1.y, np1.x, np1.y)
 		dist2 = @manhattanDistance(cp2.x, cp2.y, np2.x, np2.y)
 		
