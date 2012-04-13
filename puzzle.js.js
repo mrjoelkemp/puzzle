@@ -26,6 +26,7 @@
     }
 
     Jigsaw.prototype.setDraggingEvents = function(pieces, snapping_threshold) {
+      var _this = this;
       return _.each(pieces, function(piece) {
         return piece.draggable({
           snap: false,
@@ -39,13 +40,14 @@
           },
           drag: function(e, ui) {},
           stop: function(e, ui) {
+            debugger;
             var neighbors_objects;
-            this.updateDetailedPosition(piece);
-            neighbors_objects = this.getNeighborObjects(piece, pieces);
+            _this.updateDetailedPosition(piece);
+            neighbors_objects = _this.getNeighborObjects(piece, pieces);
             _.each(neighbors_objects, function(n) {
               return this.updateDetailsPosition(n);
             });
-            return this.findSnappableNeighbors(piece, neighbors_objects, snapping_threshold);
+            return _this.findSnappableNeighbors(piece, neighbors_objects, snapping_threshold);
           }
         });
       });

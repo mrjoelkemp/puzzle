@@ -44,7 +44,7 @@ class Jigsaw
 	
 	setDraggingEvents: (pieces, snapping_threshold) ->
 	# Purpose: 	Initializes the dragging events for each piece in the passed list
-		_.each(pieces, (piece) ->
+		_.each(pieces, (piece) =>	# Avoid the piece's context
 			piece.draggable({
 				snap	: false,
 				snapMode: "inner",
@@ -58,8 +58,8 @@ class Jigsaw
 				drag	: (e, ui) ->
 					# Drag every (snapped) piece in the group
 					# dragGroup(group_id)
-				stop	: (e, ui) ->
-					#debugger
+				stop	: (e, ui) =>	# Avoid the piece's context
+					debugger
 					# Update detailed positional information for current piece
 					@updateDetailedPosition(piece)
 					
