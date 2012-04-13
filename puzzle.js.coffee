@@ -59,7 +59,7 @@ class Jigsaw
 					# Drag every (snapped) piece in the group
 					# dragGroup(group_id)
 				stop	: (e, ui) =>	# Avoid the piece's context
-					debugger
+					
 					# Update detailed positional information for current piece
 					@updateDetailedPosition(piece)
 					
@@ -67,9 +67,11 @@ class Jigsaw
 					# Note: we know that we're connected to at most 3 other pieces, so it's not expensive to 
 					#	fetch the neighbors on every mouseup
 					neighbors_objects = @getNeighborObjects(piece, pieces)
+					debugger
 					
 					# Update detailed positional info of neighboring pieces 
-					_.each(neighbors_objects, (n) -> @updateDetailsPosition(n))
+					# FIXME: Should this always be a just-in-case, or do the neighbors update their own positions?
+					_.each(neighbors_objects, (n) => @updateDetailedPosition(n))
 					
 					# Find and extract snappable neighbor(s)
 					@findSnappableNeighbors(piece, neighbors_objects, snapping_threshold)

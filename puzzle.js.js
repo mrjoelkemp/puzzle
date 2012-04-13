@@ -40,12 +40,12 @@
           },
           drag: function(e, ui) {},
           stop: function(e, ui) {
-            debugger;
             var neighbors_objects;
             _this.updateDetailedPosition(piece);
             neighbors_objects = _this.getNeighborObjects(piece, pieces);
+            debugger;
             _.each(neighbors_objects, function(n) {
-              return this.updateDetailsPosition(n);
+              return _this.updateDetailedPosition(n);
             });
             return _this.findSnappableNeighbors(piece, neighbors_objects, snapping_threshold);
           }
