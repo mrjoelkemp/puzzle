@@ -43,10 +43,10 @@
             var neighbors_objects;
             _this.updateDetailedPosition(piece);
             neighbors_objects = _this.getNeighborObjects(piece, pieces);
-            debugger;
             _.each(neighbors_objects, function(n) {
               return _this.updateDetailedPosition(n);
             });
+            debugger;
             return _this.findSnappableNeighbors(piece, neighbors_objects, snapping_threshold);
           }
         });
@@ -74,7 +74,7 @@
       p_left = parseFloat(piece.position().left);
       p_right = p_left + p_width;
       p_bottom = p_top + p_height;
-      piece.data({
+      piece.data("position", {
         "top": p_top,
         "left": p_left,
         "right": p_right,
@@ -83,13 +83,14 @@
     };
 
     Jigsaw.prototype.findSnappableNeighbors = function(current_piece, neighbors_objects, snapping_threshold) {
-      var cp_neighbors_object, i, neighbor_id, neighbor_object, neighbor_relation, neighbors_objects_ids, neighbors_relations, snappable, _ref;
+      var cp_neighbors_object, i, neighbor_id, neighbor_object, neighbor_relation, neighbors_objects_ids, neighbors_relations, snappable, _ref,
+        _this = this;
       cp_neighbors_object = current_piece.data("neighbors");
-      neighbors_objects_ids = _.each(neighbors_objects, function(n) {
+      neighbors_objects_ids = _.map(neighbors_objects, function(n) {
         return n.data("id");
       });
-      neighbors_relations = _.each(neighbors_objects_ids, function(nid) {
-        if (nid != null) return this.getKeyFromValue(cp_neighbors_object, nid);
+      neighbors_relations = _.map(neighbors_objects_ids, function(nid) {
+        if (nid != null) return _this.getKeyFromValue(cp_neighbors_object, nid);
       });
       snappable = [];
       for (i = 0, _ref = neighbors_objects_ids.length - 1; 0 <= _ref ? i <= _ref : i >= _ref; 0 <= _ref ? i++ : i--) {

@@ -67,12 +67,11 @@ class Jigsaw
 					# Note: we know that we're connected to at most 3 other pieces, so it's not expensive to 
 					#	fetch the neighbors on every mouseup
 					neighbors_objects = @getNeighborObjects(piece, pieces)
-					debugger
-					
+										
 					# Update detailed positional info of neighboring pieces 
 					# FIXME: Should this always be a just-in-case, or do the neighbors update their own positions?
 					_.each(neighbors_objects, (n) => @updateDetailedPosition(n))
-					
+					debugger
 					# Find and extract snappable neighbor(s)
 					@findSnappableNeighbors(piece, neighbors_objects, snapping_threshold)
 					
@@ -109,7 +108,7 @@ class Jigsaw
 		# Compute the right and bottom locations
 		p_right 	= p_left + p_width		# Top-right
 		p_bottom 	= p_top  + p_height		# Bottom-left
-		piece.data({
+		piece.data("position", {
 			"top"	: p_top,
 			"left"	: p_left,
 			"right"	: p_right,
@@ -125,10 +124,10 @@ class Jigsaw
 		cp_neighbors_object = current_piece.data("neighbors")
 		
 		# For the case when the neighbors are out of order in the passed objects list
-		neighbors_objects_ids = _.each(neighbors_objects, (n) -> return n.data("id"))
+		neighbors_objects_ids = _.map(neighbors_objects, (n) -> return n.data("id"))
 		
 		# Find the positional neighbor relation (left, top, bottom, right) for each neighbor
-		neighbors_relations = _.each(neighbors_objects_ids, (nid) -> 
+		neighbors_relations = _.map(neighbors_objects_ids, (nid) => 
 			# If the value (id) isn't null or undefined then get they key for that value
 			if nid? then return @getKeyFromValue(cp_neighbors_object, nid)
 		)
