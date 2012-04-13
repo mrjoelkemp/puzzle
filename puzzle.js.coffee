@@ -123,7 +123,7 @@ class Jigsaw
 		neighbors_objects_ids = _.each(neighbors_objects, (n) -> return n.data("id"))
 		
 		# Find the positional neighbor relation (left, top, bottom, right) for each neighbor
-		neighbors_relations = _.each(neighbors_objects_id, (nid) -> return @getKeyFromValue(cp_neighbors_object, nid))
+		neighbors_relations = _.each(neighbors_objects_ids, (nid) -> return @getKeyFromValue(cp_neighbors_object, nid))
 		
 		snappable = []
 		# Determine the IDs of the pieces that are witihin snapping range and in the proper snapping position
@@ -134,7 +134,7 @@ class Jigsaw
 			neighbor_object 	= neighbors_objects[i]
 			neighbor_relation 	= neighbors_relations[i]
 			
-			if @canSnap(current_piece, neighbor_object, neighbors_relation, snapping_threshold)
+			if @canSnap(current_piece, neighbor_object, neighbor_relation, snapping_threshold)
 				snappable.push neighbor_id
 				
 		return snappable
@@ -147,7 +147,7 @@ class Jigsaw
 		desired_key = _.find(keys, (k) -> return obj[k] == value)   
 		return desired_key
 		
-	canSnap: (current_piece, neighbor_object, position_relation, snapping_threshold) ->
+	canSnap: (current_piece, neighbor_object, neighbor_relation, snapping_threshold) ->
 	# Purpose: 	Determines if the neighbor is within snapping distance
 	#			and snapping orientation about the current piece.
 	# Returns:	True if the neighbor is snappable. False otherwise.
@@ -156,10 +156,16 @@ class Jigsaw
 		current_position = current_piece.data("position")
 		neighbor_position = neighbor_object.data("position")
 		
-		switch position_relation
-			when "left"
+		snappable = false
+		# The orientation of the neighbor about the piece in the original board. 
+		#	i.e., was the neighbor to the right, left, top, or bottom of the current piece?
+		switch neighbor_relation
+			when "left" 	then console.log "yah"
+			when "right" 	then console.log "yah"
+			when "top" 		then console.log "yah"
+			when "bottom" 	then console.log "yah"
 				
-		return false
+		return snappable
 		
 	initNeighbors: (rows, columns, board) ->
 	# Purpose:	Creates a neighbor (top, bottom, left, and right) hash for each (piece) board position
