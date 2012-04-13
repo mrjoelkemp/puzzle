@@ -148,8 +148,7 @@ class Jigsaw
 			neighbor_relation 	= neighbors_relations[i]
 			
 			snaps = @canSnap(current_piece, neighbor_object, neighbor_relation, snapping_threshold)
-			if snaps
-				snappable.push neighbor_id
+			if snaps then snappable.push neighbor_id
 				
 		return snappable
 	
