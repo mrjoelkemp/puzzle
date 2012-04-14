@@ -40,7 +40,7 @@
           },
           drag: function(e, ui) {},
           stop: function(e, ui) {
-            var have_neighbors_to_snap, neighbors_objects, snappable_neighbors, snappable_neighbors_ids;
+            var game_won, have_neighbors_to_snap, neighbors_objects, outcasts, pid, snappable_neighbors, snappable_neighbors_ids;
             _this.updateDetailedPosition(piece);
             neighbors_objects = _this.getNeighborObjects(piece, pieces);
             _.each(neighbors_objects, function(n) {
@@ -50,8 +50,14 @@
             snappable_neighbors = _this.getNeighborObjectsFromIds(pieces, snappable_neighbors_ids);
             have_neighbors_to_snap = !_.isEmpty(snappable_neighbors);
             if (have_neighbors_to_snap) {
-              return _this.snapToNeighbors(piece, snappable_neighbors);
+              _this.snapToNeighbors(piece, snappable_neighbors);
             }
+            pid = piece.data("id");
+            outcasts = _.reject(pieces, function(p) {
+              return p.data("id") === pid;
+            });
+            game_won = _.isEmpty(outcasts);
+            if (game_won) return console.log("Me win!");
           }
         });
       });
@@ -66,7 +72,6 @@
     };
 
     Jigsaw.prototype.snapToNeighbors = function(current_piece, snappable_neighbors) {
-      debugger;
       var cp_id, neighbors_relations, pieces;
       pieces = _.union(current_piece, snappable_neighbors);
       cp_id = current_piece.data("id");

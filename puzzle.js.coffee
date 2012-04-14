@@ -63,9 +63,7 @@ class Jigsaw
 					# Update detailed positional information for current piece
 					@updateDetailedPosition(piece)
 					
-					# Grab neighboring pieces
-					# Note: we know that we're connected to at most 3 other pieces, so it's not expensive to 
-					#	fetch the neighbors on every mouseup
+					# Grab neighboring pieces -- not expensive due to max of 4 neighbors
 					neighbors_objects = @getNeighborObjects(piece, pieces)
 										
 					# Update detailed positional info of neighboring pieces 
@@ -76,13 +74,22 @@ class Jigsaw
 					snappable_neighbors_ids = @findSnappableNeighbors(piece, neighbors_objects, snapping_threshold)
 					snappable_neighbors = @getNeighborObjectsFromIds(pieces, snappable_neighbors_ids)
 					
-					#debugger
 					# If we found a neighbor to snap to
 					have_neighbors_to_snap = !_.isEmpty(snappable_neighbors)
-					if have_neighbors_to_snap then @snapToNeighbors(piece, snappable_neighbors)
+					if have_neighbors_to_snap 
+						@snapToNeighbors(piece, snappable_neighbors)
+						# TODO: Update neighbor groups with new group id
+						#propagateSnap()
 										
 					# Check for a win condition: all pieces are in the same group
-										
+					# TODO: Make into a function
+					pid = piece.data("id")
+					# Pieces not in my group
+					outcasts = _.reject(pieces, (p) -> return p.data("id") == pid)
+					# We win if there are no outcasts
+					game_won = _.isEmpty(outcasts)
+					if game_won then console.log("Me win!")
+					
 			})	#end draggable()
 		)
 	
@@ -94,7 +101,6 @@ class Jigsaw
 		
 	snapToNeighbors: (current_piece, snappable_neighbors) ->
 	# Purpose: Snaps the current piece to the snappable neighbors and adds them all to the same drag group.
-		debugger
 		# Temporarily combine the pieces into a single list
 		pieces = _.union(current_piece, snappable_neighbors)
 		
@@ -105,8 +111,10 @@ class Jigsaw
 		# Get the relation of the neighbors about the current piece (left, right, top, bottom)
 		neighbors_relations = @getNeighborRelations(current_piece, snappable_neighbors)
 		
-		# Use the relation to determine snapping mode (inner, outer, both)
-		#DEBUG
+		# TODO: Implement a manual snap. Fix piece to the neighbors' positions
+		# Find neighbor relations to determine borders to use in snapping. Reuse canSnap() logic.
+		# Modify piece's CSS top and left to make snap borders at the position of the proper snap border for the neighbor
+		
 		_.each(pieces, (p) -> p.css("border", "1px solid red"))
 
 		return	# Void function
