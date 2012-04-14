@@ -73,21 +73,44 @@ class Jigsaw
 					_.each(neighbors_objects, (n) => @updateDetailedPosition(n))
 					
 					# Find and extract snappable neighbor(s)
-					snappable_neighbors = @findSnappableNeighbors(piece, neighbors_objects, snapping_threshold)
+					snappable_neighbors_ids = @findSnappableNeighbors(piece, neighbors_objects, snapping_threshold)
+					snappable_neighbors = @getNeighborObjectsFromIds(pieces, snappable_neighbors_ids)
 					
 					#debugger
-					
-					# Trigger snapping of the current piece to the snappable neighbor(s)
-					@snapToNeighbors(piece, snappable_neighbors)
+					# If we found a neighbor to snap to
+					have_neighbors_to_snap = !_.isEmpty(snappable_neighbors)
+					if have_neighbors_to_snap then @snapToNeighbors(piece, snappable_neighbors)
 										
-					# Check for a win condition: all pieces are snapped together
-					
+					# Check for a win condition: all pieces are in the same group
+										
 			})	#end draggable()
 		)
-		
-	snapToNeighbors: (piece, snappable_neighbors) ->
-	# Purpose: 
 	
+	getNeighborObjectsFromIds: (pieces, neighbors_ids) ->
+	# Purpose: 	Extracts the neighbor objects from the pieces list with ids matching passed neighbor ids
+	# Returns:	A list of neighbor (piece) objects
+		neighbors_pieces = _.map(neighbors_ids, (id) -> return pieces[id])
+		return neighbors_pieces
+		
+	snapToNeighbors: (current_piece, snappable_neighbors) ->
+	# Purpose: Snaps the current piece to the snappable neighbors and adds them all to the same drag group.
+		debugger
+		# Temporarily combine the pieces into a single list
+		pieces = _.union(current_piece, snappable_neighbors)
+		
+		# Add the piece and the neighbors to a group numbered after the piece's ID
+		cp_id = current_piece.data("id")		
+		_.each(pieces, (p) -> p.data("group", cp_id))
+		
+		# Get the relation of the neighbors about the current piece (left, right, top, bottom)
+		neighbors_relations = @getNeighborRelations(current_piece, snappable_neighbors)
+		
+		# Use the relation to determine snapping mode (inner, outer, both)
+		#DEBUG
+		_.each(pieces, (p) -> p.css("border", "1px solid red"))
+
+		return	# Void function
+		
 	getNeighborObjects: (current_piece, pieces) ->
 	# Purpose:	Extracts the neighboring piece objects for the passed current piece
 	# Returns: 	A list of neighbor piece objects.
@@ -95,10 +118,10 @@ class Jigsaw
 		neighbors_ids = _.values(neighbors_obj)
 		
 		# Remove the undefined ids for boundary pieces
-		neighbors_ids = _.reject(neighbors_ids, (id) -> return !id?)
+		neighbors_ids = _.compact(neighbors_ids)
 		
 		# Grab pieces associated with neighbor ids
-		neighbors_pieces = _.map(neighbors_ids, (id) -> return pieces[id])
+		neighbors_pieces = @getNeighborObjectsFromIds(pieces, neighbors_ids)
 		
 		return neighbors_pieces
 		
@@ -152,6 +175,9 @@ class Jigsaw
 		neighbors_relations = @getNeighborRelations(current_piece, neighbors_objects)
 		
 		snappable = []
+		
+		neighbors_objects_ids = _.map(neighbors_objects, (n) -> return n.data("id"))
+				
 		# Determine the IDs of the pieces that are witihin snapping range and in the proper snapping position
 		# in reference to the current piece.
 		# TODO: Possible use _.zip() to combine the neighbor_objects and position_relations sets into tuples.

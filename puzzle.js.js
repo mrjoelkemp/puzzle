@@ -40,31 +40,51 @@
           },
           drag: function(e, ui) {},
           stop: function(e, ui) {
-            var neighbors_objects, snappable_neighbors;
+            var have_neighbors_to_snap, neighbors_objects, snappable_neighbors, snappable_neighbors_ids;
             _this.updateDetailedPosition(piece);
             neighbors_objects = _this.getNeighborObjects(piece, pieces);
             _.each(neighbors_objects, function(n) {
               return _this.updateDetailedPosition(n);
             });
-            snappable_neighbors = _this.findSnappableNeighbors(piece, neighbors_objects, snapping_threshold);
-            return _this.snapToNeighbors(piece, snappable_neighbors);
+            snappable_neighbors_ids = _this.findSnappableNeighbors(piece, neighbors_objects, snapping_threshold);
+            snappable_neighbors = _this.getNeighborObjectsFromIds(pieces, snappable_neighbors_ids);
+            have_neighbors_to_snap = !_.isEmpty(snappable_neighbors);
+            if (have_neighbors_to_snap) {
+              return _this.snapToNeighbors(piece, snappable_neighbors);
+            }
           }
         });
       });
     };
 
-    Jigsaw.prototype.snapToNeighbors = function(piece, snappable_neighbors) {};
+    Jigsaw.prototype.getNeighborObjectsFromIds = function(pieces, neighbors_ids) {
+      var neighbors_pieces;
+      neighbors_pieces = _.map(neighbors_ids, function(id) {
+        return pieces[id];
+      });
+      return neighbors_pieces;
+    };
+
+    Jigsaw.prototype.snapToNeighbors = function(current_piece, snappable_neighbors) {
+      debugger;
+      var cp_id, neighbors_relations, pieces;
+      pieces = _.union(current_piece, snappable_neighbors);
+      cp_id = current_piece.data("id");
+      _.each(pieces, function(p) {
+        return p.data("group", cp_id);
+      });
+      neighbors_relations = this.getNeighborRelations(current_piece, snappable_neighbors);
+      _.each(pieces, function(p) {
+        return p.css("border", "1px solid red");
+      });
+    };
 
     Jigsaw.prototype.getNeighborObjects = function(current_piece, pieces) {
       var neighbors_ids, neighbors_obj, neighbors_pieces;
       neighbors_obj = current_piece.data("neighbors");
       neighbors_ids = _.values(neighbors_obj);
-      neighbors_ids = _.reject(neighbors_ids, function(id) {
-        return !(id != null);
-      });
-      neighbors_pieces = _.map(neighbors_ids, function(id) {
-        return pieces[id];
-      });
+      neighbors_ids = _.compact(neighbors_ids);
+      neighbors_pieces = this.getNeighborObjectsFromIds(pieces, neighbors_ids);
       return neighbors_pieces;
     };
 
@@ -114,9 +134,12 @@
     };
 
     Jigsaw.prototype.findSnappableNeighbors = function(current_piece, neighbors_objects, snapping_threshold) {
-      var i, neighbor_id, neighbor_object, neighbor_relation, neighbors_relations, snappable, snaps, _ref;
+      var i, neighbor_id, neighbor_object, neighbor_relation, neighbors_objects_ids, neighbors_relations, snappable, snaps, _ref;
       neighbors_relations = this.getNeighborRelations(current_piece, neighbors_objects);
       snappable = [];
+      neighbors_objects_ids = _.map(neighbors_objects, function(n) {
+        return n.data("id");
+      });
       for (i = 0, _ref = neighbors_objects_ids.length - 1; 0 <= _ref ? i <= _ref : i >= _ref; 0 <= _ref ? i++ : i--) {
         neighbor_id = neighbors_objects_ids[i];
         neighbor_object = neighbors_objects[i];
