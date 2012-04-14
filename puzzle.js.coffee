@@ -46,7 +46,7 @@ class Jigsaw
 	# Purpose: 	Initializes the dragging events for each piece in the passed list
 		_.each(pieces, (piece) =>	# Avoid the piece's context
 			piece.draggable({
-				snap	: false,
+				snap	: false,					# Turn off snapping until we manually trigger snapping
 				snapMode: "inner",
 				stack	: ".piece",					# Dragged piece has a higher z-index
 				snapTolerance: snapping_threshold,	# Pixel distance to initiate snapping
@@ -78,14 +78,16 @@ class Jigsaw
 					#debugger
 					
 					# Trigger snapping of the current piece to the snappable neighbor(s)
-					# TODO: Implement next
-					#snapToCloseNeighbors(piece, snappable_neighbors)
+					@snapToNeighbors(piece, snappable_neighbors)
 										
 					# Check for a win condition: all pieces are snapped together
 					
 			})	#end draggable()
 		)
 		
+	snapToNeighbors: (piece, snappable_neighbors) ->
+	# Purpose: 
+	
 	getNeighborObjects: (current_piece, pieces) ->
 	# Purpose:	Extracts the neighboring piece objects for the passed current piece
 	# Returns: 	A list of neighbor piece objects.
@@ -124,12 +126,10 @@ class Jigsaw
 			"bottom_right"	: bottom_right
 		})
 		return	# Void function
-		
-	findSnappableNeighbors: (current_piece, neighbors_objects, snapping_threshold) ->
-	# Purpose:	Determines the snappable neighbors that are within a snapping, pixel tolerance
-	# Precond:	neighbors_objects is a list of piece objects neighboring the current piece
-	#			snapping_threshold is an integer, lower-bound amount of pixels for snapping between neighbors 
-	# Returns:	A list of neighbor ids that are within snapping range
+	
+	getNeighborRelations: (current_piece, neighbors_objects) ->	
+	# Purpose: Returns a list of relations of the neighbors about the current piece
+	# Returns: A list of positional orientations/relations (left, right, top, bottom)
 		cp_neighbors_object = current_piece.data("neighbors")
 		
 		# For the case when the neighbors are out of order in the passed objects list
@@ -140,6 +140,16 @@ class Jigsaw
 			# If the value (id) isn't null or undefined then get they key for that value
 			if nid? then return @getKeyFromValue(cp_neighbors_object, nid)
 		)
+		return neighbors_relations
+		
+	findSnappableNeighbors: (current_piece, neighbors_objects, snapping_threshold) ->
+	# Purpose:	Determines the snappable neighbors that are within a snapping, pixel tolerance
+	# Precond:	neighbors_objects is a list of piece objects neighboring the current piece
+	#			snapping_threshold is an integer, lower-bound amount of pixels for snapping between neighbors 
+	# Returns:	A list of neighbor ids that are within snapping range
+		
+		# Find the positional neighbor relation (left, top, bottom, right) for each neighbor
+		neighbors_relations = @getNeighborRelations(current_piece, neighbors_objects)
 		
 		snappable = []
 		# Determine the IDs of the pieces that are witihin snapping range and in the proper snapping position

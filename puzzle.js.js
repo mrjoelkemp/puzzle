@@ -46,11 +46,14 @@
             _.each(neighbors_objects, function(n) {
               return _this.updateDetailedPosition(n);
             });
-            return snappable_neighbors = _this.findSnappableNeighbors(piece, neighbors_objects, snapping_threshold);
+            snappable_neighbors = _this.findSnappableNeighbors(piece, neighbors_objects, snapping_threshold);
+            return _this.snapToNeighbors(piece, snappable_neighbors);
           }
         });
       });
     };
+
+    Jigsaw.prototype.snapToNeighbors = function(piece, snappable_neighbors) {};
 
     Jigsaw.prototype.getNeighborObjects = function(current_piece, pieces) {
       var neighbors_ids, neighbors_obj, neighbors_pieces;
@@ -97,8 +100,8 @@
       });
     };
 
-    Jigsaw.prototype.findSnappableNeighbors = function(current_piece, neighbors_objects, snapping_threshold) {
-      var cp_neighbors_object, i, neighbor_id, neighbor_object, neighbor_relation, neighbors_objects_ids, neighbors_relations, snappable, snaps, _ref,
+    Jigsaw.prototype.getNeighborRelations = function(current_piece, neighbors_objects) {
+      var cp_neighbors_object, neighbors_objects_ids, neighbors_relations,
         _this = this;
       cp_neighbors_object = current_piece.data("neighbors");
       neighbors_objects_ids = _.map(neighbors_objects, function(n) {
@@ -107,6 +110,12 @@
       neighbors_relations = _.map(neighbors_objects_ids, function(nid) {
         if (nid != null) return _this.getKeyFromValue(cp_neighbors_object, nid);
       });
+      return neighbors_relations;
+    };
+
+    Jigsaw.prototype.findSnappableNeighbors = function(current_piece, neighbors_objects, snapping_threshold) {
+      var i, neighbor_id, neighbor_object, neighbor_relation, neighbors_relations, snappable, snaps, _ref;
+      neighbors_relations = this.getNeighborRelations(current_piece, neighbors_objects);
       snappable = [];
       for (i = 0, _ref = neighbors_objects_ids.length - 1; 0 <= _ref ? i <= _ref : i >= _ref; 0 <= _ref ? i++ : i--) {
         neighbor_id = neighbors_objects_ids[i];
