@@ -114,6 +114,7 @@ class Jigsaw
 		# TODO: Implement a manual snap. Fix piece to the neighbors' positions
 		# Find neighbor relations to determine borders to use in snapping. Reuse canSnap() logic.
 		# Modify piece's CSS top and left to make snap borders at the position of the proper snap border for the neighbor
+		# Animate (quickly) to the proper locations
 		
 		_.each(pieces, (p) -> p.css("border", "none"))
 
