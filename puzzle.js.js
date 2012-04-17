@@ -40,7 +40,7 @@
           },
           drag: function(e, ui) {},
           stop: function(e, ui) {
-            var game_won, have_neighbors_to_snap, neighbors_objects, outcasts, pid, snappable_neighbors, snappable_neighbors_ids;
+            var have_neighbors_to_snap, neighbors_objects, snappable_neighbors, snappable_neighbors_ids;
             _this.updateDetailedPosition(piece);
             neighbors_objects = _this.getNeighborObjects(piece, pieces);
             _.each(neighbors_objects, function(n) {
@@ -50,14 +50,8 @@
             snappable_neighbors = _this.getNeighborObjectsFromIds(pieces, snappable_neighbors_ids);
             have_neighbors_to_snap = !_.isEmpty(snappable_neighbors);
             if (have_neighbors_to_snap) {
-              _this.snapToNeighbors(piece, snappable_neighbors);
+              return _this.snapToNeighbors(piece, snappable_neighbors);
             }
-            pid = piece.data("id");
-            outcasts = _.reject(pieces, function(p) {
-              return p.data("id") === pid;
-            });
-            game_won = _.isEmpty(outcasts);
-            if (game_won) return console.log("Me win!");
           }
         });
       });
@@ -80,8 +74,22 @@
       });
       neighbors_relations = this.getNeighborRelations(current_piece, snappable_neighbors);
       _.each(pieces, function(p) {
-        return p.css("border", "1px solid red");
+        return p.css("border", "none");
       });
+    };
+
+    Jigsaw.prototype.getNeighborRelations = function(current_piece, neighbors_objects) {
+      var cp_neighbors_object, neighbors_objects_ids, neighbors_relations,
+        _this = this;
+      cp_neighbors_object = current_piece.data("neighbors");
+      neighbors_objects_ids = _.map(neighbors_objects, function(n) {
+        return n.data("id");
+      });
+      neighbors_objects_ids = _.compact(neighbors_objects_ids);
+      neighbors_relations = _.map(neighbors_objects_ids, function(nid) {
+        return _this.getKeyFromValue(cp_neighbors_object, nid);
+      });
+      return neighbors_relations;
     };
 
     Jigsaw.prototype.getNeighborObjects = function(current_piece, pieces) {
@@ -123,19 +131,6 @@
         "bottom_left": bottom_left,
         "bottom_right": bottom_right
       });
-    };
-
-    Jigsaw.prototype.getNeighborRelations = function(current_piece, neighbors_objects) {
-      var cp_neighbors_object, neighbors_objects_ids, neighbors_relations,
-        _this = this;
-      cp_neighbors_object = current_piece.data("neighbors");
-      neighbors_objects_ids = _.map(neighbors_objects, function(n) {
-        return n.data("id");
-      });
-      neighbors_relations = _.map(neighbors_objects_ids, function(nid) {
-        if (nid != null) return _this.getKeyFromValue(cp_neighbors_object, nid);
-      });
-      return neighbors_relations;
     };
 
     Jigsaw.prototype.findSnappableNeighbors = function(current_piece, neighbors_objects, snapping_threshold) {

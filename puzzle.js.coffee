@@ -75,7 +75,7 @@ class Jigsaw
 					snappable_neighbors = @getNeighborObjectsFromIds(pieces, snappable_neighbors_ids)
 					
 					# If we found a neighbor to snap to
-					have_neighbors_to_snap = !_.isEmpty(snappable_neighbors)
+					have_neighbors_to_snap = not _.isEmpty(snappable_neighbors)
 					if have_neighbors_to_snap 
 						@snapToNeighbors(piece, snappable_neighbors)
 						# TODO: Update neighbor groups with new group id
@@ -83,12 +83,12 @@ class Jigsaw
 										
 					# Check for a win condition: all pieces are in the same group
 					# TODO: Make into a function
-					pid = piece.data("id")
+					#pid = piece.data("id")
 					# Pieces not in my group
-					outcasts = _.reject(pieces, (p) -> return p.data("id") == pid)
+					#outcasts = _.reject(pieces, (p) -> return p.data("id") == pid)
 					# We win if there are no outcasts
-					game_won = _.isEmpty(outcasts)
-					if game_won then console.log("Me win!")
+					#game_won = _.isEmpty(outcasts)
+					#if game_won then "Me win!"
 					
 			})	#end draggable()
 		)
@@ -115,9 +115,25 @@ class Jigsaw
 		# Find neighbor relations to determine borders to use in snapping. Reuse canSnap() logic.
 		# Modify piece's CSS top and left to make snap borders at the position of the proper snap border for the neighbor
 		
-		_.each(pieces, (p) -> p.css("border", "1px solid red"))
+		_.each(pieces, (p) -> p.css("border", "none"))
 
 		return	# Void function
+		
+	getNeighborRelations: (current_piece, neighbors_objects) ->	
+	# Purpose: Returns a list of relations of the neighbors about the current piece
+	# Returns: A list of positional orientations/relations (left, right, top, bottom)
+		cp_neighbors_object = current_piece.data("neighbors")
+
+		# For the case when the neighbors are out of order in the passed objects list
+		neighbors_objects_ids = _.map(neighbors_objects, (n) -> return n.data("id"))
+		neighbors_objects_ids = _.compact(neighbors_objects_ids)
+
+		# Find the positional neighbor relation (left, top, bottom, right) for each neighbor
+		neighbors_relations = _.map(neighbors_objects_ids, (nid) => 
+			# If the value (id) isn't null or undefined then get they key for that value
+			return @getKeyFromValue(cp_neighbors_object, nid)
+		)
+		return neighbors_relations
 		
 	getNeighborObjects: (current_piece, pieces) ->
 	# Purpose:	Extracts the neighboring piece objects for the passed current piece
@@ -145,10 +161,10 @@ class Jigsaw
 		bottom 	= top  + height		# Bottom-left
 		
 		# Compute the four corners of the piece
-		top_left 	= {"x": left, 	"y": top}
-		top_right 	= {"x": right, 	"y": top}
-		bottom_left = {"x": left, 	"y": bottom}
-		bottom_right= {"x": right, 	"y": bottom}
+		top_left 	= "x": left, 	"y": top
+		top_right 	= "x": right, 	"y": top
+		bottom_left = "x": left, 	"y": bottom
+		bottom_right= "x": right, 	"y": bottom
 		
 		piece.data("position", {
 			"top_left"		: top_left,
@@ -158,20 +174,6 @@ class Jigsaw
 		})
 		return	# Void function
 	
-	getNeighborRelations: (current_piece, neighbors_objects) ->	
-	# Purpose: Returns a list of relations of the neighbors about the current piece
-	# Returns: A list of positional orientations/relations (left, right, top, bottom)
-		cp_neighbors_object = current_piece.data("neighbors")
-		
-		# For the case when the neighbors are out of order in the passed objects list
-		neighbors_objects_ids = _.map(neighbors_objects, (n) -> return n.data("id"))
-		
-		# Find the positional neighbor relation (left, top, bottom, right) for each neighbor
-		neighbors_relations = _.map(neighbors_objects_ids, (nid) => 
-			# If the value (id) isn't null or undefined then get they key for that value
-			if nid? then return @getKeyFromValue(cp_neighbors_object, nid)
-		)
-		return neighbors_relations
 		
 	findSnappableNeighbors: (current_piece, neighbors_objects, snapping_threshold) ->
 	# Purpose:	Determines the snappable neighbors that are within a snapping, pixel tolerance
