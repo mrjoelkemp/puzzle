@@ -160,9 +160,16 @@
     };
 
     Jigsaw.prototype.canSnap = function(current_piece, neighbor_object, neighbor_relation, snapping_threshold) {
-      var cp, np, points, snappable;
+      var points, snappable;
+      points = this.getSnappablePoints(current_piece, neighbor_object, neighbor_relation);
+      snappable = this.isWithinThreshold(points[0], points[1], points[2], points[3], snapping_threshold);
+      return snappable;
+    };
+
+    Jigsaw.prototype.getSnappablePoints = function(current_piece, neighbor_piece, neighbor_relation) {
+      var cp, np, points;
       cp = current_piece.data("position");
-      np = neighbor_object.data("position");
+      np = neighbor_piece.data("position");
       points = [];
       switch (neighbor_relation) {
         case "right":
@@ -177,8 +184,7 @@
         case "bottom":
           points = [cp.bottom_left, cp.bottom_right, np.top_left, np.top_right];
       }
-      snappable = this.isWithinThreshold(points[0], points[1], points[2], points[3], snapping_threshold);
-      return snappable;
+      return points;
     };
 
     Jigsaw.prototype.isWithinThreshold = function(cp1, cp2, np1, np2, snapping_threshold) {

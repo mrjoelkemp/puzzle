@@ -216,10 +216,19 @@ class Jigsaw
 	# Returns:	True if the neighbor is snappable. False otherwise.
 	# Note:		We're relying on the detailed positional data since it also includes bottom and right
 	#			which are valid snappable orientations.	
-		cp = current_piece.data("position")
-		np = neighbor_object.data("position")
+		# Get the points that can snap together from the two pieces based on their relationship
+		points = @getSnappablePoints(current_piece, neighbor_object, neighbor_relation)
 		
 		# Holds the points to be used in determine if snapping is possible 
+		snappable = @isWithinThreshold(points[0], points[1], points[2], points[3], snapping_threshold)		
+		return snappable
+		
+	getSnappablePoints: (current_piece, neighbor_piece, neighbor_relation) ->
+	# Purpose: Determines the points from the two pieces that are important for snapping based on the passed relation
+	# Returns: A 4-element list containing the points of interest from both pieces. 2 from current_piece and 2 from neighbor.
+		cp = current_piece.data("position")
+		np = neighbor_piece.data("position")
+		
 		points = []
 		
 		# The orientation of the neighbor about the piece in the original board. 
@@ -242,9 +251,9 @@ class Jigsaw
 			# Then my bottom side must be within range of your top side
 			when "bottom" 	then points = [cp.bottom_left, cp.bottom_right, np.top_left, np.top_right]
 		
-		snappable = @isWithinThreshold(points[0], points[1], points[2], points[3], snapping_threshold)		
-		return snappable
-	
+		return points
+		
+		
 	isWithinThreshold: (cp1, cp2, np1, np2, snapping_threshold) ->
 	# Purpose: 	Determines if the Euclidean distance between passed associated points are within the snapping
 	# Precond:	cp1 compares to n1, cp2 compares to n2
