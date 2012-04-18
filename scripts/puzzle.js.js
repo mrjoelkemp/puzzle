@@ -18,12 +18,48 @@
       pieces = this.initPieces(rows, columns, back_canvas, starting_id, neighbors);
       snapping_threshold = 30;
       this.setDraggingEvents(pieces, snapping_threshold);
+      this.randomize(pieces);
       refresh_rate = 33;
       back_canvas_element = back_canvas[0];
       back_canvas_context = back_canvas_element.getContext('2d');
       this.renderVideoToBackCanvas(video_element, back_canvas_context, refresh_rate);
       this.renderBackCanvasToPieces(back_canvas_element, pieces, refresh_rate);
     }
+
+    Jigsaw.prototype.randomize = function(pieces) {
+      var center_pos, num_points, points;
+      center_pos = {
+        "x": $(window).width() / 2,
+        "y": $(window).height() / 2
+      };
+      num_points = pieces.length;
+      return points = this.generatePointsAboutCircle(num_points, center, radius);
+    };
+
+    Jigsaw.prototype.generatePointsAboutCircle = function(num_points, center, radius) {
+      var centered, coords, degree, degrees, step;
+      step = 360 / num_points;
+      degrees = [];
+      degree = 0;
+      while (degree <= 360) {
+        degrees.push(degree);
+        degree += step;
+      }
+      coords = _.map(degrees, function(d) {
+        var x, y;
+        x = Math.cos(d) * radius;
+        y = Math.sin(d) * radius;
+        return {
+          "x": x,
+          "y": y
+        };
+      });
+      centered = _.map(coords, function(c) {
+        c.x += center.x;
+        return c.y += center.y;
+      });
+      return centered;
+    };
 
     Jigsaw.prototype.setDraggingEvents = function(pieces, snapping_threshold) {
       var _this = this;
