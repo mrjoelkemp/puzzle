@@ -11,5 +11,6 @@ video {
   height: 360px; }
   #pieces-canvas canvas {
     float: left;
+    position: absolute;
     border-right: 1px solid blue;
     border-bottom: 1px solid blue; }
