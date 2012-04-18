@@ -70,15 +70,6 @@ class Jigsaw
 			
 			# Set the top and left to the point's y and x, respectively
 			@movePiece(p, circle_point.x, circle_point.y)
-		
-		# For each piece
-		#_.each(pieces_indices, (arr) =>
-		#	p 	= arr[0]
-		#	ind = arr[1]
-		#	circle_point = points[ind]
-		#	# Set the top and left to the point's y and x, respectively
-		#	@movePiece(p, circle_point.x, circle_point.y)
-		#)			
 	
 	generatePointsAboutCircle: (num_points, center, radius) ->
 	# Purpose: 	Generate a series of points about a circle centered at the 
