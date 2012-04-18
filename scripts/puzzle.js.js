@@ -41,7 +41,6 @@
         return _results;
       }).apply(this);
       indices = _.shuffle(indices);
-      debugger;
       _results2 = [];
       for (i = 0; 0 <= num_points ? i < num_points : i > num_points; 0 <= num_points ? i++ : i--) {
         p = pieces[i + 1];
@@ -150,7 +149,8 @@
         new_top = cp_pos_top + top_offset;
         new_left = cp_pos_left + left_offset;
         console.log("New Pos: Left = " + new_left + " Top = " + new_top);
-        return _this.movePiece(current_piece, new_left, new_top);
+        _this.movePiece(current_piece, new_left, new_top, 0);
+        return current_piece.css("border", "1px solid red");
       });
     };
 

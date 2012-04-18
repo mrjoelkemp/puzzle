@@ -59,7 +59,7 @@ class Jigsaw
 		# Shuffle the points
 		indices = [0 ... num_points]
 		indices = _.shuffle(indices)
-		debugger
+		#debugger
 		# Combine the pieces and the points indices for iteration
 		#pieces_indices = _.zip(pieces, indices)
 		for i in [0 ... num_points]
@@ -213,7 +213,9 @@ class Jigsaw
 			new_left = cp_pos_left + left_offset 
 			
 			console.log ("New Pos: Left = " + new_left + " Top = " + new_top)
-			@movePiece(current_piece, new_left, new_top)
+			@movePiece(current_piece, new_left, new_top, 0)
+			# DEBUG
+			current_piece.css("border", "1px solid red")
 		)
 		#_.each(pieces, (p) -> p.css("border", "none"))
 
