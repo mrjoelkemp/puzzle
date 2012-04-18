@@ -133,7 +133,7 @@
         relation = arr[1];
         return _this.getSnappablePoints(current_piece, neighbor, relation);
       });
-      _.each(neighbors_points, function(point_list) {
+      return _.each(neighbors_points, function(point_list) {
         var cp1, cp2, cp_pos, cp_pos_left, cp_pos_top, left_offset, new_left, new_top, np1, np2, top_offset;
         cp1 = point_list[0];
         cp2 = point_list[1];

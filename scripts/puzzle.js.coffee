@@ -176,8 +176,6 @@ class Jigsaw
 		# Combine the two sets of information so we can iterate
 		objects_relations = _.zip(snappable_neighbors, neighbors_relations)
 		
-		#debugger
-		
 		# Grab the snappable points for each neighbor in relation to the current piece
 		# resulting list contains a list of 4-element arrays
 		#	For each array, 
@@ -217,9 +215,6 @@ class Jigsaw
 			# DEBUG
 			current_piece.css("border", "1px solid red")
 		)
-		#_.each(pieces, (p) -> p.css("border", "none"))
-
-		return	# Void function
 		
 	getNeighborRelations: (current_piece, neighbors_objects) ->	
 	# Purpose: Returns a list of relations of the neighbors about the current piece
