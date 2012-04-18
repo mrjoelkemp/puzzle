@@ -118,7 +118,7 @@ class Jigsaw
 					piece.data("old_top", piece.position().top)
 					piece.data("old_left", piece.position().left)
 				drag	: (e, ui) ->
-					# Drag every (snapped) piece in the group
+					# TODO: Drag every (snapped) piece in the group
 					# dragGroup(group_id)
 				stop	: (e, ui) =>	# Avoid the piece's context
 					
