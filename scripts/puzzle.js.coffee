@@ -52,24 +52,33 @@ class Jigsaw
 		center_pos = "x" : $(window).width() / 2, "y": $(window).height() / 2
 		
 		# List of objects with an left (x) and top (y) value
-		num_points = pieces.length
-		points = @generatePointsAboutCircle(num_points, center, radius)
+		num_points = _.size(pieces)
+		radius = 350
+		points = @generatePointsAboutCircle(num_points, center_pos, radius)
 		
 		# Shuffle the points
-		indices = [0 ... points.length]
-		_.shuffle(indices)
-		
+		indices = [0 ... num_points]
+		indices = _.shuffle(indices)
+		debugger
 		# Combine the pieces and the points indices for iteration
-		pieces_indices = _.zip(pieces, indices)
-		
-		# For each piece
-		_.each(pieces_indices, (arr) =>
-			p 	= arr[0]
-			ind = arr[1]
-			circle_point = points[ind]
+		#pieces_indices = _.zip(pieces, indices)
+		for i in [0 ... num_points]
+			#FIXME: See if we can use "for p in pieces"
+			p	= pieces[i + 1]	# Piece indices start at 1
+			ind = indices[i]
+			circle_point= points[ind]
+			
 			# Set the top and left to the point's y and x, respectively
 			@movePiece(p, circle_point.x, circle_point.y)
-		)			
+		
+		# For each piece
+		#_.each(pieces_indices, (arr) =>
+		#	p 	= arr[0]
+		#	ind = arr[1]
+		#	circle_point = points[ind]
+		#	# Set the top and left to the point's y and x, respectively
+		#	@movePiece(p, circle_point.x, circle_point.y)
+		#)			
 	
 	generatePointsAboutCircle: (num_points, center, radius) ->
 	# Purpose: 	Generate a series of points about a circle centered at the 
@@ -99,6 +108,7 @@ class Jigsaw
 		centered = _.map(coords, (c) -> 
 			c.x += center.x
 			c.y += center.y
+			return c
 		)
 		
 		return centered
@@ -494,7 +504,7 @@ class Jigsaw
 		return piece
 	
 			
-	movePiece: (piece, x, y) ->
+	movePiece: (piece, x, y, speed = 1900) ->
 	# Purpose:	Animates the passed piece to the passed location.
 	# Precond:	piece is a jquery canvas object
 	# Notes:	uses jquery animate with a predefined duration
@@ -502,7 +512,7 @@ class Jigsaw
 		piece.animate({
 		'left' : x,
 		'top' : y
-		}, 1900, -> console.log "Done Moving")	
+		}, speed)			
 				
 	initBoard: (rows, columns, starting_id) ->
 	# Purpose: 	Creates a num_rows x num_columns matrix of IDs.

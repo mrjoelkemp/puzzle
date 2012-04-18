@@ -27,28 +27,29 @@
     }
 
     Jigsaw.prototype.randomize = function(pieces) {
-      var center_pos, indices, num_points, pieces_indices, points, _i, _ref, _results,
-        _this = this;
+      var center_pos, circle_point, i, ind, indices, num_points, p, points, radius, _i, _results, _results2;
       center_pos = {
         "x": $(window).width() / 2,
         "y": $(window).height() / 2
       };
-      num_points = pieces.length;
-      points = this.generatePointsAboutCircle(num_points, center, radius);
+      num_points = _.size(pieces);
+      radius = 350;
+      points = this.generatePointsAboutCircle(num_points, center_pos, radius);
       indices = (function() {
         _results = [];
-        for (var _i = 0, _ref = points.length; 0 <= _ref ? _i < _ref : _i > _ref; 0 <= _ref ? _i++ : _i--){ _results.push(_i); }
+        for (var _i = 0; 0 <= num_points ? _i < num_points : _i > num_points; 0 <= num_points ? _i++ : _i--){ _results.push(_i); }
         return _results;
       }).apply(this);
-      _.shuffle(indices);
-      pieces_indices = _.zip(pieces, indices);
-      return _.each(pieces_indices, function(arr) {
-        var circle_point, ind, p;
-        p = arr[0];
-        ind = arr[1];
+      indices = _.shuffle(indices);
+      debugger;
+      _results2 = [];
+      for (i = 0; 0 <= num_points ? i < num_points : i > num_points; 0 <= num_points ? i++ : i--) {
+        p = pieces[i + 1];
+        ind = indices[i];
         circle_point = points[ind];
-        return _this.movePiece(p, circle_point.x, circle_point.y);
-      });
+        _results2.push(this.movePiece(p, circle_point.x, circle_point.y));
+      }
+      return _results2;
     };
 
     Jigsaw.prototype.generatePointsAboutCircle = function(num_points, center, radius) {
@@ -71,7 +72,8 @@
       });
       centered = _.map(coords, function(c) {
         c.x += center.x;
-        return c.y += center.y;
+        c.y += center.y;
+        return c;
       });
       return centered;
     };
@@ -352,13 +354,12 @@
       return piece;
     };
 
-    Jigsaw.prototype.movePiece = function(piece, x, y) {
+    Jigsaw.prototype.movePiece = function(piece, x, y, speed) {
+      if (speed == null) speed = 1900;
       return piece.animate({
         'left': x,
         'top': y
-      }, 1900, function() {
-        return console.log("Done Moving");
-      });
+      }, speed);
     };
 
     Jigsaw.prototype.initBoard = function(rows, columns, starting_id) {
