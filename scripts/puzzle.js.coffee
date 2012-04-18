@@ -56,9 +56,20 @@ class Jigsaw
 		points = @generatePointsAboutCircle(num_points, center, radius)
 		
 		# Shuffle the points
+		indices = [0 ... points.length]
+		_.shuffle(indices)
+		
+		# Combine the pieces and the points indices for iteration
+		pieces_indices = _.zip(pieces, indices)
 		
 		# For each piece
+		_.each(pieces_indices, (arr) =>
+			p 	= arr[0]
+			ind = arr[1]
+			circle_point = points[ind]
 			# Set the top and left to the point's y and x, respectively
+			@movePiece(p, circle_point.x, circle_point.y)
+		)			
 	
 	generatePointsAboutCircle: (num_points, center, radius) ->
 	# Purpose: 	Generate a series of points about a circle centered at the 

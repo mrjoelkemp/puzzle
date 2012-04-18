@@ -27,13 +27,28 @@
     }
 
     Jigsaw.prototype.randomize = function(pieces) {
-      var center_pos, num_points, points;
+      var center_pos, indices, num_points, pieces_indices, points, _i, _ref, _results,
+        _this = this;
       center_pos = {
         "x": $(window).width() / 2,
         "y": $(window).height() / 2
       };
       num_points = pieces.length;
-      return points = this.generatePointsAboutCircle(num_points, center, radius);
+      points = this.generatePointsAboutCircle(num_points, center, radius);
+      indices = (function() {
+        _results = [];
+        for (var _i = 0, _ref = points.length; 0 <= _ref ? _i < _ref : _i > _ref; 0 <= _ref ? _i++ : _i--){ _results.push(_i); }
+        return _results;
+      }).apply(this);
+      _.shuffle(indices);
+      pieces_indices = _.zip(pieces, indices);
+      return _.each(pieces_indices, function(arr) {
+        var circle_point, ind, p;
+        p = arr[0];
+        ind = arr[1];
+        circle_point = points[ind];
+        return _this.movePiece(p, circle_point.x, circle_point.y);
+      });
     };
 
     Jigsaw.prototype.generatePointsAboutCircle = function(num_points, center, radius) {
