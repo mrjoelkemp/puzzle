@@ -66,15 +66,38 @@
     };
 
     Jigsaw.prototype.snapToNeighbors = function(current_piece, snappable_neighbors) {
-      var cp_id, neighbors_relations, pieces;
+      var cp_id, neighbors_points, neighbors_relations, objects_relations, pieces,
+        _this = this;
       pieces = _.union(current_piece, snappable_neighbors);
       cp_id = current_piece.data("id");
       _.each(pieces, function(p) {
         return p.data("group", cp_id);
       });
       neighbors_relations = this.getNeighborRelations(current_piece, snappable_neighbors);
-      _.each(pieces, function(p) {
-        return p.css("border", "none");
+      objects_relations = _.zip(snappable_neighbors, neighbors_relations);
+      neighbors_points = _.map(objects_relations, function(arr) {
+        var neighbor, relation;
+        neighbor = arr[0];
+        relation = arr[1];
+        return _this.getSnappablePoints(current_piece, neighbor, relation);
+      });
+      _.each(neighbors_points, function(point_list) {
+        var cp1, cp2, cp_pos, cp_pos_left, cp_pos_top, left_offset, new_left, new_top, np1, np2, top_offset;
+        cp1 = point_list[0];
+        cp2 = point_list[1];
+        np1 = point_list[2];
+        np2 = point_list[3];
+        top_offset = cp1.y - np1.y;
+        left_offset = np2.x - cp2.x;
+        cp_pos = current_piece.data("position");
+        cp_pos_top = cp_pos.top_left.y;
+        cp_pos_left = cp_pos.top_left.x;
+        console.log("Curr Pos: Left = " + cp_pos_left + " Top = " + cp_pos_top);
+        console.log("Offset: Left = " + left_offset + " Top = " + top_offset);
+        new_top = cp_pos_top + top_offset;
+        new_left = cp_pos_left + left_offset;
+        console.log("New Pos: Left = " + new_left + " Top = " + new_top);
+        return _this.movePiece(current_piece, new_left, new_top);
       });
     };
 
@@ -282,7 +305,9 @@
       return piece.animate({
         'left': x,
         'top': y
-      }, 1900);
+      }, 1900, function() {
+        return console.log("Done Moving");
+      });
     };
 
     Jigsaw.prototype.initBoard = function(rows, columns, starting_id) {

@@ -111,12 +111,49 @@ class Jigsaw
 		# Get the relation of the neighbors about the current piece (left, right, top, bottom)
 		neighbors_relations = @getNeighborRelations(current_piece, snappable_neighbors)
 		
-		# TODO: Implement a manual snap. Fix piece to the neighbors' positions
-		# Find neighbor relations to determine borders to use in snapping. Reuse canSnap() logic.
-		# Modify piece's CSS top and left to make snap borders at the position of the proper snap border for the neighbor
-		# Animate (quickly) to the proper locations
+		# Combine the two sets of information so we can iterate
+		objects_relations = _.zip(snappable_neighbors, neighbors_relations)
 		
-		_.each(pieces, (p) -> p.css("border", "none"))
+		#debugger
+		
+		# Grab the snappable points for each neighbor in relation to the current piece
+		# resulting list contains a list of 4-element arrays
+		#	For each array, 
+		# 		the first 2 elements are the snappable points for the current piece
+		#		the last 2 elements are the snappable points for the neighbor based on their relationship (right, left, top, or bottom)
+		neighbors_points = _.map(objects_relations, (arr) => 
+			neighbor = arr[0]
+			relation = arr[1]
+			@getSnappablePoints(current_piece, neighbor, relation)
+		)
+		
+		# Compute the amount of pixels the current piece should move
+		_.each(neighbors_points, (point_list) =>
+			cp1 = point_list[0]
+			cp2 = point_list[1]
+			np1 = point_list[2]
+			np2 = point_list[3]
+			
+			# We don't use abs() because we want the piece to move up/down or left/right appropriately
+			# We also only compute the difference about a single point from the current piece and neighbor
+			#	since the pieces are symmetrical, this works.
+			top_offset  = cp1.y - np1.y		# Increases downward
+			left_offset = np2.x - cp2.x		# Increases rightward
+		#	debugger
+			cp_pos   	= current_piece.data("position")
+			cp_pos_top 	= cp_pos.top_left.y
+			cp_pos_left = cp_pos.top_left.x
+			
+			console.log ("Curr Pos: Left = " + cp_pos_left + " Top = " + cp_pos_top)
+			console.log ("Offset: Left = " + left_offset + " Top = " + top_offset)
+		
+			new_top  = cp_pos_top  + top_offset
+			new_left = cp_pos_left + left_offset 
+			
+			console.log ("New Pos: Left = " + new_left + " Top = " + new_top)
+			@movePiece(current_piece, new_left, new_top)
+		)
+		#_.each(pieces, (p) -> p.css("border", "none"))
 
 		return	# Void function
 		
@@ -404,7 +441,7 @@ class Jigsaw
 		piece.animate({
 		'left' : x,
 		'top' : y
-		}, 1900)	
+		}, 1900, -> console.log "Done Moving")	
 				
 	initBoard: (rows, columns, starting_id) ->
 	# Purpose: 	Creates a num_rows x num_columns matrix of IDs.
