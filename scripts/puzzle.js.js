@@ -133,14 +133,11 @@
         relation = arr[1];
         return _this.getSnappablePoints(current_piece, neighbor, relation);
       });
-      return _.each(neighbors_points, function(point_list) {
-        var cp1, cp2, cp_pos, cp_pos_left, cp_pos_top, left_offset, new_left, new_top, np1, np2, top_offset;
-        cp1 = point_list[0];
-        cp2 = point_list[1];
-        np1 = point_list[2];
-        np2 = point_list[3];
-        top_offset = cp1.y - np1.y;
-        left_offset = np2.x - cp2.x;
+      return _.each(neighbors_points, function(points) {
+        var cp_pos, cp_pos_left, cp_pos_top, left_offset, new_left, new_top, offsets, top_offset;
+        offsets = _this.getMovementOffset(points[0], points[1], points[2], points[3]);
+        left_offset = offsets.left_offset;
+        top_offset = offsets.top_offset;
         cp_pos = current_piece.data("position");
         cp_pos_top = cp_pos.top_left.y;
         cp_pos_left = cp_pos.top_left.x;
@@ -152,6 +149,16 @@
         _this.movePiece(current_piece, new_left, new_top, 0);
         return current_piece.css("border", "1px solid red");
       });
+    };
+
+    Jigsaw.prototype.getMovementOffset = function(cp1, cp2, np1, np2) {
+      var nleft_to_pleft, ntop_to_ptop;
+      ntop_to_ptop = np1.y - cp1.y;
+      nleft_to_pleft = np2.x - cp2.x;
+      return {
+        "top_offset": ntop_to_ptop,
+        "left_offset": nleft_to_pleft
+      };
     };
 
     Jigsaw.prototype.getNeighborRelations = function(current_piece, neighbors_objects) {

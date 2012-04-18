@@ -163,7 +163,6 @@ class Jigsaw
 		
 	snapToNeighbors: (current_piece, snappable_neighbors) ->
 	# Purpose: Snaps the current piece to the snappable neighbors and adds them all to the same drag group.
-		# Temporarily combine the pieces into a single list
 		pieces = _.union(current_piece, snappable_neighbors)
 		
 		# Add the piece and the neighbors to a group numbered after the piece's ID
@@ -176,29 +175,21 @@ class Jigsaw
 		# Combine the two sets of information so we can iterate
 		objects_relations = _.zip(snappable_neighbors, neighbors_relations)
 		
-		# Grab the snappable points for each neighbor in relation to the current piece
-		# resulting list contains a list of 4-element arrays
-		#	For each array, 
-		# 		the first 2 elements are the snappable points for the current piece
-		#		the last 2 elements are the snappable points for the neighbor based on their relationship (right, left, top, or bottom)
+		# Grab a list of 4 snappable points for each neighbor in relation to the current piece
+		# 	the first 2 elements are the snappable points for the current piece
+		#	the last 2 elements are the snappable points for the neighbor based on their relationship (right, left, top, or bottom)
 		neighbors_points = _.map(objects_relations, (arr) => 
 			neighbor = arr[0]
 			relation = arr[1]
 			@getSnappablePoints(current_piece, neighbor, relation)
 		)
 		
-		# Compute the amount of pixels the current piece should move
-		_.each(neighbors_points, (point_list) =>
-			cp1 = point_list[0]
-			cp2 = point_list[1]
-			np1 = point_list[2]
-			np2 = point_list[3]
+		# Compute the amount of pixels the current piece should move in both directions (top and left)
+		_.each(neighbors_points, (points) =>
+			offsets 	= @getMovementOffset(points[0], points[1], points[2], points[3])
+			left_offset = offsets.left_offset
+			top_offset 	= offsets.top_offset
 			
-			# We don't use abs() because we want the piece to move up/down or left/right appropriately
-			# We also only compute the difference about a single point from the current piece and neighbor
-			#	since the pieces are symmetrical, this works.
-			top_offset  = cp1.y - np1.y		# Increases downward
-			left_offset = np2.x - cp2.x		# Increases rightward
 		#	debugger
 			cp_pos   	= current_piece.data("position")
 			cp_pos_top 	= cp_pos.top_left.y
@@ -215,6 +206,15 @@ class Jigsaw
 			# DEBUG
 			current_piece.css("border", "1px solid red")
 		)
+	
+	getMovementOffset: (cp1, cp2, np1, np2) ->
+	# Purpose: 	Computes the difference between 
+	# Returns:	An object with the two offsets		
+		# Distance (top and left) from the neighbor to the piece
+		ntop_to_ptop 	= np1.y - cp1.y
+		nleft_to_pleft 	= np2.x - cp2.x
+		 
+		return "top_offset": ntop_to_ptop, "left_offset": nleft_to_pleft
 		
 	getNeighborRelations: (current_piece, neighbors_objects) ->	
 	# Purpose: Returns a list of relations of the neighbors about the current piece
