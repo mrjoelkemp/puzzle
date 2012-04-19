@@ -91,9 +91,16 @@
             return piece.data("old_left", piece.position().left);
           },
           drag: function(e, ui) {
-            var pid, target_pos;
-            pid = piece.data("id");
-            return target_pos = _this.dragGroup(pid);
+            debugger;
+            var dragging_pos, group_exists, group_id;
+            group_id = piece.data("group");
+            group_exists = group_id !== void 0;
+            if (group_exists) {
+              dragging_pos = ui.position;
+              _this.dragGroup(group_id, piece, pieces, dragging_pos);
+              piece.data("old_top", ui.position.top);
+              return piece.data("old_left", ui.position.left);
+            }
           },
           stop: function(e, ui) {
             var have_neighbors_to_snap, neighbors_objects, snappable_neighbors, snappable_neighbors_ids;
@@ -113,7 +120,14 @@
       });
     };
 
-    Jigsaw.prototype.dragGroup = function(pid) {};
+    Jigsaw.prototype.dragGroup = function(group_id, piece, pieces, dragging_pos) {
+      var group_objects, left_offset, top_offset;
+      group_objects = _.filter(pieces, function(p) {
+        return p.data("group") === group_id;
+      });
+      top_offset = piece.data("old_top") - dragging_pos.top;
+      return left_offset = piece.data("old_left") - dragging_pos.left;
+    };
 
     Jigsaw.prototype.getNeighborObjectsFromIds = function(pieces, neighbors_ids) {
       var neighbors_pieces;

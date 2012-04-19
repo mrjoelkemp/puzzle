@@ -115,13 +115,23 @@ class Jigsaw
 					# Remember where you are so the movement distance can be computed
 					piece.data("old_top", piece.position().top)
 					piece.data("old_left", piece.position().left)
-				drag	: (e, ui) =>
-					# TODO: Drag every (snapped) piece in the current piece's group
-					pid = piece.data("id")
-					# Compute the ui's position
-					target_pos = 
-					@dragGroup(pid)
 					
+				drag	: (e, ui) =>
+					debugger
+					# Drag every (snapped) piece in the current piece's group
+					group_id = piece.data("group")
+					group_exists = group_id != undefined
+					if group_exists
+						
+						dragging_pos = ui.position
+						
+						# Drag the current piece's group of pieces
+						@dragGroup(group_id, piece, pieces, dragging_pos)
+						
+						# Update the old position for the next update
+						piece.data("old_top", ui.position.top)
+						piece.data("old_left", ui.position.left)
+						
 				stop	: (e, ui) =>	# Avoid the piece's context
 					
 					# Update detailed positional information for current piece
@@ -157,7 +167,17 @@ class Jigsaw
 			})	#end draggable()
 		)
 	
-	dragGroup:(pid) ->
+	dragGroup:(group_id, piece, pieces, dragging_pos) ->
+	# Purpose: 	Computes the distance moved by the piece against the current dragging position
+	# Precond:	dragging_pos = the current drag coordinates
+		# Find objects in group with 
+		group_objects = _.filter(pieces, (p) -> return p.data("group") == group_id)
+		
+		# Compute the distances between the pre-drag and current dragging coordinates
+		top_offset 	= piece.data("old_top") - dragging_pos.top
+		left_offset = piece.data("old_left") - dragging_pos.left
+		
+		
 		
 	getNeighborObjectsFromIds: (pieces, neighbors_ids) ->
 	# Purpose: 	Extracts the neighbor objects from the pieces list with ids matching passed neighbor ids
