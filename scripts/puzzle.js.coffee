@@ -165,8 +165,14 @@ class Jigsaw
 		
 		# Add the piece and the neighbors to a group numbered after the piece's ID
 		cp_id = current_piece.data("id")		
-		_.each(pieces, (p) -> p.data("group", cp_id))
+		_.each(pieces, (p) -> 
+			p.data("group", cp_id)
+			# DEBUG
+			p.css("border", "1px solid red")
+		)
 		
+		# DEBUG
+		current_piece.css("border", "1px solid red")
 		# Get the relation of the neighbors about the current piece (left, right, top, bottom)
 		neighbors_relations = @getNeighborRelations(current_piece, snappable_neighbors)
 		
@@ -188,21 +194,14 @@ class Jigsaw
 			left_offset = offsets.left_offset
 			top_offset 	= offsets.top_offset
 			
-		#	debugger
 			cp_pos   	= current_piece.data("position")
 			cp_pos_top 	= cp_pos.top_left.y
 			cp_pos_left = cp_pos.top_left.x
 			
-			console.log ("Curr Pos: Left = " + cp_pos_left + " Top = " + cp_pos_top)
-			console.log ("Offset: Left = " + left_offset + " Top = " + top_offset)
-		
 			new_top  = cp_pos_top  + top_offset
 			new_left = cp_pos_left + left_offset 
 			
-			console.log ("New Pos: Left = " + new_left + " Top = " + new_top)
 			@movePiece(current_piece, new_left, new_top, 0)
-			# DEBUG
-			current_piece.css("border", "1px solid red")
 		)
 	
 	getMovementOffset: (cp1, cp2, np1, np2) ->

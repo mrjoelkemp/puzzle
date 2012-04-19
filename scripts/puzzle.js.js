@@ -123,8 +123,10 @@
       pieces = _.union(current_piece, snappable_neighbors);
       cp_id = current_piece.data("id");
       _.each(pieces, function(p) {
-        return p.data("group", cp_id);
+        p.data("group", cp_id);
+        return p.css("border", "1px solid red");
       });
+      current_piece.css("border", "1px solid red");
       neighbors_relations = this.getNeighborRelations(current_piece, snappable_neighbors);
       objects_relations = _.zip(snappable_neighbors, neighbors_relations);
       neighbors_points = _.map(objects_relations, function(arr) {
@@ -141,13 +143,9 @@
         cp_pos = current_piece.data("position");
         cp_pos_top = cp_pos.top_left.y;
         cp_pos_left = cp_pos.top_left.x;
-        console.log("Curr Pos: Left = " + cp_pos_left + " Top = " + cp_pos_top);
-        console.log("Offset: Left = " + left_offset + " Top = " + top_offset);
         new_top = cp_pos_top + top_offset;
         new_left = cp_pos_left + left_offset;
-        console.log("New Pos: Left = " + new_left + " Top = " + new_top);
-        _this.movePiece(current_piece, new_left, new_top, 0);
-        return current_piece.css("border", "1px solid red");
+        return _this.movePiece(current_piece, new_left, new_top, 0);
       });
     };
 
