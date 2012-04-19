@@ -113,62 +113,68 @@ class Jigsaw
 				opacity: 0.75,						# Make the dragged piece lighter for now. TODO: Remove when we have collision detection.
 				start	: (e, ui) ->
 					# Remember where you are so the movement distance can be computed
+					console.log("Start!")
 					piece.data("old_top", piece.position().top)
 					piece.data("old_left", piece.position().left)
 					
 				drag	: (e, ui) =>
 					#console.log("UI left: " + ui.position.left + " UI top: " + ui.position.top)
+					console.log("Old left: " + piece.data("old_left") + " Old top: " + piece.data("old_top"))
 					console.log("P left: " + piece.position().left + " P top: " + piece.position().top)
+					
+					#console.log("Positions are the same = " + ui.position.left == piece.position().left and ui.position.top == piece.position().top)
 					
 					# Drag every (snapped) piece in the current piece's group
 					group_id = piece.data("group")
 					group_exists = group_id != -1
 					if group_exists
-						debugger
-						dragging_pos = ui.position
-						
+						#dragging_pos = ui.position
+						dragging_pos = piece.position()						
 						# Drag the current piece's group of pieces
 						@dragGroup(group_id, piece, pieces, dragging_pos)
 						
 					# Update the old position for the next update
-					piece.data("old_top", ui.position.top)
-					piece.data("old_left", ui.position.left)
 					
-				stop	: (e, ui) =>	# Avoid the piece's context
-					
-					# Update detailed positional information for current piece
-					@updateDetailedPosition(piece)
-					
-					# Grab neighboring pieces -- not expensive due to max of 4 neighbors
-					neighbors_objects = @getNeighborObjects(piece, pieces)
-										
-					# Update detailed positional info of neighboring pieces 
-					# FIXME: Should this always be a just-in-case, or do the neighbors update their own positions?
-					_.each(neighbors_objects, (n) => @updateDetailedPosition(n))
-					
-					# Find and extract snappable neighbor(s)
-					snappable_neighbors_ids = @findSnappableNeighbors(piece, neighbors_objects, snapping_threshold)
-					snappable_neighbors = @getNeighborObjectsFromIds(pieces, snappable_neighbors_ids)
-					
-					# If we found a neighbor to snap to
-					have_neighbors_to_snap = not _.isEmpty(snappable_neighbors)
-					if have_neighbors_to_snap 
-						@snapToNeighbors(piece, snappable_neighbors)
-						# TODO: Update neighbor groups with new group id
-						#propagateSnap()
-										
-					# Check for a win condition: all pieces are in the same group
-					# TODO: Make into a function
-					#pid = piece.data("id")
-					# Pieces not in my group
-					#outcasts = _.reject(pieces, (p) -> return p.data("id") == pid)
-					# We win if there are no outcasts
-					#game_won = _.isEmpty(outcasts)
-					#if game_won then "Me win!"
+					#piece.data("old_top", piece.position().top)
+					#piece.data("old_left", piece.position().left)
 					
 			})	#end draggable()
+			
+			piece.bind("dragstop", (e, ui) -> @onDragStop(piece, pieces, snapping_threshold))
 		)
-	
+		
+	onDragStop: (piece, pieces, snapping_threshold) ->
+	# Purpose: On the drag stop, snap to the proper pieces and check for game completion.
+		# Update detailed positional information for current piece
+		@updateDetailedPosition(piece)
+		
+		# Grab neighboring pieces -- not expensive due to max of 4 neighbors
+		neighbors_objects = @getNeighborObjects(piece, pieces)
+							
+		# Update detailed positional info of neighboring pieces 
+		# FIXME: Should this always be a just-in-case, or do the neighbors update their own positions?
+		_.each(neighbors_objects, (n) => @updateDetailedPosition(n))
+		
+		# Find and extract snappable neighbor(s)
+		snappable_neighbors_ids = @findSnappableNeighbors(piece, neighbors_objects, snapping_threshold)
+		snappable_neighbors = @getNeighborObjectsFromIds(pieces, snappable_neighbors_ids)
+		
+		# If we found a neighbor to snap to
+		have_neighbors_to_snap = not _.isEmpty(snappable_neighbors)
+		if have_neighbors_to_snap 
+			@snapToNeighbors(piece, snappable_neighbors)
+			# TODO: Update neighbor groups with new group id
+			#propagateSnap()
+							
+		# Check for a win condition: all pieces are in the same group
+		# TODO: Make into a function
+		#pid = piece.data("id")
+		# Pieces not in my group
+		#outcasts = _.reject(pieces, (p) -> return p.data("id") == pid)
+		# We win if there are no outcasts
+		#game_won = _.isEmpty(outcasts)
+		#if game_won then "Me win!"
+		
 	dragGroup:(group_id, piece, pieces, dragging_pos) ->
 	# Purpose: 	Computes the distance moved by the piece away from the neighbors and moves the neighbors to remain snapped
 	# Precond:	dragging_pos = the current drag coordinates (top and left)
@@ -178,20 +184,19 @@ class Jigsaw
 		
 		# Exclude the current piece from that group since we only want to drag neighbors
 		group_objects = _.reject(group_objects, (p) -> return p.data("id") == piece.data("id"))
-		debugger
-		left_offset = dragging_pos.left - piece.data("old_left") 
-		top_offset 	= dragging_pos.top  - piece.data("old_top")
+#		debugger
+		@snapToNeighbors(piece, group_objects)
+		#left_offset = dragging_pos.left - piece.data("old_left")
+		#top_offset 	= dragging_pos.top - piece.data("old_top")
 		
 		# Move each of the neighbors by the new offsets
-		_.each(group_objects, (p) => 
+		#_.each(group_objects, (p) => 
 			# Compute the distances between the neighbor and the current piece's drag coordinates
 			#left_offset = dragging_pos.left - p.position().left 
-			#top_offset 	= dragging_pos.top  - p.position().top 
-			
-			
-			@movePieceByOffsets(p, left_offset, top_offset, 0)
+			#top_offset 	= dragging_pos.top  - p.position().top 	
+		#	@movePieceByOffsets(p, left_offset, top_offset, 0)
 			#@setPositionByOffsets(p, left_offset, top_offset)
-		)
+		#)
 		
 	getNeighborObjectsFromIds: (pieces, neighbors_ids) ->
 	# Purpose: 	Extracts the neighbor objects from the pieces list with ids matching passed neighbor ids
