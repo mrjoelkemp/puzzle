@@ -90,7 +90,11 @@
             piece.data("old_top", piece.position().top);
             return piece.data("old_left", piece.position().left);
           },
-          drag: function(e, ui) {},
+          drag: function(e, ui) {
+            var pid, target_pos;
+            pid = piece.data("id");
+            return target_pos = _this.dragGroup(pid);
+          },
           stop: function(e, ui) {
             var have_neighbors_to_snap, neighbors_objects, snappable_neighbors, snappable_neighbors_ids;
             _this.updateDetailedPosition(piece);
@@ -108,6 +112,8 @@
         });
       });
     };
+
+    Jigsaw.prototype.dragGroup = function(pid) {};
 
     Jigsaw.prototype.getNeighborObjectsFromIds = function(pieces, neighbors_ids) {
       var neighbors_pieces;
@@ -355,7 +361,7 @@
         'height': height,
         'videox': videox,
         'videoy': videoy
-      }).css("cursor", "pointer").data("id", id).data("neighbors", neighbors).data("group", -1).appendTo('#pieces-canvas').addClass("piece");
+      }).css("cursor", "pointer").data("id", id).data("neighbors", neighbors).data("group", void 0).appendTo('#pieces-canvas').addClass("piece");
       return piece;
     };
 

@@ -115,9 +115,13 @@ class Jigsaw
 					# Remember where you are so the movement distance can be computed
 					piece.data("old_top", piece.position().top)
 					piece.data("old_left", piece.position().left)
-				drag	: (e, ui) ->
-					# TODO: Drag every (snapped) piece in the group
-					# dragGroup(group_id)
+				drag	: (e, ui) =>
+					# TODO: Drag every (snapped) piece in the current piece's group
+					pid = piece.data("id")
+					# Compute the ui's position
+					target_pos = 
+					@dragGroup(pid)
+					
 				stop	: (e, ui) =>	# Avoid the piece's context
 					
 					# Update detailed positional information for current piece
@@ -153,6 +157,8 @@ class Jigsaw
 			})	#end draggable()
 		)
 	
+	dragGroup:(pid) ->
+		
 	getNeighborObjectsFromIds: (pieces, neighbors_ids) ->
 	# Purpose: 	Extracts the neighbor objects from the pieces list with ids matching passed neighbor ids
 	# Returns:	A list of neighbor (piece) objects
@@ -482,7 +488,7 @@ class Jigsaw
 			.css("cursor", "pointer")
 			.data("id", id)						# Keeps ID hidden from user
 			.data("neighbors", neighbors)		# List of neighbors by canvas id
-			.data("group", -1)					# Default group id. Group used for snapping multiple pieces together.
+			.data("group", undefined)			# Default group id. Group used for snapping multiple pieces together.
 			.appendTo('#pieces-canvas')			# FIXME: This breaks if we change the div name...
 			.addClass("piece")					# Added for ease of finding similar objects
 		
