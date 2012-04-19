@@ -111,12 +111,6 @@ class Jigsaw
 				stack	: ".piece",					# Dragged piece has a higher z-index
 				snapTolerance: snapping_threshold,	# Pixel distance to initiate snapping
 				opacity: 0.75,						# Make the dragged piece lighter for now. TODO: Remove when we have collision detection.
-				start	: (e, ui) ->
-					# Remember where you are so the movement distance can be computed
-					console.log("Start!")
-					piece.data("old_top", piece.position().top)
-					piece.data("old_left", piece.position().left)
-					
 				drag	: (e, ui) =>
 					#console.log("UI left: " + ui.position.left + " UI top: " + ui.position.top)
 					console.log("Old left: " + piece.data("old_left") + " Old top: " + piece.data("old_top"))
@@ -139,12 +133,24 @@ class Jigsaw
 					#piece.data("old_left", piece.position().left)
 					
 			})	#end draggable()
-			
-			piece.bind("dragstop", (e, ui) -> @onDragStop(piece, pieces, snapping_threshold))
+			piece.bind("dragstart", (e, ui) => @onDragStart(piece))
+			piece.bind("drag", (e, ui) => @onDrag(e, ui, piece, pieces))
+			piece.bind("dragstop", (e, ui) => @onDragStop(piece, pieces, snapping_threshold))
 		)
 		
+	onDragStart: (piece) ->
+	# Purpose: Handler for drag start event
+		# Remember where you are so the movement distance can be computed
+		console.log("Start!")
+		piece.data("old_top", piece.position().top)
+		piece.data("old_left", piece.position().left)
+
+	onDrag: (e, ui, piece, pieces) ->
+		
+	
 	onDragStop: (piece, pieces, snapping_threshold) ->
-	# Purpose: On the drag stop, snap to the proper pieces and check for game completion.
+	# Purpose: 	Handler for drag stop event. 
+	# Note:		On the drag stop, snap to the proper pieces and check for game completion.
 		# Update detailed positional information for current piece
 		@updateDetailedPosition(piece)
 		
