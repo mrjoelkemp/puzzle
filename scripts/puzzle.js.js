@@ -92,15 +92,16 @@
           },
           drag: function(e, ui) {
             var dragging_pos, group_exists, group_id;
+            console.log("P left: " + piece.position().left + " P top: " + piece.position().top);
             group_id = piece.data("group");
             group_exists = group_id !== -1;
             if (group_exists) {
               debugger;
               dragging_pos = ui.position;
               _this.dragGroup(group_id, piece, pieces, dragging_pos);
-              piece.data("old_top", ui.position.top);
-              return piece.data("old_left", ui.position.left);
             }
+            piece.data("old_top", ui.position.top);
+            return piece.data("old_left", ui.position.left);
           },
           stop: function(e, ui) {
             var have_neighbors_to_snap, neighbors_objects, snappable_neighbors, snappable_neighbors_ids;
@@ -123,16 +124,17 @@
     Jigsaw.prototype.dragGroup = function(group_id, piece, pieces, dragging_pos) {
       var group_objects, left_offset, top_offset,
         _this = this;
-      top_offset = piece.data("old_top") - dragging_pos.top;
-      left_offset = piece.data("old_left") - dragging_pos.left;
       group_objects = _.filter(pieces, function(p) {
         return p.data("group") === group_id;
       });
       group_objects = _.reject(group_objects, function(p) {
         return p.data("id") === piece.data("id");
       });
+      debugger;
+      left_offset = dragging_pos.left - piece.data("old_left");
+      top_offset = dragging_pos.top - piece.data("old_top");
       return _.each(group_objects, function(p) {
-        return _this.movePieceByOffsets(p, left_offset, top_offset);
+        return _this.movePieceByOffsets(p, left_offset, top_offset, 0);
       });
     };
 
@@ -182,6 +184,7 @@
 
     Jigsaw.prototype.movePieceByOffsets = function(piece, left_offset, top_offset, move_speed) {
       var cp_pos, cp_pos_left, cp_pos_top, new_left, new_top;
+      if (move_speed == null) move_speed = 0;
       cp_pos = piece.data("position");
       cp_pos_top = cp_pos.top_left.y;
       cp_pos_left = cp_pos.top_left.x;

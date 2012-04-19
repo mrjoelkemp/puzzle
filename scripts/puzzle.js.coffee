@@ -117,6 +117,8 @@ class Jigsaw
 					piece.data("old_left", piece.position().left)
 					
 				drag	: (e, ui) =>
+					#console.log("UI left: " + ui.position.left + " UI top: " + ui.position.top)
+					console.log("P left: " + piece.position().left + " P top: " + piece.position().top)
 					
 					# Drag every (snapped) piece in the current piece's group
 					group_id = piece.data("group")
@@ -128,10 +130,10 @@ class Jigsaw
 						# Drag the current piece's group of pieces
 						@dragGroup(group_id, piece, pieces, dragging_pos)
 						
-						# Update the old position for the next update
-						piece.data("old_top", ui.position.top)
-						piece.data("old_left", ui.position.left)
-						
+					# Update the old position for the next update
+					piece.data("old_top", ui.position.top)
+					piece.data("old_left", ui.position.left)
+					
 				stop	: (e, ui) =>	# Avoid the piece's context
 					
 					# Update detailed positional information for current piece
@@ -168,22 +170,26 @@ class Jigsaw
 		)
 	
 	dragGroup:(group_id, piece, pieces, dragging_pos) ->
-	# Purpose: 	Computes the distance moved by the piece against the current dragging position
-	# Precond:	dragging_pos = the current drag coordinates
-	
-		# Compute the distances between the pre-drag and current dragging coordinates
-		top_offset 	= piece.data("old_top")  - dragging_pos.top
-		left_offset = piece.data("old_left") - dragging_pos.left
+	# Purpose: 	Computes the distance moved by the piece away from the neighbors and moves the neighbors to remain snapped
+	# Precond:	dragging_pos = the current drag coordinates (top and left)
 		
 		# Find group neighbors
 		group_objects = _.filter(pieces, (p) -> return p.data("group") == group_id)
 		
 		# Exclude the current piece from that group since we only want to drag neighbors
 		group_objects = _.reject(group_objects, (p) -> return p.data("id") == piece.data("id"))
+		debugger
+		left_offset = dragging_pos.left - piece.data("old_left") 
+		top_offset 	= dragging_pos.top  - piece.data("old_top")
 		
 		# Move each of the neighbors by the new offsets
 		_.each(group_objects, (p) => 
-			@movePieceByOffsets(p, left_offset, top_offset)
+			# Compute the distances between the neighbor and the current piece's drag coordinates
+			#left_offset = dragging_pos.left - p.position().left 
+			#top_offset 	= dragging_pos.top  - p.position().top 
+			
+			
+			@movePieceByOffsets(p, left_offset, top_offset, 0)
 			#@setPositionByOffsets(p, left_offset, top_offset)
 		)
 		
@@ -240,7 +246,7 @@ class Jigsaw
 		piece.css("left", new_left)
 		piece.css("top", new_top)
 		
-	movePieceByOffsets: (piece, left_offset, top_offset, move_speed) ->
+	movePieceByOffsets: (piece, left_offset, top_offset, move_speed = 0) ->
 	# Purpose: 	Adds the piece offsets to the piece's current position
 		cp_pos   	= piece.data("position")
 		cp_pos_top 	= cp_pos.top_left.y
