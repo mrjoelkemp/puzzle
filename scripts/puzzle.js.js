@@ -122,11 +122,12 @@
 
     Jigsaw.prototype.dragGroup = function(group_id, piece, pieces, dragging_pos) {
       var group_objects, left_offset, top_offset;
+      top_offset = piece.data("old_top") - dragging_pos.top;
+      left_offset = piece.data("old_left") - dragging_pos.left;
       group_objects = _.filter(pieces, function(p) {
         return p.data("group") === group_id;
       });
-      top_offset = piece.data("old_top") - dragging_pos.top;
-      return left_offset = piece.data("old_left") - dragging_pos.left;
+      return _.each(group_objects, function(p) {});
     };
 
     Jigsaw.prototype.getNeighborObjectsFromIds = function(pieces, neighbors_ids) {
@@ -146,7 +147,6 @@
         p.data("group", cp_id);
         return p.css("border", "1px solid red");
       });
-      current_piece.css("border", "1px solid red");
       neighbors_relations = this.getNeighborRelations(current_piece, snappable_neighbors);
       objects_relations = _.zip(snappable_neighbors, neighbors_relations);
       neighbors_points = _.map(objects_relations, function(arr) {
@@ -156,17 +156,23 @@
         return _this.getSnappablePoints(current_piece, neighbor, relation);
       });
       return _.each(neighbors_points, function(points) {
-        var cp_pos, cp_pos_left, cp_pos_top, left_offset, new_left, new_top, offsets, top_offset;
+        var left_offset, offsets, top_offset;
         offsets = _this.getMovementOffset(points[0], points[1], points[2], points[3]);
         left_offset = offsets.left_offset;
         top_offset = offsets.top_offset;
-        cp_pos = current_piece.data("position");
-        cp_pos_top = cp_pos.top_left.y;
-        cp_pos_left = cp_pos.top_left.x;
-        new_top = cp_pos_top + top_offset;
-        new_left = cp_pos_left + left_offset;
-        return _this.movePiece(current_piece, new_left, new_top, 0);
+        return _this.movePieceByOffsets(current_piece, left_offset, top_offset, 0);
       });
+    };
+
+    Jigsaw.prototype.movePieceByOffsets = function(piece, left_offset, top_offset, move_speed) {
+      var cp_pos, cp_pos_left, cp_pos_top, new_left, new_top;
+      if (move_speed == null) move_speed = 0;
+      cp_pos = current_piece.data("position");
+      cp_pos_top = cp_pos.top_left.y;
+      cp_pos_left = cp_pos.top_left.x;
+      new_left = cp_pos_left + left_offset;
+      new_top = cp_pos_top + top_offset;
+      return this.movePiece(piece, new_left, new_top, move_speed);
     };
 
     Jigsaw.prototype.getMovementOffset = function(cp1, cp2, np1, np2) {

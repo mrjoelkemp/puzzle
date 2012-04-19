@@ -170,15 +170,18 @@ class Jigsaw
 	dragGroup:(group_id, piece, pieces, dragging_pos) ->
 	# Purpose: 	Computes the distance moved by the piece against the current dragging position
 	# Precond:	dragging_pos = the current drag coordinates
-		# Find objects in group with 
-		group_objects = _.filter(pieces, (p) -> return p.data("group") == group_id)
-		
+	
 		# Compute the distances between the pre-drag and current dragging coordinates
 		top_offset 	= piece.data("old_top") - dragging_pos.top
 		left_offset = piece.data("old_left") - dragging_pos.left
 		
-		
-		
+		# Find objects in group with 
+		group_objects = _.filter(pieces, (p) -> return p.data("group") == group_id)
+	
+		# Move each of the neighbors by the new offsets
+		_.each(group_objects, (p) ->
+			
+			)
 	getNeighborObjectsFromIds: (pieces, neighbors_ids) ->
 	# Purpose: 	Extracts the neighbor objects from the pieces list with ids matching passed neighbor ids
 	# Returns:	A list of neighbor (piece) objects
@@ -197,8 +200,6 @@ class Jigsaw
 			p.css("border", "1px solid red")
 		)
 		
-		# DEBUG
-		current_piece.css("border", "1px solid red")
 		# Get the relation of the neighbors about the current piece (left, right, top, bottom)
 		neighbors_relations = @getNeighborRelations(current_piece, snappable_neighbors)
 		
@@ -220,16 +221,20 @@ class Jigsaw
 			left_offset = offsets.left_offset
 			top_offset 	= offsets.top_offset
 			
-			cp_pos   	= current_piece.data("position")
-			cp_pos_top 	= cp_pos.top_left.y
-			cp_pos_left = cp_pos.top_left.x
-			
-			new_top  = cp_pos_top  + top_offset
-			new_left = cp_pos_left + left_offset 
-			
-			@movePiece(current_piece, new_left, new_top, 0)
+			@movePieceByOffsets(current_piece, left_offset, top_offset, 0)
 		)
-	
+		
+	movePieceByOffsets: (piece, left_offset, top_offset, move_speed = 0) ->
+	# Purpose: 	Adds the piece offsets to the piece's current position
+		cp_pos   	= current_piece.data("position")
+		cp_pos_top 	= cp_pos.top_left.y
+		cp_pos_left = cp_pos.top_left.x
+		
+		new_left = cp_pos_left + left_offset 
+		new_top  = cp_pos_top  + top_offset
+		
+		@movePiece(piece, new_left, new_top, move_speed)
+		
 	getMovementOffset: (cp1, cp2, np1, np2) ->
 	# Purpose: 	Computes the difference between 
 	# Returns:	An object with the two offsets		
