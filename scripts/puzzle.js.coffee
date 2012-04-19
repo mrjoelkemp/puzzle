@@ -172,16 +172,15 @@ class Jigsaw
 	# Precond:	dragging_pos = the current drag coordinates
 	
 		# Compute the distances between the pre-drag and current dragging coordinates
-		top_offset 	= piece.data("old_top") - dragging_pos.top
+		top_offset 	= piece.data("old_top")  - dragging_pos.top
 		left_offset = piece.data("old_left") - dragging_pos.left
 		
-		# Find objects in group with 
+		# Find group neighbors
 		group_objects = _.filter(pieces, (p) -> return p.data("group") == group_id)
 	
 		# Move each of the neighbors by the new offsets
-		_.each(group_objects, (p) ->
-			
-			)
+		_.each(group_objects, (p) => @movePieceByOffsets(p, top_offset, left_offset))
+		
 	getNeighborObjectsFromIds: (pieces, neighbors_ids) ->
 	# Purpose: 	Extracts the neighbor objects from the pieces list with ids matching passed neighbor ids
 	# Returns:	A list of neighbor (piece) objects
@@ -226,7 +225,7 @@ class Jigsaw
 		
 	movePieceByOffsets: (piece, left_offset, top_offset, move_speed = 0) ->
 	# Purpose: 	Adds the piece offsets to the piece's current position
-		cp_pos   	= current_piece.data("position")
+		cp_pos   	= piece.data("position")
 		cp_pos_top 	= cp_pos.top_left.y
 		cp_pos_left = cp_pos.top_left.x
 		

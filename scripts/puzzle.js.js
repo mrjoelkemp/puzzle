@@ -121,13 +121,16 @@
     };
 
     Jigsaw.prototype.dragGroup = function(group_id, piece, pieces, dragging_pos) {
-      var group_objects, left_offset, top_offset;
+      var group_objects, left_offset, top_offset,
+        _this = this;
       top_offset = piece.data("old_top") - dragging_pos.top;
       left_offset = piece.data("old_left") - dragging_pos.left;
       group_objects = _.filter(pieces, function(p) {
         return p.data("group") === group_id;
       });
-      return _.each(group_objects, function(p) {});
+      return _.each(group_objects, function(p) {
+        return _this.movePieceByOffsets(p, top_offset, left_offset);
+      });
     };
 
     Jigsaw.prototype.getNeighborObjectsFromIds = function(pieces, neighbors_ids) {
@@ -167,7 +170,7 @@
     Jigsaw.prototype.movePieceByOffsets = function(piece, left_offset, top_offset, move_speed) {
       var cp_pos, cp_pos_left, cp_pos_top, new_left, new_top;
       if (move_speed == null) move_speed = 0;
-      cp_pos = current_piece.data("position");
+      cp_pos = piece.data("position");
       cp_pos_top = cp_pos.top_left.y;
       cp_pos_left = cp_pos.top_left.x;
       new_left = cp_pos_left + left_offset;
