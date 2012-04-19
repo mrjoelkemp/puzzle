@@ -110,28 +110,7 @@ class Jigsaw
 				snapMode: "inner",
 				stack	: ".piece",					# Dragged piece has a higher z-index
 				snapTolerance: snapping_threshold,	# Pixel distance to initiate snapping
-				opacity: 0.75,						# Make the dragged piece lighter for now. TODO: Remove when we have collision detection.
-				drag	: (e, ui) =>
-					#console.log("UI left: " + ui.position.left + " UI top: " + ui.position.top)
-					console.log("Old left: " + piece.data("old_left") + " Old top: " + piece.data("old_top"))
-					console.log("P left: " + piece.position().left + " P top: " + piece.position().top)
-					
-					#console.log("Positions are the same = " + ui.position.left == piece.position().left and ui.position.top == piece.position().top)
-					
-					# Drag every (snapped) piece in the current piece's group
-					group_id = piece.data("group")
-					group_exists = group_id != -1
-					if group_exists
-						#dragging_pos = ui.position
-						dragging_pos = piece.position()						
-						# Drag the current piece's group of pieces
-						@dragGroup(group_id, piece, pieces, dragging_pos)
-						
-					# Update the old position for the next update
-					
-					#piece.data("old_top", piece.position().top)
-					#piece.data("old_left", piece.position().left)
-					
+				opacity: 0.75						# Make the dragged piece lighter for now. TODO: Remove when we have collision detection.	
 			})	#end draggable()
 			piece.bind("dragstart", (e, ui) => @onDragStart(piece))
 			piece.bind("drag", (e, ui) => @onDrag(e, ui, piece, pieces))
@@ -146,7 +125,28 @@ class Jigsaw
 		piece.data("old_left", piece.position().left)
 
 	onDrag: (e, ui, piece, pieces) ->
+	# Purpose: 	Handler for the drag event
+	# Note:		On drag, move the snapped pieces in the currently dragged piece's group
+	 
+		#console.log("UI left: " + ui.position.left + " UI top: " + ui.position.top)
+		console.log("Old left: " + piece.data("old_left") + " Old top: " + piece.data("old_top"))
+		console.log("P left: " + piece.position().left + " P top: " + piece.position().top)
 		
+		#console.log("Positions are the same = " + ui.position.left == piece.position().left and ui.position.top == piece.position().top)
+		
+		# Drag every (snapped) piece in the current piece's group
+		group_id = piece.data("group")
+		group_exists = group_id != -1
+		if group_exists
+			#dragging_pos = ui.position
+			dragging_pos = piece.position()						
+			# Drag the current piece's group of pieces
+			@dragGroup(group_id, piece, pieces, dragging_pos)
+			
+		# Update the old position for the next update
+		
+		#piece.data("old_top", piece.position().top)
+		#piece.data("old_left", piece.position().left)
 	
 	onDragStop: (piece, pieces, snapping_threshold) ->
 	# Purpose: 	Handler for drag stop event. 

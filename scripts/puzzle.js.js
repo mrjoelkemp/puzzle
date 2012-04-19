@@ -86,18 +86,7 @@
           snapMode: "inner",
           stack: ".piece",
           snapTolerance: snapping_threshold,
-          opacity: 0.75,
-          drag: function(e, ui) {
-            var dragging_pos, group_exists, group_id;
-            console.log("Old left: " + piece.data("old_left") + " Old top: " + piece.data("old_top"));
-            console.log("P left: " + piece.position().left + " P top: " + piece.position().top);
-            group_id = piece.data("group");
-            group_exists = group_id !== -1;
-            if (group_exists) {
-              dragging_pos = piece.position();
-              return _this.dragGroup(group_id, piece, pieces, dragging_pos);
-            }
-          }
+          opacity: 0.75
         });
         piece.bind("dragstart", function(e, ui) {
           return _this.onDragStart(piece);
@@ -117,7 +106,17 @@
       return piece.data("old_left", piece.position().left);
     };
 
-    Jigsaw.prototype.onDrag = function(e, ui, piece, pieces) {};
+    Jigsaw.prototype.onDrag = function(e, ui, piece, pieces) {
+      var dragging_pos, group_exists, group_id;
+      console.log("Old left: " + piece.data("old_left") + " Old top: " + piece.data("old_top"));
+      console.log("P left: " + piece.position().left + " P top: " + piece.position().top);
+      group_id = piece.data("group");
+      group_exists = group_id !== -1;
+      if (group_exists) {
+        dragging_pos = piece.position();
+        return this.dragGroup(group_id, piece, pieces, dragging_pos);
+      }
+    };
 
     Jigsaw.prototype.onDragStop = function(piece, pieces, snapping_threshold) {
       var have_neighbors_to_snap, neighbors_objects, snappable_neighbors, snappable_neighbors_ids,
