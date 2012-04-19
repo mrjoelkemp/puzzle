@@ -59,9 +59,7 @@ class Jigsaw
 		# Shuffle the points
 		indices = [0 ... num_points]
 		indices = _.shuffle(indices)
-		#debugger
-		# Combine the pieces and the points indices for iteration
-		#pieces_indices = _.zip(pieces, indices)
+		
 		for i in [0 ... num_points]
 			#FIXME: See if we can use "for p in pieces"
 			p	= pieces[i + 1]	# Piece indices start at 1
