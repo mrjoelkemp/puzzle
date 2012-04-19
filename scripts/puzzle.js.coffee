@@ -117,12 +117,12 @@ class Jigsaw
 					piece.data("old_left", piece.position().left)
 					
 				drag	: (e, ui) =>
-					debugger
+					
 					# Drag every (snapped) piece in the current piece's group
 					group_id = piece.data("group")
-					group_exists = group_id != undefined
+					group_exists = group_id != -1
 					if group_exists
-						
+						debugger
 						dragging_pos = ui.position
 						
 						# Drag the current piece's group of pieces
@@ -177,9 +177,15 @@ class Jigsaw
 		
 		# Find group neighbors
 		group_objects = _.filter(pieces, (p) -> return p.data("group") == group_id)
-	
+		
+		# Exclude the current piece from that group since we only want to drag neighbors
+		group_objects = _.reject(group_objects, (p) -> return p.data("id") == piece.data("id"))
+		
 		# Move each of the neighbors by the new offsets
-		_.each(group_objects, (p) => @movePieceByOffsets(p, top_offset, left_offset))
+		_.each(group_objects, (p) => 
+			@movePieceByOffsets(p, left_offset, top_offset)
+			#@setPositionByOffsets(p, left_offset, top_offset)
+		)
 		
 	getNeighborObjectsFromIds: (pieces, neighbors_ids) ->
 	# Purpose: 	Extracts the neighbor objects from the pieces list with ids matching passed neighbor ids
@@ -222,8 +228,19 @@ class Jigsaw
 			
 			@movePieceByOffsets(current_piece, left_offset, top_offset, 0)
 		)
+	
+	setPositionByOffsets: (piece, left_offset, top_offset) ->
+	# Purpose: 	Simply sets the top and left css positions of the passed piece to its current location plus the offsets
+		top  = piece.css("top")
+		left = piece.css("left")
 		
-	movePieceByOffsets: (piece, left_offset, top_offset, move_speed = 0) ->
+		new_left = left + left_offset
+		new_top  = top  + top_offset 
+		
+		piece.css("left", new_left)
+		piece.css("top", new_top)
+		
+	movePieceByOffsets: (piece, left_offset, top_offset, move_speed) ->
 	# Purpose: 	Adds the piece offsets to the piece's current position
 		cp_pos   	= piece.data("position")
 		cp_pos_top 	= cp_pos.top_left.y
@@ -233,7 +250,17 @@ class Jigsaw
 		new_top  = cp_pos_top  + top_offset
 		
 		@movePiece(piece, new_left, new_top, move_speed)
-		
+	
+	movePiece: (piece, x, y, speed = 1900) ->
+	# Purpose:	Animates the passed piece to the passed location.
+	# Precond:	piece is a jquery canvas object
+	# Notes:	uses jquery animate with a predefined duration
+	# TODO: This should be a member of a Piece class.
+		piece.animate({
+		'left' : x,
+		'top' : y
+		}, speed)		
+
 	getMovementOffset: (cp1, cp2, np1, np2) ->
 	# Purpose: 	Computes the difference between 
 	# Returns:	An object with the two offsets		
@@ -512,22 +539,11 @@ class Jigsaw
 			.css("cursor", "pointer")
 			.data("id", id)						# Keeps ID hidden from user
 			.data("neighbors", neighbors)		# List of neighbors by canvas id
-			.data("group", undefined)			# Default group id. Group used for snapping multiple pieces together.
+			.data("group", -1)					# Default group id. Group used for snapping multiple pieces together.
 			.appendTo('#pieces-canvas')			# FIXME: This breaks if we change the div name...
 			.addClass("piece")					# Added for ease of finding similar objects
 		
-		return piece
-	
-			
-	movePiece: (piece, x, y, speed = 1900) ->
-	# Purpose:	Animates the passed piece to the passed location.
-	# Precond:	piece is a jquery canvas object
-	# Notes:	uses jquery animate with a predefined duration
-	# TODO: This should be a member of a Piece class.
-		piece.animate({
-		'left' : x,
-		'top' : y
-		}, speed)			
+		return piece	
 				
 	initBoard: (rows, columns, starting_id) ->
 	# Purpose: 	Creates a num_rows x num_columns matrix of IDs.
