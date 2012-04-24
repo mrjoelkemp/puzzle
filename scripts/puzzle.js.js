@@ -101,27 +101,30 @@
     };
 
     Jigsaw.prototype.onDragStart = function(e, ui, piece) {
-      piece.data("old_top", ui.position.top);
-      return piece.data("old_left", ui.position.left);
+      return this.updateOldPosition(piece, ui.helper);
     };
 
     Jigsaw.prototype.onDrag = function(e, ui, piece, pieces) {
       var dragging_pos, group_exists, group_id;
-      console.log("UI left: " + ui.position.left + " UI top: " + ui.position.top);
-      console.log("Old left: " + piece.data("old_left") + " Old top: " + piece.data("old_top"));
-      console.log("P left: " + piece.position().left + " P top: " + piece.position().top);
+      dragging_pos = {
+        "left": parseFloat(ui.offset.left),
+        "top": parseFloat(ui.offset.top)
+      };
       group_id = piece.data("group");
       group_exists = group_id !== -1;
       if (group_exists) {
-        dragging_pos = piece.position();
         this.dragGroup(group_id, piece, pieces, dragging_pos);
       }
-      piece.data("old_top", piece.position().top);
-      return piece.data("old_left", piece.position().left);
+      return this.updateOldPosition(piece, ui.helper);
     };
 
-    Jigsaw.prototype.dragGroup = function(group_id, piece, pieces, dragging_pos) {
-      var group_objects, left_offset, top_offset,
+    Jigsaw.prototype.updateOldPosition = function(piece, ui_helper) {
+      piece.data("old_top", parseFloat(ui_helper.css('top')));
+      return piece.data("old_left", parseFloat(ui_helper.css('left')));
+    };
+
+    Jigsaw.prototype.dragGroup = function(group_id, piece, pieces, offset_obj) {
+      var group_objects,
         _this = this;
       group_objects = _.filter(pieces, function(p) {
         return p.data("group") === group_id;
@@ -129,11 +132,32 @@
       group_objects = _.reject(group_objects, function(p) {
         return p.data("id") === piece.data("id");
       });
-      left_offset = dragging_pos.left - piece.data("old_left");
-      top_offset = dragging_pos.top - piece.data("old_top");
       return _.each(group_objects, function(p) {
-        return _this.movePieceByOffsets(p, left_offset, top_offset, 0);
+        var left_offset, new_left, new_top, pleft, ptop, top_offset;
+        ptop = parseFloat(p.css("top"));
+        pleft = parseFloat(p.css("left"));
+        top_offset = offset_obj.top - ptop;
+        left_offset = offset_obj.left - pleft;
+        console.log("LeftOffset = " + left_offset, "TopOffset = " + top_offset);
+        new_top = ptop + top_offset;
+        new_left = pleft + left_offset;
+        return p.css({
+          "top": new_top,
+          "left": new_left
+        });
       });
+    };
+
+    Jigsaw.prototype.movePieceByOffsets = function(piece, left_offset, top_offset, move_speed) {
+      var cp_pos_left, cp_pos_top, new_left, new_top;
+      if (move_speed == null) {
+        move_speed = 0;
+      }
+      cp_pos_top = parseFloat(piece.css('top'));
+      cp_pos_left = parseFloat(piece.css('left'));
+      new_left = cp_pos_left + left_offset;
+      new_top = cp_pos_top + top_offset;
+      return this.movePiece(piece, new_left, new_top, move_speed);
     };
 
     Jigsaw.prototype.onDragStop = function(piece, pieces, snapping_threshold) {
@@ -194,19 +218,6 @@
       new_top = top + top_offset;
       piece.css("left", new_left);
       return piece.css("top", new_top);
-    };
-
-    Jigsaw.prototype.movePieceByOffsets = function(piece, left_offset, top_offset, move_speed) {
-      var cp_pos, cp_pos_left, cp_pos_top, new_left, new_top;
-      if (move_speed == null) {
-        move_speed = 0;
-      }
-      cp_pos = piece.data("position");
-      cp_pos_top = cp_pos.top_left.y;
-      cp_pos_left = cp_pos.top_left.x;
-      new_left = cp_pos_left + left_offset;
-      new_top = cp_pos_top + top_offset;
-      return this.movePiece(piece, new_left, new_top, move_speed);
     };
 
     Jigsaw.prototype.movePiece = function(piece, x, y, speed) {
