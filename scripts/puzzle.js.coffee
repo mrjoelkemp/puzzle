@@ -112,22 +112,22 @@ class Jigsaw
 				snapTolerance: snapping_threshold,	# Pixel distance to initiate snapping
 				opacity: 0.75						# Make the dragged piece lighter for now. TODO: Remove when we have collision detection.	
 			})	#end draggable()
-			piece.bind("dragstart", (e, ui) => @onDragStart(piece))
+			piece.bind("dragstart", (e, ui) => @onDragStart(e, ui, piece))
 			piece.bind("drag", (e, ui) => @onDrag(e, ui, piece, pieces))
 			piece.bind("dragstop", (e, ui) => @onDragStop(piece, pieces, snapping_threshold))
 		)
 		
-	onDragStart: (piece) ->
-	# Purpose: Handler for drag start event
-		# Remember where you are so the movement distance can be computed
-		console.log("Start!")
-		piece.data("old_top", piece.position().top)
-		piece.data("old_left", piece.position().left)
+	onDragStart: (e, ui, piece) ->
+	# Purpose: 	Handler for drag start event
+	# Precond: 	The ui is the helper object that's being dragged. Its positional info is more accurate than the piece's position.
+		# Remember where you are so the movement distance can be computed during drag
+		piece.data("old_top", ui.position.top)
+		piece.data("old_left", ui.position.left)
 
 	onDrag: (e, ui, piece, pieces) ->
 	# Purpose: 	Handler for the drag event
 	# Note:		On drag, move the snapped pieces in the currently dragged piece's group
-	 
+	 	
 		console.log("UI left: " + ui.position.left + " UI top: " + ui.position.top)
 		console.log("Old left: " + piece.data("old_left") + " Old top: " + piece.data("old_top"))
 		console.log("P left: " + piece.position().left + " P top: " + piece.position().top)
@@ -158,7 +158,7 @@ class Jigsaw
 		# Compute how far the piece moved between calls
 		left_offset = dragging_pos.left - piece.data("old_left")
 		top_offset 	= dragging_pos.top - piece.data("old_top")
-		console.log("dragGroup: Left_Offset = " + left_offset + " Top_Offset = " + top_offset)
+	#	console.log("dragGroup: Left_Offset = " + left_offset + " Top_Offset = " + top_offset)
 
 		# Move each of the neighbors by the new offsets
 		_.each(group_objects, (p) => 

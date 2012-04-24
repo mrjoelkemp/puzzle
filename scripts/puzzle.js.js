@@ -89,7 +89,7 @@
           opacity: 0.75
         });
         piece.bind("dragstart", function(e, ui) {
-          return _this.onDragStart(piece);
+          return _this.onDragStart(e, ui, piece);
         });
         piece.bind("drag", function(e, ui) {
           return _this.onDrag(e, ui, piece, pieces);
@@ -100,10 +100,9 @@
       });
     };
 
-    Jigsaw.prototype.onDragStart = function(piece) {
-      console.log("Start!");
-      piece.data("old_top", piece.position().top);
-      return piece.data("old_left", piece.position().left);
+    Jigsaw.prototype.onDragStart = function(e, ui, piece) {
+      piece.data("old_top", ui.position.top);
+      return piece.data("old_left", ui.position.left);
     };
 
     Jigsaw.prototype.onDrag = function(e, ui, piece, pieces) {
@@ -132,7 +131,6 @@
       });
       left_offset = dragging_pos.left - piece.data("old_left");
       top_offset = dragging_pos.top - piece.data("old_top");
-      console.log("dragGroup: Left_Offset = " + left_offset + " Top_Offset = " + top_offset);
       return _.each(group_objects, function(p) {
         return _this.movePieceByOffsets(p, left_offset, top_offset, 0);
       });
