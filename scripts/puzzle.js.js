@@ -108,6 +108,7 @@
 
     Jigsaw.prototype.onDrag = function(e, ui, piece, pieces) {
       var dragging_pos, group_exists, group_id;
+      console.log("UI left: " + ui.position.left + " UI top: " + ui.position.top);
       console.log("Old left: " + piece.data("old_left") + " Old top: " + piece.data("old_top"));
       console.log("P left: " + piece.position().left + " P top: " + piece.position().top);
       group_id = piece.data("group");
@@ -118,6 +119,23 @@
       }
       piece.data("old_top", piece.position().top);
       return piece.data("old_left", piece.position().left);
+    };
+
+    Jigsaw.prototype.dragGroup = function(group_id, piece, pieces, dragging_pos) {
+      var group_objects, left_offset, top_offset,
+        _this = this;
+      group_objects = _.filter(pieces, function(p) {
+        return p.data("group") === group_id;
+      });
+      group_objects = _.reject(group_objects, function(p) {
+        return p.data("id") === piece.data("id");
+      });
+      left_offset = dragging_pos.left - piece.data("old_left");
+      top_offset = dragging_pos.top - piece.data("old_top");
+      console.log("dragGroup: Left_Offset = " + left_offset + " Top_Offset = " + top_offset);
+      return _.each(group_objects, function(p) {
+        return _this.movePieceByOffsets(p, left_offset, top_offset, 0);
+      });
     };
 
     Jigsaw.prototype.onDragStop = function(piece, pieces, snapping_threshold) {
@@ -134,22 +152,6 @@
       if (have_neighbors_to_snap) {
         return this.snapToNeighbors(piece, snappable_neighbors);
       }
-    };
-
-    Jigsaw.prototype.dragGroup = function(group_id, piece, pieces, dragging_pos) {
-      var group_objects, left_offset, top_offset,
-        _this = this;
-      group_objects = _.filter(pieces, function(p) {
-        return p.data("group") === group_id;
-      });
-      group_objects = _.reject(group_objects, function(p) {
-        return p.data("id") === piece.data("id");
-      });
-      left_offset = dragging_pos.left - piece.data("old_left");
-      top_offset = dragging_pos.top - piece.data("old_top");
-      return _.each(group_objects, function(p) {
-        return _this.setPositionByOffsets(p, left_offset, top_offset);
-      });
     };
 
     Jigsaw.prototype.getNeighborObjectsFromIds = function(pieces, neighbors_ids) {
@@ -187,7 +189,6 @@
     };
 
     Jigsaw.prototype.setPositionByOffsets = function(piece, left_offset, top_offset) {
-      debugger;
       var left, new_left, new_top, top;
       top = parseFloat(piece.css("top"));
       left = parseFloat(piece.css("left"));
