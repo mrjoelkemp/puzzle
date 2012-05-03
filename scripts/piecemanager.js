@@ -33,6 +33,32 @@
       return pieces;
     };
 
+    PieceManager.randomize = function(pieces) {
+      var center_pos, circle_point, i, ind, indices, num_points, offset, p, points, radius, _i, _j, _results, _results1;
+      offset = 100;
+      center_pos = {
+        "x": ($(window).width() / 2) - offset,
+        "y": $(window).height() / 2
+      };
+      num_points = _.size(pieces);
+      radius = 300;
+      points = MathHelper.generatePointsAboutCircle(num_points, center_pos, radius);
+      indices = (function() {
+        _results = [];
+        for (var _i = 0; 0 <= num_points ? _i < num_points : _i > num_points; 0 <= num_points ? _i++ : _i--){ _results.push(_i); }
+        return _results;
+      }).apply(this);
+      indices = _.shuffle(indices);
+      _results1 = [];
+      for (i = _j = 0; 0 <= num_points ? _j < num_points : _j > num_points; i = 0 <= num_points ? ++_j : --_j) {
+        p = pieces[i + 1];
+        ind = indices[i];
+        circle_point = points[ind];
+        _results1.push(this.movePiece(p, circle_point.x, circle_point.y, 400));
+      }
+      return _results1;
+    };
+
     return PieceManager;
 
   })();

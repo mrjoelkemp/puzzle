@@ -45,3 +45,28 @@ class @PieceManager
 				cur_column_left = 0
 				
 		return pieces
+	
+	@randomize: (pieces) ->
+	# Purpose: Randomize the top and left positions of each piece in the passed list 
+	#			and animates them to their new positions
+		offset = 100 	# Nudge factor
+		center_pos = "x" : ($(window).width() / 2) - offset, "y": $(window).height() / 2
+		
+		# List of objects with an left (x) and top (y) value
+		num_points = _.size(pieces)
+		radius = 300
+		points = MathHelper.generatePointsAboutCircle(num_points, center_pos, radius)
+		
+		# Shuffle the points
+		indices = [0 ... num_points]
+		indices = _.shuffle(indices)
+		
+		for i in [0 ... num_points]
+			#FIXME: See if we can use "for p in pieces"
+			p	= pieces[i + 1]	# Piece indices start at 1
+			ind = indices[i]
+			circle_point= points[ind]
+			
+			# Set the top and left to the point's y and x, respectively
+			@movePiece(p, circle_point.x, circle_point.y, 400)
+			

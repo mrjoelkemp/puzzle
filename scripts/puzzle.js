@@ -18,39 +18,13 @@
       pieces = PieceManager.initPieces(rows, columns, back_canvas, starting_id, neighbors);
       snapping_threshold = 40;
       this.setDraggingEvents(pieces, snapping_threshold);
-      this.randomize(pieces);
+      PieceManager.randomize(pieces);
       refresh_rate = 33;
       back_canvas_element = back_canvas[0];
       back_canvas_context = back_canvas_element.getContext('2d');
       this.renderVideoToBackCanvas(video_element, back_canvas_context, refresh_rate);
       this.renderBackCanvasToPieces(back_canvas_element, pieces, refresh_rate);
     }
-
-    Jigsaw.prototype.randomize = function(pieces) {
-      var center_pos, circle_point, i, ind, indices, num_points, offset, p, points, radius, _i, _j, _results, _results1;
-      offset = 100;
-      center_pos = {
-        "x": ($(window).width() / 2) - offset,
-        "y": $(window).height() / 2
-      };
-      num_points = _.size(pieces);
-      radius = 300;
-      points = MathHelper.generatePointsAboutCircle(num_points, center_pos, radius);
-      indices = (function() {
-        _results = [];
-        for (var _i = 0; 0 <= num_points ? _i < num_points : _i > num_points; 0 <= num_points ? _i++ : _i--){ _results.push(_i); }
-        return _results;
-      }).apply(this);
-      indices = _.shuffle(indices);
-      _results1 = [];
-      for (i = _j = 0; 0 <= num_points ? _j < num_points : _j > num_points; i = 0 <= num_points ? ++_j : --_j) {
-        p = pieces[i + 1];
-        ind = indices[i];
-        circle_point = points[ind];
-        _results1.push(this.movePiece(p, circle_point.x, circle_point.y, 400));
-      }
-      return _results1;
-    };
 
     Jigsaw.prototype.setDraggingEvents = function(pieces, snapping_threshold) {
       var _this = this;
@@ -125,18 +99,6 @@
           "left": new_left
         });
       });
-    };
-
-    Jigsaw.prototype.movePieceByOffsets = function(piece, left_offset, top_offset, move_speed) {
-      var cp_pos_left, cp_pos_top, new_left, new_top;
-      if (move_speed == null) {
-        move_speed = 0;
-      }
-      cp_pos_top = parseFloat(piece.css('top'));
-      cp_pos_left = parseFloat(piece.css('left'));
-      new_left = cp_pos_left + left_offset;
-      new_top = cp_pos_top + top_offset;
-      return this.movePiece(piece, new_left, new_top, move_speed);
     };
 
     Jigsaw.prototype.onDragStop = function(piece, pieces, snapping_threshold) {
@@ -241,16 +203,6 @@
       new_top = top + top_offset;
       piece.css("left", new_left);
       return piece.css("top", new_top);
-    };
-
-    Jigsaw.prototype.movePiece = function(piece, x, y, speed) {
-      if (speed == null) {
-        speed = 1900;
-      }
-      return piece.animate({
-        'left': x,
-        'top': y
-      }, speed);
     };
 
     Jigsaw.prototype.getMovementOffset = function(cp1, cp2, np1, np2) {
@@ -401,34 +353,6 @@
         }
       }
       return neighbors;
-    };
-
-    Jigsaw.prototype.initPieces = function(rows, columns, back_canvas, starting_id, neighbors) {
-      var back_height, back_width, cur_column_left, cur_row_top, i, neighbor_hash, next_id, num_pieces_needed, piece, piece_height, piece_width, pieces, should_move_to_next_row, videox, videoy, _i;
-      pieces = {};
-      next_id = starting_id;
-      back_width = back_canvas.width();
-      back_height = back_canvas.height();
-      piece_width = back_width / columns;
-      piece_height = back_height / rows;
-      cur_row_top = 0;
-      cur_column_left = 0;
-      num_pieces_needed = rows * columns;
-      for (i = _i = 1; 1 <= num_pieces_needed ? _i <= num_pieces_needed : _i >= num_pieces_needed; i = 1 <= num_pieces_needed ? ++_i : --_i) {
-        videox = cur_column_left;
-        videoy = cur_row_top;
-        neighbor_hash = neighbors[next_id];
-        piece = Piece.createPiece(next_id, piece_width, piece_height, videox, videoy, neighbor_hash);
-        pieces[next_id] = piece;
-        next_id++;
-        cur_column_left += piece_width;
-        should_move_to_next_row = cur_column_left >= back_width;
-        if (should_move_to_next_row) {
-          cur_row_top += piece_height;
-          cur_column_left = 0;
-        }
-      }
-      return pieces;
     };
 
     Jigsaw.prototype.renderVideoToBackCanvas = function(video_element, back_canvas_context, refresh_rate, pieces) {

@@ -2,10 +2,6 @@ class @Piece
 # Represents a collection of static helpers for manipulating a subcanvas 
 # object that renders a portion of a playing video.
 
-	#constructor: (id, width, height, videox, videoy, neighbors) ->
-	#	@create(id, width, height, videox, videoy, neighbors)
-
-
 	@createPiece: (id, width, height, videox, videoy, neighbors) ->
 	# Purpose: 	Initializes a subcanvas with the passed dimensions
 	# Preconds:	videox and videoy are the piece's position atop the back canvas playing the video
@@ -31,3 +27,22 @@ class @Piece
 			.addClass("piece")					# Added for ease of finding similar objects
 		return piece
 
+	@movePieceByOffsets: (piece, left_offset, top_offset, move_speed = 0) ->
+	# Purpose: 	Adds the piece offsets to the piece's current position
+		cp_pos_top 	= parseFloat(piece.css('top'))
+		cp_pos_left = parseFloat(piece.css('left'))
+		
+		new_left = cp_pos_left + left_offset 
+		new_top  = cp_pos_top  + top_offset
+
+		@movePiece(piece, new_left, new_top, move_speed)
+
+	@movePiece: (piece, x, y, speed = 1900) ->
+	# Purpose:	Animates the passed piece to the passed location.
+	# Precond:	piece is a jquery canvas object
+	# Notes:	uses jquery animate with a predefined duration
+	# TODO: This should be a member of a Piece class.
+		piece.animate({
+		'left' : x,
+		'top' : y
+		}, speed)		
