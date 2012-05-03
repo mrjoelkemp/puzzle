@@ -213,11 +213,12 @@ class Jigsaw
 			@propagateSnap(piece, snappable_neighbors, pieces)
 			# Snap to immediate, snappable neighbors
 			@snapToNeighbors(piece, snappable_neighbors)
+			
 			# DEBUG: Visualize the membership changes
 			@debug_colorObjectsFromId(pieces)
-
 			_.each(pieces, (p) -> console.log("gid: " + p.data("group")))
-			
+			console.log("---")
+
 			# If a snap occurs, then check for game win
 			@checkWinCondition(pieces)
 

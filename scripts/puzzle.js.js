@@ -183,6 +183,7 @@
         _.each(pieces, function(p) {
           return console.log("gid: " + p.data("group"));
         });
+        console.log("---");
         return this.checkWinCondition(pieces);
       }
     };
