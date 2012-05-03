@@ -22,8 +22,8 @@
       refresh_rate = 33;
       back_canvas_element = back_canvas[0];
       back_canvas_context = back_canvas_element.getContext('2d');
-      this.renderVideoToBackCanvas(video_element, back_canvas_context, refresh_rate);
-      this.renderBackCanvasToPieces(back_canvas_element, pieces, refresh_rate);
+      RenderHelper.renderVideoToBackCanvas(video_element, back_canvas_context, refresh_rate);
+      RenderHelper.renderBackCanvasToPieces(back_canvas_element, pieces, refresh_rate);
     }
 
     Jigsaw.prototype.setDraggingEvents = function(pieces, snapping_threshold) {
@@ -208,31 +208,6 @@
         }
       }
       return neighbors;
-    };
-
-    Jigsaw.prototype.renderVideoToBackCanvas = function(video_element, back_canvas_context, refresh_rate, pieces) {
-      var _this = this;
-      return setInterval(function() {
-        video_element.play();
-        return back_canvas_context.drawImage(video_element, 0, 0);
-      }, refresh_rate);
-    };
-
-    Jigsaw.prototype.renderBackCanvasToPieces = function(back_canvas_element, pieces, refresh_rate) {
-      var pieces_objects,
-        _this = this;
-      pieces_objects = _.values(pieces);
-      return setInterval(function() {
-        return _.each(pieces_objects, function(piece) {
-          var height, piece_context, videox, videoy, width;
-          piece_context = piece[0].getContext('2d');
-          videox = parseFloat(piece.attr("videox"));
-          videoy = parseFloat(piece.attr("videoy"));
-          width = parseFloat(piece.attr("width"));
-          height = parseFloat(piece.attr("height"));
-          return piece_context.drawImage(back_canvas_element, videox, videoy, width, height, 0, 0, width, height);
-        });
-      }, refresh_rate);
     };
 
     return Jigsaw;
