@@ -49,13 +49,14 @@ class Jigsaw
 	# Purpose: Randomize the top and left positions of each piece in the passed list 
 	#			and animates them to their new positions
 	# TODO: Implement a more desired randomization
-		center_pos = "x" : $(window).width() / 2, "y": $(window).height() / 2
+		offset = 100 	# Nudge factor
+		center_pos = "x" : ($(window).width() / 2) - offset, "y": $(window).height() / 2
 		
 		# List of objects with an left (x) and top (y) value
 		num_points = _.size(pieces)
-		radius = 350
+		radius = 300
 		points = @generatePointsAboutCircle(num_points, center_pos, radius)
-		
+		console.log(points)
 		# Shuffle the points
 		indices = [0 ... num_points]
 		indices = _.shuffle(indices)
@@ -80,7 +81,7 @@ class Jigsaw
 		step = 360 / num_points
 		degrees = []
 		degree = 0
-		while degree <= 360
+		while degree < 360
 			degrees.push(degree)
 			degree += step
 		

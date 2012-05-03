@@ -28,14 +28,16 @@
     }
 
     Jigsaw.prototype.randomize = function(pieces) {
-      var center_pos, circle_point, i, ind, indices, num_points, p, points, radius, _i, _j, _results, _results1;
+      var center_pos, circle_point, i, ind, indices, num_points, offset, p, points, radius, _i, _j, _results, _results1;
+      offset = 100;
       center_pos = {
-        "x": $(window).width() / 2,
+        "x": ($(window).width() / 2) - offset,
         "y": $(window).height() / 2
       };
       num_points = _.size(pieces);
-      radius = 350;
+      radius = 300;
       points = this.generatePointsAboutCircle(num_points, center_pos, radius);
+      console.log(points);
       indices = (function() {
         _results = [];
         for (var _i = 0; 0 <= num_points ? _i < num_points : _i > num_points; 0 <= num_points ? _i++ : _i--){ _results.push(_i); }
@@ -57,7 +59,7 @@
       step = 360 / num_points;
       degrees = [];
       degree = 0;
-      while (degree <= 360) {
+      while (degree < 360) {
         degrees.push(degree);
         degree += step;
       }
