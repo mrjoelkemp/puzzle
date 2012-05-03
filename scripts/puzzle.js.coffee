@@ -68,7 +68,7 @@ class Jigsaw
 			
 			# Set the top and left to the point's y and x, respectively
 			@movePiece(p, circle_point.x, circle_point.y)
-	
+			
 	generatePointsAboutCircle: (num_points, center, radius) ->
 	# Purpose: 	Generate a series of points about a circle centered at the 
 	#			passed center scaled about the passed radius.
@@ -121,11 +121,7 @@ class Jigsaw
 	# Purpose: 	Handler for drag start event
 	# Precond: 	The ui is the helper object that's being dragged. Its positional info is more accurate than the piece's position.
 		# Remember where you are so the movement distance can be computed during drag
-		#piece.data("old_top", ui.position.top)
-		#piece.data("old_left", ui.position.left)
 		@updateOldPosition(piece, ui.helper)
-		#piece.data("old_top", parseFloat(piece.css('top')))
-		#piece.data("old_left", parseFloat(piece.css('left')))
 		
 
 	onDrag: (e, ui, piece, pieces) ->
