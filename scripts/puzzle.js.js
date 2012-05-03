@@ -177,8 +177,34 @@
       snappable_neighbors = this.getNeighborObjectsFromIds(pieces, snappable_neighbors_ids);
       have_neighbors_to_snap = !_.isEmpty(snappable_neighbors);
       if (have_neighbors_to_snap) {
-        return this.snapToNeighbors(piece, snappable_neighbors);
+        this.propagateSnap(piece, snappable_neighbors, pieces);
+        this.snapToNeighbors(piece, snappable_neighbors);
+        this.debug_colorObjectsFromId(pieces);
+        return _.each(pieces, function(p) {
+          return console.log("gid: " + p.data("group"));
+        });
       }
+    };
+
+    Jigsaw.prototype.propagateSnap = function(piece, snappable_neighbors, pieces) {
+      var p_gid,
+        _this = this;
+      p_gid = piece.data("id");
+      piece.data("group", p_gid);
+      _.each(snappable_neighbors, function(n) {
+        var has_group, n_gid, n_group_members;
+        n_gid = n.data("group");
+        has_group = n_gid !== -1;
+        if (has_group) {
+          n_group_members = _this.getGroupObjects(n_gid, n, pieces);
+          return _.each(n_group_members, function(ngm) {
+            return ngm.data("group", p_gid);
+          });
+        }
+      });
+      return _.each(snappable_neighbors, function(sn) {
+        return sn.data("group", p_gid);
+      });
     };
 
     Jigsaw.prototype.getNeighborObjectsFromIds = function(pieces, neighbors_ids) {
@@ -189,16 +215,19 @@
       return neighbors_pieces;
     };
 
-    Jigsaw.prototype.snapToNeighbors = function(current_piece, snappable_neighbors) {
-      var colors, cp_id, neighbors_points, neighbors_relations, objects_relations, pieces,
-        _this = this;
-      pieces = _.union(current_piece, snappable_neighbors);
-      cp_id = current_piece.data("id");
+    Jigsaw.prototype.debug_colorObjectsFromId = function(pieces) {
+      var colors;
       colors = ["red", "green", "blue", "yellow", "black", "pink"];
-      _.each(pieces, function(p) {
-        p.data("group", cp_id);
-        return p.css("border", "3px solid " + colors[cp_id]);
+      return _.each(pieces, function(p) {
+        var p_gid;
+        p_gid = p.data("group");
+        return p.css("border", "3px solid " + colors[p_gid]);
       });
+    };
+
+    Jigsaw.prototype.snapToNeighbors = function(current_piece, snappable_neighbors) {
+      var neighbors_points, neighbors_relations, objects_relations,
+        _this = this;
       neighbors_relations = this.getNeighborRelations(current_piece, snappable_neighbors);
       objects_relations = _.zip(snappable_neighbors, neighbors_relations);
       neighbors_points = _.map(objects_relations, function(arr) {

@@ -208,10 +208,15 @@ class Jigsaw
 		
 		# If we found a neighbor to snap to
 		have_neighbors_to_snap = not _.isEmpty(snappable_neighbors)
-		if have_neighbors_to_snap 
+		if have_neighbors_to_snap 			
+			# Update neighbors' groups with new group id
+			@propagateSnap(piece, snappable_neighbors, pieces)
+			# Snap to immediate, snappable neighbors
 			@snapToNeighbors(piece, snappable_neighbors)
-			# TODO: Update neighbor groups with new group id
-			#propagateSnap()
+			# DEBUG: Visualize the membership changes
+			@debug_colorObjectsFromId(pieces)
+
+			_.each(pieces, (p) -> console.log("gid: " + p.data("group")))
 							
 		# Check for a win condition: all pieces are in the same group
 		# TODO: Make into a function
@@ -222,30 +227,52 @@ class Jigsaw
 		#game_won = _.isEmpty(outcasts)
 		#if game_won then "Me win!"
 		
-	
+	propagateSnap: (piece, snappable_neighbors, pieces) ->	
+	# Purpose:	Propagates a group id change through the current piece's neighbors 
+	#			and the neighbors of the snappable_neighbors 
+		# The new group ID
+		# Note: We just use the piece's id as the group id
+		p_gid = piece.data("id")
+		# Set the piece's own group id
+		piece.data("group", p_gid)
+
+		# For each snappable neighbor, get its group members
+		_.each(snappable_neighbors, (n) =>
+			# Neighbor's existing group id
+			n_gid = n.data("group")
+
+			has_group = n_gid != -1
+			if has_group
+				# Get the group members
+				n_group_members = @getGroupObjects(n_gid, n, pieces)
+
+				# Change the group id for each member to the current piece's group id
+				_.each(n_group_members, (ngm) -> ngm.data("group", p_gid))
+		)
+
+		# Modify the group id of the snappable_neighbors
+		_.each(snappable_neighbors, (sn) -> sn.data("group", p_gid))
+
 	getNeighborObjectsFromIds: (pieces, neighbors_ids) ->
 	# Purpose: 	Extracts the neighbor objects from the pieces list with ids matching passed neighbor ids
 	# Returns:	A list of neighbor (piece) objects
 		neighbors_pieces = _.map(neighbors_ids, (id) -> return pieces[id])
 		return neighbors_pieces
+
+	debug_colorObjectsFromId: (pieces) ->
+	# Purpose: 	Helper to visualize group membership changes
+	# TODO: 	Delete!!
+		colors = ["red", "green", "blue", "yellow", "black", "pink"]		
 		
+		# Change the neighbors' group id
+		_.each(pieces, (p) -> 
+			p_gid = p.data("group")
+			p.css("border", "3px solid " + colors[p_gid])
+		)
 	snapToNeighbors: (current_piece, snappable_neighbors) ->
 	# Purpose: 	Snaps the current piece to the snappable neighbors and adds them all to the same drag group.
 	# Note:		The neighbors join the current piece's group which makes group membership dynamic.
-		pieces = _.union(current_piece, snappable_neighbors)
-		
-		# Add the piece and the neighbors to a group numbered after the piece's ID
-		cp_id = current_piece.data("id")
-
-		# DEBUG
-		colors = ["red", "green", "blue", "yellow", "black", "pink"]		
-		
-		_.each(pieces, (p) -> 
-			p.data("group", cp_id)
-			# DEBUG
-			p.css("border", "3px solid " + colors[cp_id])
-		)
-		
+	
 		# Get the relation of the neighbors about the current piece (left, right, top, bottom)
 		neighbors_relations = @getNeighborRelations(current_piece, snappable_neighbors)
 		
