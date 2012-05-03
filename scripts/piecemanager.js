@@ -3,15 +3,34 @@
 
   this.PieceManager = (function() {
 
-    function PieceManager(board_dimensions, piece_dimensions, neighbors) {}
+    function PieceManager() {}
 
-    PieceManager.prototype.initPieces = function(board_dimensions, piece_dimensions, neighbors) {
-      var cols, piece_height, piece_width, rows, starting_id;
-      starting_id = 1;
-      piece_width = piece_dimensions.width;
-      piece_height = piece_dimensions.height;
-      rows = board_dimensions.rows;
-      return cols = board_dimensions.columns;
+    PieceManager.initPieces = function(rows, columns, back_canvas, starting_id, neighbors) {
+      var back_height, back_width, cur_column_left, cur_row_top, i, neighbor_hash, next_id, num_pieces_needed, piece, piece_height, piece_width, pieces, should_move_to_next_row, videox, videoy, _i;
+      pieces = {};
+      next_id = starting_id;
+      back_width = back_canvas.width();
+      back_height = back_canvas.height();
+      piece_width = back_width / columns;
+      piece_height = back_height / rows;
+      cur_row_top = 0;
+      cur_column_left = 0;
+      num_pieces_needed = rows * columns;
+      for (i = _i = 1; 1 <= num_pieces_needed ? _i <= num_pieces_needed : _i >= num_pieces_needed; i = 1 <= num_pieces_needed ? ++_i : --_i) {
+        videox = cur_column_left;
+        videoy = cur_row_top;
+        neighbor_hash = neighbors[next_id];
+        piece = Piece.createPiece(next_id, piece_width, piece_height, videox, videoy, neighbor_hash);
+        pieces[next_id] = piece;
+        next_id++;
+        cur_column_left += piece_width;
+        should_move_to_next_row = cur_column_left >= back_width;
+        if (should_move_to_next_row) {
+          cur_row_top += piece_height;
+          cur_column_left = 0;
+        }
+      }
+      return pieces;
     };
 
     return PieceManager;

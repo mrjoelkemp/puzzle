@@ -1,4 +1,6 @@
 class @Board
+# Represents a collection of helpers for the neighborhood matrix (board) 
+#	modeling the relationships between pieces
 
 	@initBoard: (rows, columns, starting_id) ->
 		# Purpose: 	Creates a num_rows x num_columns matrix of IDs.

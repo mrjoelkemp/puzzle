@@ -28,7 +28,8 @@ class @Jigsaw
 		neighbors = @initNeighbors(rows, columns, board)
 		#debugger
 		# We pass the board to tell pieces who they snap to
-		pieces = @initPieces(rows, columns, back_canvas, starting_id, neighbors)
+		#pieces = @initPieces(rows, columns, back_canvas, starting_id, neighbors)
+		pieces = PieceManager.initPieces(rows, columns, back_canvas, starting_id, neighbors)
 		
 		# Pixel distance for snapping between neighbors
 		snapping_threshold = 40
