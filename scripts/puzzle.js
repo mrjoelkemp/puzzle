@@ -37,50 +37,13 @@
           snapTolerance: snapping_threshold
         });
         piece.bind("dragstart", function(e, ui) {
-          return _this.onDragStart(e, ui, piece);
+          return Piece.onDragStart(e, ui, piece);
         });
         piece.bind("drag", function(e, ui) {
-          return _this.onDrag(e, ui, piece, pieces);
+          return Piece.onDrag(e, ui, piece, pieces);
         });
         return piece.bind("dragstop", function(e, ui) {
           return _this.onDragStop(piece, pieces, snapping_threshold);
-        });
-      });
-    };
-
-    Jigsaw.prototype.onDragStart = function(e, ui, piece) {
-      return Piece.updateOldPosition(piece, ui.offset);
-    };
-
-    Jigsaw.prototype.onDrag = function(e, ui, piece, pieces) {
-      var dragging_pos, group_exists, group_id;
-      dragging_pos = {
-        "left": parseFloat(ui.offset.left),
-        "top": parseFloat(ui.offset.top)
-      };
-      group_id = piece.data("group");
-      group_exists = group_id !== -1;
-      if (group_exists) {
-        this.dragGroup(group_id, piece, pieces, dragging_pos);
-      }
-      return Piece.updateOldPosition(piece, ui.offset);
-    };
-
-    Jigsaw.prototype.dragGroup = function(group_id, piece, pieces, offset_obj) {
-      var drag_left_delta, drag_top_delta, group_objects,
-        _this = this;
-      group_objects = Piece.getGroupObjects(group_id, piece, pieces);
-      drag_top_delta = offset_obj.top - piece.data("old_top");
-      drag_left_delta = offset_obj.left - piece.data("old_left");
-      return _.each(group_objects, function(p) {
-        var new_left, new_top, pleft, ptop;
-        ptop = parseFloat(p.css("top"));
-        pleft = parseFloat(p.css("left"));
-        new_top = ptop + drag_top_delta;
-        new_left = pleft + drag_left_delta;
-        return p.css({
-          "top": new_top,
-          "left": new_left
         });
       });
     };
@@ -89,7 +52,7 @@
       var have_neighbors_to_snap, neighbors_objects, snappable_neighbors, snappable_neighbors_ids,
         _this = this;
       Piece.updateDetailedPosition(piece);
-      neighbors_objects = this.getNeighborObjects(piece, pieces);
+      neighbors_objects = Piece.getNeighborObjects(piece, pieces);
       _.each(neighbors_objects, function(n) {
         return Piece.updateDetailedPosition(n);
       });
@@ -154,7 +117,7 @@
     Jigsaw.prototype.snapToNeighbors = function(current_piece, snappable_neighbors) {
       var neighbors_points, neighbors_relations, objects_relations,
         _this = this;
-      neighbors_relations = this.getNeighborRelations(current_piece, snappable_neighbors);
+      neighbors_relations = Piece.getNeighborRelations(current_piece, snappable_neighbors);
       objects_relations = _.zip(snappable_neighbors, neighbors_relations);
       neighbors_points = _.map(objects_relations, function(arr) {
         var neighbor, relation;
@@ -171,32 +134,9 @@
       });
     };
 
-    Jigsaw.prototype.getNeighborRelations = function(current_piece, neighbors_objects) {
-      var cp_neighbors_object, neighbors_objects_ids, neighbors_relations,
-        _this = this;
-      cp_neighbors_object = current_piece.data("neighbors");
-      neighbors_objects_ids = _.map(neighbors_objects, function(n) {
-        return n.data("id");
-      });
-      neighbors_objects_ids = _.compact(neighbors_objects_ids);
-      neighbors_relations = _.map(neighbors_objects_ids, function(nid) {
-        return _this.getKeyFromValue(cp_neighbors_object, nid);
-      });
-      return neighbors_relations;
-    };
-
-    Jigsaw.prototype.getNeighborObjects = function(current_piece, pieces) {
-      var neighbors_ids, neighbors_obj, neighbors_pieces;
-      neighbors_obj = current_piece.data("neighbors");
-      neighbors_ids = _.values(neighbors_obj);
-      neighbors_ids = _.compact(neighbors_ids);
-      neighbors_pieces = Piece.getNeighborObjectsFromIds(pieces, neighbors_ids);
-      return neighbors_pieces;
-    };
-
     Jigsaw.prototype.findSnappableNeighbors = function(current_piece, neighbors_objects, snapping_threshold) {
       var i, neighbor_id, neighbor_object, neighbor_relation, neighbors_objects_ids, neighbors_relations, snappable, snaps, _i, _ref;
-      neighbors_relations = this.getNeighborRelations(current_piece, neighbors_objects);
+      neighbors_relations = Piece.getNeighborRelations(current_piece, neighbors_objects);
       snappable = [];
       neighbors_objects_ids = _.map(neighbors_objects, function(n) {
         return n.data("id");
@@ -211,15 +151,6 @@
         }
       }
       return snappable;
-    };
-
-    Jigsaw.prototype.getKeyFromValue = function(obj, value) {
-      var desired_key, keys;
-      keys = _.keys(obj);
-      desired_key = _.find(keys, function(k) {
-        return obj[k] === value;
-      });
-      return desired_key;
     };
 
     Jigsaw.prototype.canSnap = function(current_piece, neighbor_object, neighbor_relation, snapping_threshold) {
