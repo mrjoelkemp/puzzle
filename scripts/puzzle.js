@@ -14,7 +14,7 @@
       columns = 3;
       starting_id = 1;
       board = Board.initBoard(rows, columns, starting_id);
-      neighbors = this.initNeighbors(rows, columns, board);
+      neighbors = Board.initNeighbors(rows, columns, board);
       pieces = PieceManager.initPieces(rows, columns, back_canvas, starting_id, neighbors);
       snapping_threshold = 40;
       this.setDraggingEvents(pieces, snapping_threshold);
@@ -179,35 +179,6 @@
           points = [cp.bottom_left, cp.bottom_right, np.top_left, np.top_right];
       }
       return points;
-    };
-
-    Jigsaw.prototype.initNeighbors = function(rows, columns, board) {
-      var bottom, bottom_bound, col, current_position_id, left, left_bound, neighbors, right, right_bound, row, top, top_bound, _i, _j, _ref, _ref1;
-      neighbors = {};
-      left_bound = 0;
-      top_bound = 0;
-      right_bound = columns - 1;
-      bottom_bound = rows - 1;
-      for (row = _i = 0, _ref = rows - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; row = 0 <= _ref ? ++_i : --_i) {
-        left = void 0;
-        right = void 0;
-        top = void 0;
-        bottom = void 0;
-        for (col = _j = 0, _ref1 = columns - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; col = 0 <= _ref1 ? ++_j : --_j) {
-          left = col !== left_bound ? board[row][col - 1] : void 0;
-          top = row !== top_bound ? board[row - 1][col] : void 0;
-          right = col !== right_bound ? board[row][col + 1] : void 0;
-          bottom = row !== bottom_bound ? board[row + 1][col] : void 0;
-          current_position_id = board[row][col];
-          neighbors[current_position_id] = {
-            "left": left,
-            "right": right,
-            "top": top,
-            "bottom": bottom
-          };
-        }
-      }
-      return neighbors;
     };
 
     return Jigsaw;
