@@ -106,11 +106,11 @@ class Jigsaw
 	# Purpose: 	Initializes the dragging events for each piece in the passed list
 		_.each(pieces, (piece) =>	# Avoid the piece's context
 			piece.draggable({
+				helper 	: "original",				# Drag the original object, not a clone or anything else
 				snap	: false,					# Turn off snapping until we manually trigger snapping
 				snapMode: "inner",
 				stack	: ".piece",					# Dragged piece has a higher z-index
-				snapTolerance: snapping_threshold,	# Pixel distance to initiate snapping
-				opacity: 0.75						# Make the dragged piece lighter for now. TODO: Remove when we have collision detection.	
+				snapTolerance: snapping_threshold	# Pixel distance to initiate snapping	
 			})	#end draggable()
 			piece.bind("dragstart", (e, ui) => @onDragStart(e, ui, piece))
 			piece.bind("drag", (e, ui) => @onDrag(e, ui, piece, pieces))
@@ -159,18 +159,27 @@ class Jigsaw
 		# Exclude the current piece from that group since we only want to drag neighbors
 		group_objects = _.reject(group_objects, (p) -> return p.data("id") == piece.data("id"))
 
+		# How much the piece moved within a single drag update
+		drag_top_delta 	= offset_obj.top - piece.data("old_top")
+		drag_left_delta = offset_obj.left - piece.data("old_left")
+
 		# Move each of the neighbors by the new offsets
 		_.each(group_objects, (p) => 
 			ptop 	= parseFloat(p.css("top"))
 			pleft 	= parseFloat(p.css("left"))
+
+			#top_offset 	= (offset_obj.top - ptop)
+			#left_offset = (offset_obj.left - pleft)
 			
-			top_offset 	= (offset_obj.top - ptop)
-			left_offset = (offset_obj.left - pleft)
-			console.log("LeftOffset = " + left_offset, "TopOffset = " + top_offset)
+			#console.log("LeftOffset = " + left_offset, "TopOffset = " + top_offset)
 			
 			# Neighbor's location moves over by the offset components
-			new_top = ptop 	+ top_offset
-			new_left= pleft + left_offset
+			#new_top = ptop 	+ top_offset
+			#new_left= pleft + left_offset
+
+			# Add how far the piece has moved in a single update to the neighbor's position
+			new_top = ptop 	+ drag_top_delta
+			new_left= pleft + drag_left_delta
 			p.css({"top": new_top, "left": new_left})
 		)
 

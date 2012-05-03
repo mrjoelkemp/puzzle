@@ -82,11 +82,11 @@
       var _this = this;
       return _.each(pieces, function(piece) {
         piece.draggable({
+          helper: "original",
           snap: false,
           snapMode: "inner",
           stack: ".piece",
-          snapTolerance: snapping_threshold,
-          opacity: 0.75
+          snapTolerance: snapping_threshold
         });
         piece.bind("dragstart", function(e, ui) {
           return _this.onDragStart(e, ui, piece);
@@ -124,7 +124,7 @@
     };
 
     Jigsaw.prototype.dragGroup = function(group_id, piece, pieces, offset_obj) {
-      var group_objects,
+      var drag_left_delta, drag_top_delta, group_objects,
         _this = this;
       group_objects = _.filter(pieces, function(p) {
         return p.data("group") === group_id;
@@ -132,15 +132,14 @@
       group_objects = _.reject(group_objects, function(p) {
         return p.data("id") === piece.data("id");
       });
+      drag_top_delta = offset_obj.top - piece.data("old_top");
+      drag_left_delta = offset_obj.left - piece.data("old_left");
       return _.each(group_objects, function(p) {
-        var left_offset, new_left, new_top, pleft, ptop, top_offset;
+        var new_left, new_top, pleft, ptop;
         ptop = parseFloat(p.css("top"));
         pleft = parseFloat(p.css("left"));
-        top_offset = offset_obj.top - ptop;
-        left_offset = offset_obj.left - pleft;
-        console.log("LeftOffset = " + left_offset, "TopOffset = " + top_offset);
-        new_top = ptop + top_offset;
-        new_left = pleft + left_offset;
+        new_top = ptop + drag_top_delta;
+        new_left = pleft + drag_left_delta;
         return p.css({
           "top": new_top,
           "left": new_left
