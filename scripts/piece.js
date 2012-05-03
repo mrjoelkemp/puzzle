@@ -466,7 +466,7 @@
         videox = cur_column_left;
         videoy = cur_row_top;
         neighbor_hash = neighbors[next_id];
-        piece = Piece.createPiece(next_id, piece_width, piece_height, videox, videoy, neighbor_hash);
+        piece = this.createPiece(next_id, piece_width, piece_height, videox, videoy, neighbor_hash);
         pieces[next_id] = piece;
         next_id++;
         cur_column_left += piece_width;
@@ -477,18 +477,6 @@
         }
       }
       return pieces;
-    };
-
-    Jigsaw.prototype.createPiece = function(id, width, height, videox, videoy, neighbors) {
-      var piece;
-      piece = $("<canvas></canvas>").clone();
-      piece.attr({
-        'width': width,
-        'height': height,
-        'videox': videox,
-        'videoy': videoy
-      }).css("cursor", "pointer").data("id", id).data("neighbors", neighbors).data("group", -1).appendTo('#pieces-canvas').addClass("piece");
-      return piece;
     };
 
     Jigsaw.prototype.initBoard = function(rows, columns, starting_id) {
