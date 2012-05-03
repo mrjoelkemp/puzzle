@@ -14,3 +14,10 @@ video {
     position: absolute;
     border-right: 1px solid blue;
     border-bottom: 1px solid blue; }
+
+#game-status span {
+  font-size: 35px; }
+#game-status.win {
+  color: green; }
+#game-status.lose {
+  color: red; }

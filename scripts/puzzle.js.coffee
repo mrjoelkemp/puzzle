@@ -213,7 +213,7 @@ class Jigsaw
 			@propagateSnap(piece, snappable_neighbors, pieces)
 			# Snap to immediate, snappable neighbors
 			@snapToNeighbors(piece, snappable_neighbors)
-			
+
 			# DEBUG: Visualize the membership changes
 			@debug_colorObjectsFromId(pieces)
 			_.each(pieces, (p) -> console.log("gid: " + p.data("group")))
@@ -236,12 +236,14 @@ class Jigsaw
 		group_members = _.filter(pieces, (p) -> return p.data("group") == g_id)
 
 		game_won = num_pieces == _.size(group_members)
-
-		@updateGameStatus("You Win!")
+		
+		if(game_won)
+			@updateGameStatus("You Win!")
 
 	updateGameStatus: (msg) ->
 	# Purpose: Updates the game status message element with the passed message
 		$('#game-status').html("<span>" + msg + "</span>")
+						 .addClass("win")
 
 	propagateSnap: (piece, snappable_neighbors, pieces) ->	
 	# Purpose:	Propagates a group id change through the current piece's neighbors 

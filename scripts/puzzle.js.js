@@ -196,11 +196,13 @@
         return p.data("group") === g_id;
       });
       game_won = num_pieces === _.size(group_members);
-      return this.updateGameStatus("You Win!");
+      if (game_won) {
+        return this.updateGameStatus("You Win!");
+      }
     };
 
     Jigsaw.prototype.updateGameStatus = function(msg) {
-      return $('#game-status').html("<span>" + msg + "</span>");
+      return $('#game-status').html("<span>" + msg + "</span>").addClass("win");
     };
 
     Jigsaw.prototype.propagateSnap = function(piece, snappable_neighbors, pieces) {
