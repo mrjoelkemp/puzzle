@@ -17,7 +17,7 @@
       board = this.initBoard(rows, columns, starting_id);
       neighbors = this.initNeighbors(rows, columns, board);
       pieces = this.initPieces(rows, columns, back_canvas, starting_id, neighbors);
-      snapping_threshold = 30;
+      snapping_threshold = 40;
       this.setDraggingEvents(pieces, snapping_threshold);
       this.randomize(pieces);
       refresh_rate = 33;

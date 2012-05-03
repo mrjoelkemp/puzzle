@@ -31,7 +31,7 @@ class Jigsaw
 		pieces = @initPieces(rows, columns, back_canvas, starting_id, neighbors)
 		
 		# Pixel distance for snapping between neighbors
-		snapping_threshold = 30
+		snapping_threshold = 40
 		# Set up the draggable actions and events for each piece
 		@setDraggingEvents(pieces, snapping_threshold)
 		
