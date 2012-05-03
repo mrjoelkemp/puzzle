@@ -10,6 +10,9 @@
 	%body
 		#instructions
 			%span Reassemble the video by dragging the pieces!
+		-# Used for notifying the player of Game Win or Game Over
+		#game-status
+		
 		%video{:id=> "player"}
 			%source{:src => "assets/OldSpice.mp4", :type => "video/mp4"}/
 			%source{:src => "assets/OldSpice.ogv", :type => "video/ogg"}/
@@ -18,5 +21,4 @@
 		%canvas{:id => "back-canvas", :width => "640", :height => "360"}
 		-# Subcanvases that render portions of the video playing on the back-canvas
 		#pieces-canvas
-		-# Used for notifying the player of Game Win or Game Over
-		#game-status
+		
