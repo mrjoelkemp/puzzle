@@ -78,7 +78,7 @@ class Jigsaw
 	# Returns:	A list of {x, y} objects 
 		
 		# Segment euclidean space into num_points segments	
-		step = 360 / num_points
+		step = 360 / num_points 
 		degrees = []
 		degree = 0
 		while degree < 360
@@ -288,6 +288,7 @@ class Jigsaw
 			p_gid = p.data("group")
 			p.css("border", "3px solid " + colors[p_gid])
 		)
+	
 	snapToNeighbors: (current_piece, snappable_neighbors) ->
 	# Purpose: 	Snaps the current piece to the snappable neighbors and adds them all to the same drag group.
 	# Note:		The neighbors join the current piece's group which makes group membership dynamic.
