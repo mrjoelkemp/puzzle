@@ -4,7 +4,8 @@ video {
 
 #back-canvas {
   z-index: 150;
-  border: 1px solid red; }
+  border: 1px solid red;
+  display: none; }
 
 #pieces-canvas {
   width: 642px;
