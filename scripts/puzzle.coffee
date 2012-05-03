@@ -55,7 +55,7 @@ class @Jigsaw
 		# List of objects with an left (x) and top (y) value
 		num_points = _.size(pieces)
 		radius = 300
-		points = @generatePointsAboutCircle(num_points, center_pos, radius)
+		points = MathHelper.generatePointsAboutCircle(num_points, center_pos, radius)
 		
 		# Shuffle the points
 		indices = [0 ... num_points]
@@ -70,38 +70,7 @@ class @Jigsaw
 			# Set the top and left to the point's y and x, respectively
 			@movePiece(p, circle_point.x, circle_point.y, 400)
 			
-	generatePointsAboutCircle: (num_points, center, radius) ->
-	# Purpose: 	Generate a series of points about a circle centered at the 
-	#			passed center scaled about the passed radius.
-	# Precond:	center is an {x, y} object of float coordinates.
-	#			radius > 0
-	# Returns:	A list of {x, y} objects 
-		
-		# Segment euclidean space into num_points segments	
-		step = 360 / num_points 
-		degrees = []
-		degree = 0
-		while degree < 360
-			degrees.push(degree)
-			degree += step
-		
-		# Get the x and y trigonometric coordinates for each degree value
-		# We want points along a circle of the passed radius
-		# Both x and y are in the range -1 to 1 using cos() and sin()
-		coords = _.map(degrees, (d) ->
-			x = Math.cos(d) * radius
-			y = Math.sin(d) * radius
-			return "x": x, "y": y
-		)
-		
-		# Center the points
-		centered = _.map(coords, (c) -> 
-			c.x += center.x
-			c.y += center.y
-			return c
-		)
-		
-		return centered
+	
 			
 	setDraggingEvents: (pieces, snapping_threshold) ->
 	# Purpose: 	Initializes the dragging events for each piece in the passed list

@@ -35,7 +35,7 @@
       };
       num_points = _.size(pieces);
       radius = 300;
-      points = this.generatePointsAboutCircle(num_points, center_pos, radius);
+      points = MathHelper.generatePointsAboutCircle(num_points, center_pos, radius);
       indices = (function() {
         _results = [];
         for (var _i = 0; 0 <= num_points ? _i < num_points : _i > num_points; 0 <= num_points ? _i++ : _i--){ _results.push(_i); }
@@ -50,32 +50,6 @@
         _results1.push(this.movePiece(p, circle_point.x, circle_point.y, 400));
       }
       return _results1;
-    };
-
-    Jigsaw.prototype.generatePointsAboutCircle = function(num_points, center, radius) {
-      var centered, coords, degree, degrees, step;
-      step = 360 / num_points;
-      degrees = [];
-      degree = 0;
-      while (degree < 360) {
-        degrees.push(degree);
-        degree += step;
-      }
-      coords = _.map(degrees, function(d) {
-        var x, y;
-        x = Math.cos(d) * radius;
-        y = Math.sin(d) * radius;
-        return {
-          "x": x,
-          "y": y
-        };
-      });
-      centered = _.map(coords, function(c) {
-        c.x += center.x;
-        c.y += center.y;
-        return c;
-      });
-      return centered;
     };
 
     Jigsaw.prototype.setDraggingEvents = function(pieces, snapping_threshold) {
