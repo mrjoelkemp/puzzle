@@ -86,7 +86,13 @@ class @Piece
 		# Exclude the current piece from that group since we only want to drag neighbors
 		group_objects = _.reject(group_objects, (p) -> return p.data("id") == piece.data("id"))
 		return group_objects
-
+	
+	@getNeighborObjectsFromIds: (pieces, neighbors_ids) ->
+	# Purpose: 	Extracts the neighbor objects from the pieces list with ids matching passed neighbor ids
+	# Returns:	A list of neighbor (piece) objects
+		neighbors_pieces = _.map(neighbors_ids, (id) -> return pieces[id])
+		return neighbors_pieces
+	
 	@movePieceByOffsets: (piece, left_offset, top_offset, move_speed = 0) ->
 	# Purpose: 	Adds the piece offsets to the piece's current position
 		cp_pos_top 	= parseFloat(piece.css('top'))

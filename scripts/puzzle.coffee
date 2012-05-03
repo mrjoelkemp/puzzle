@@ -124,7 +124,7 @@ class @Jigsaw
 		
 		# Find and extract snappable neighbor(s)
 		snappable_neighbors_ids = @findSnappableNeighbors(piece, neighbors_objects, snapping_threshold)
-		snappable_neighbors = @getNeighborObjectsFromIds(pieces, snappable_neighbors_ids)
+		snappable_neighbors = Piece.getNeighborObjectsFromIds(pieces, snappable_neighbors_ids)
 		
 		# If we found a neighbor to snap to
 		have_neighbors_to_snap = not _.isEmpty(snappable_neighbors)
@@ -191,11 +191,7 @@ class @Jigsaw
 		# Modify the group id of the snappable_neighbors
 		_.each(snappable_neighbors, (sn) -> sn.data("group", p_gid))
 
-	getNeighborObjectsFromIds: (pieces, neighbors_ids) ->
-	# Purpose: 	Extracts the neighbor objects from the pieces list with ids matching passed neighbor ids
-	# Returns:	A list of neighbor (piece) objects
-		neighbors_pieces = _.map(neighbors_ids, (id) -> return pieces[id])
-		return neighbors_pieces
+
 
 	debug_colorObjectsFromId: (pieces) ->
 	# Purpose: 	Helper to visualize group membership changes
@@ -264,7 +260,7 @@ class @Jigsaw
 		neighbors_ids = _.compact(neighbors_ids)
 		
 		# Grab pieces associated with neighbor ids
-		neighbors_pieces = @getNeighborObjectsFromIds(pieces, neighbors_ids)
+		neighbors_pieces = Piece.getNeighborObjectsFromIds(pieces, neighbors_ids)
 		
 		return neighbors_pieces
 		

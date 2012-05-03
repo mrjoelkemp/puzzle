@@ -94,7 +94,7 @@
         return Piece.updateDetailedPosition(n);
       });
       snappable_neighbors_ids = this.findSnappableNeighbors(piece, neighbors_objects, snapping_threshold);
-      snappable_neighbors = this.getNeighborObjectsFromIds(pieces, snappable_neighbors_ids);
+      snappable_neighbors = Piece.getNeighborObjectsFromIds(pieces, snappable_neighbors_ids);
       have_neighbors_to_snap = !_.isEmpty(snappable_neighbors);
       if (have_neighbors_to_snap) {
         this.propagateSnap(piece, snappable_neighbors, pieces);
@@ -139,14 +139,6 @@
       return _.each(snappable_neighbors, function(sn) {
         return sn.data("group", p_gid);
       });
-    };
-
-    Jigsaw.prototype.getNeighborObjectsFromIds = function(pieces, neighbors_ids) {
-      var neighbors_pieces;
-      neighbors_pieces = _.map(neighbors_ids, function(id) {
-        return pieces[id];
-      });
-      return neighbors_pieces;
     };
 
     Jigsaw.prototype.debug_colorObjectsFromId = function(pieces) {
@@ -198,7 +190,7 @@
       neighbors_obj = current_piece.data("neighbors");
       neighbors_ids = _.values(neighbors_obj);
       neighbors_ids = _.compact(neighbors_ids);
-      neighbors_pieces = this.getNeighborObjectsFromIds(pieces, neighbors_ids);
+      neighbors_pieces = Piece.getNeighborObjectsFromIds(pieces, neighbors_ids);
       return neighbors_pieces;
     };
 
