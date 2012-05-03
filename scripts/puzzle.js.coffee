@@ -56,7 +56,7 @@ class Jigsaw
 		num_points = _.size(pieces)
 		radius = 300
 		points = @generatePointsAboutCircle(num_points, center_pos, radius)
-		console.log(points)
+		
 		# Shuffle the points
 		indices = [0 ... num_points]
 		indices = _.shuffle(indices)

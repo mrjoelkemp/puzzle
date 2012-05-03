@@ -37,7 +37,6 @@
       num_points = _.size(pieces);
       radius = 300;
       points = this.generatePointsAboutCircle(num_points, center_pos, radius);
-      console.log(points);
       indices = (function() {
         _results = [];
         for (var _i = 0; 0 <= num_points ? _i < num_points : _i > num_points; 0 <= num_points ? _i++ : _i--){ _results.push(_i); }
