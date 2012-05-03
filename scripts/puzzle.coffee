@@ -418,7 +418,7 @@ class @Jigsaw
 		points = @getSnappablePoints(current_piece, neighbor_object, neighbor_relation)
 		
 		# Holds the points to be used in determine if snapping is possible 
-		snappable = @isWithinThreshold(points[0], points[1], points[2], points[3], snapping_threshold)		
+		snappable = MathHelper.isWithinThreshold(points[0], points[1], points[2], points[3], snapping_threshold)		
 		return snappable
 		
 	getSnappablePoints: (current_piece, neighbor_piece, neighbor_relation) ->
@@ -452,31 +452,6 @@ class @Jigsaw
 		return points
 		
 		
-	isWithinThreshold: (cp1, cp2, np1, np2, snapping_threshold) ->
-	# Purpose: 	Determines if the Euclidean distance between passed associated points are within the snapping
-	# Precond:	cp1 compares to n1, cp2 compares to n2
-	#			points are objects with an x and y value
-	# Returns:	True if the both distances between the sets of points are within the threshold
-	
-		dist1 = @manhattanDistance(cp1.x, cp1.y, np1.x, np1.y)
-		dist2 = @manhattanDistance(cp2.x, cp2.y, np2.x, np2.y)
-		
-		is_within = dist1 <= snapping_threshold && dist2 <= snapping_threshold
-		return is_within
-		
-	euclideanDistance: (x1, y1, x2, y2) ->
-	# Purpose: 	Computes the euclidean distance of the passed points
-	# Returns: 	The floating point distance
-		xs = Math.pow((x2 - x1), 2)
-		ys = Math.pow((y2 - y1), 2)
-		return Math.sqrt(xs + ys)
-	
-	manhattanDistance: (x1, y1, x2, y2) ->
-	# Purpose: 	Computes the manhattan distance of the passed points
-	# Returns: 	The floating point distance
-		xs = Math.abs(x2 - x1)
-		ys = Math.abs(y2 - y1)
-		return xs + ys
 		
 	initNeighbors: (rows, columns, board) ->
 	# Purpose:	Creates a neighbor (top, bottom, left, and right) hash for each (piece) board position

@@ -349,7 +349,7 @@
     Jigsaw.prototype.canSnap = function(current_piece, neighbor_object, neighbor_relation, snapping_threshold) {
       var points, snappable;
       points = this.getSnappablePoints(current_piece, neighbor_object, neighbor_relation);
-      snappable = this.isWithinThreshold(points[0], points[1], points[2], points[3], snapping_threshold);
+      snappable = MathHelper.isWithinThreshold(points[0], points[1], points[2], points[3], snapping_threshold);
       return snappable;
     };
 
@@ -372,28 +372,6 @@
           points = [cp.bottom_left, cp.bottom_right, np.top_left, np.top_right];
       }
       return points;
-    };
-
-    Jigsaw.prototype.isWithinThreshold = function(cp1, cp2, np1, np2, snapping_threshold) {
-      var dist1, dist2, is_within;
-      dist1 = this.manhattanDistance(cp1.x, cp1.y, np1.x, np1.y);
-      dist2 = this.manhattanDistance(cp2.x, cp2.y, np2.x, np2.y);
-      is_within = dist1 <= snapping_threshold && dist2 <= snapping_threshold;
-      return is_within;
-    };
-
-    Jigsaw.prototype.euclideanDistance = function(x1, y1, x2, y2) {
-      var xs, ys;
-      xs = Math.pow(x2 - x1, 2);
-      ys = Math.pow(y2 - y1, 2);
-      return Math.sqrt(xs + ys);
-    };
-
-    Jigsaw.prototype.manhattanDistance = function(x1, y1, x2, y2) {
-      var xs, ys;
-      xs = Math.abs(x2 - x1);
-      ys = Math.abs(y2 - y1);
-      return xs + ys;
     };
 
     Jigsaw.prototype.initNeighbors = function(rows, columns, board) {
