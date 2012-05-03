@@ -230,15 +230,20 @@ class Jigsaw
 		return neighbors_pieces
 		
 	snapToNeighbors: (current_piece, snappable_neighbors) ->
-	# Purpose: Snaps the current piece to the snappable neighbors and adds them all to the same drag group.
+	# Purpose: 	Snaps the current piece to the snappable neighbors and adds them all to the same drag group.
+	# Note:		The neighbors join the current piece's group which makes group membership dynamic.
 		pieces = _.union(current_piece, snappable_neighbors)
 		
 		# Add the piece and the neighbors to a group numbered after the piece's ID
-		cp_id = current_piece.data("id")		
+		cp_id = current_piece.data("id")
+
+		# DEBUG
+		colors = ["red", "green", "blue", "yellow", "black", "pink"]		
+		
 		_.each(pieces, (p) -> 
 			p.data("group", cp_id)
 			# DEBUG
-			p.css("border", "1px solid red")
+			p.css("border", "3px solid " + colors[cp_id])
 		)
 		
 		# Get the relation of the neighbors about the current piece (left, right, top, bottom)

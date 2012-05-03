@@ -190,13 +190,14 @@
     };
 
     Jigsaw.prototype.snapToNeighbors = function(current_piece, snappable_neighbors) {
-      var cp_id, neighbors_points, neighbors_relations, objects_relations, pieces,
+      var colors, cp_id, neighbors_points, neighbors_relations, objects_relations, pieces,
         _this = this;
       pieces = _.union(current_piece, snappable_neighbors);
       cp_id = current_piece.data("id");
+      colors = ["red", "green", "blue", "yellow", "black", "pink"];
       _.each(pieces, function(p) {
         p.data("group", cp_id);
-        return p.css("border", "1px solid red");
+        return p.css("border", "3px solid " + colors[cp_id]);
       });
       neighbors_relations = this.getNeighborRelations(current_piece, snappable_neighbors);
       objects_relations = _.zip(snappable_neighbors, neighbors_relations);
