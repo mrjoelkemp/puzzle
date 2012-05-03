@@ -244,33 +244,14 @@ class @Jigsaw
 		
 		# Compute the amount of pixels the current piece should move in both directions (top and left)
 		_.each(neighbors_points, (points) =>
-			offsets 	= @getMovementOffset(points[0], points[1], points[2], points[3])
+			offsets 	= Piece.getMovementOffset(points[0], points[1], points[2], points[3])
 			left_offset = offsets.left_offset
 			top_offset 	= offsets.top_offset
 			
 			Piece.movePieceByOffsets(current_piece, left_offset, top_offset, 0)
 		)
 	
-	setPositionByOffsets: (piece, left_offset, top_offset) ->
-	# Purpose: 	Simply sets the top and left css positions of the passed piece to its current location plus the offsets
-		#debugger
-		top  = parseFloat(piece.css("top"))
-		left = parseFloat(piece.css("left"))
-		
-		new_left = left + left_offset
-		new_top  = top  + top_offset 
-		
-		piece.css("left", new_left)
-		piece.css("top", new_top)
-		
-	getMovementOffset: (cp1, cp2, np1, np2) ->
-	# Purpose: 	Computes the difference between 
-	# Returns:	An object with the two offsets		
-		# Distance (top and left) from the neighbor to the piece
-		ntop_to_ptop 	= np1.y - cp1.y
-		nleft_to_pleft 	= np2.x - cp2.x
-		 
-		return "top_offset": ntop_to_ptop, "left_offset": nleft_to_pleft
+	
 		
 	getNeighborRelations: (current_piece, neighbors_objects) ->	
 	# Purpose: Returns a list of relations of the neighbors about the current piece

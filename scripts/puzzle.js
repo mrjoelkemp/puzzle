@@ -188,31 +188,11 @@
       });
       return _.each(neighbors_points, function(points) {
         var left_offset, offsets, top_offset;
-        offsets = _this.getMovementOffset(points[0], points[1], points[2], points[3]);
+        offsets = Piece.getMovementOffset(points[0], points[1], points[2], points[3]);
         left_offset = offsets.left_offset;
         top_offset = offsets.top_offset;
         return Piece.movePieceByOffsets(current_piece, left_offset, top_offset, 0);
       });
-    };
-
-    Jigsaw.prototype.setPositionByOffsets = function(piece, left_offset, top_offset) {
-      var left, new_left, new_top, top;
-      top = parseFloat(piece.css("top"));
-      left = parseFloat(piece.css("left"));
-      new_left = left + left_offset;
-      new_top = top + top_offset;
-      piece.css("left", new_left);
-      return piece.css("top", new_top);
-    };
-
-    Jigsaw.prototype.getMovementOffset = function(cp1, cp2, np1, np2) {
-      var nleft_to_pleft, ntop_to_ptop;
-      ntop_to_ptop = np1.y - cp1.y;
-      nleft_to_pleft = np2.x - cp2.x;
-      return {
-        "top_offset": ntop_to_ptop,
-        "left_offset": nleft_to_pleft
-      };
     };
 
     Jigsaw.prototype.getNeighborRelations = function(current_piece, neighbors_objects) {

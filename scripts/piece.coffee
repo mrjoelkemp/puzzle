@@ -23,9 +23,30 @@ class @Piece
 			.data("id", id)						# Keeps ID hidden from user
 			.data("neighbors", neighbors)		# List of neighbors by canvas id
 			.data("group", -1)					# Default group id. Group used for snapping multiple pieces together.
-			.appendTo('#pieces-canvas')			# FIXME: This breaks if we change the div name...
+			.appendTo('#pieces-canvas')			
 			.addClass("piece")					# Added for ease of finding similar objects
 		return piece
+
+	@setPositionByOffsets: (piece, left_offset, top_offset) ->
+	# Purpose: 	Simply sets the top and left css positions of the passed piece to its current location plus the offsets
+		#debugger
+		top  = parseFloat(piece.css("top"))
+		left = parseFloat(piece.css("left"))
+		
+		new_left = left + left_offset
+		new_top  = top  + top_offset 
+		
+		piece.css("left", new_left)
+		piece.css("top", new_top)
+		
+	@getMovementOffset: (cp1, cp2, np1, np2) ->
+	# Purpose: 	Computes the difference between 
+	# Returns:	An object with the two offsets		
+		# Distance (top and left) from the neighbor to the piece
+		ntop_to_ptop 	= np1.y - cp1.y
+		nleft_to_pleft 	= np2.x - cp2.x
+		 
+		return "top_offset": ntop_to_ptop, "left_offset": nleft_to_pleft
 
 	@movePieceByOffsets: (piece, left_offset, top_offset, move_speed = 0) ->
 	# Purpose: 	Adds the piece offsets to the piece's current position
