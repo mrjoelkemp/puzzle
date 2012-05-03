@@ -181,11 +181,6 @@
       if (have_neighbors_to_snap) {
         this.propagateSnap(piece, snappable_neighbors, pieces);
         this.snapToNeighbors(piece, snappable_neighbors);
-        this.debug_colorObjectsFromId(pieces);
-        _.each(pieces, function(p) {
-          return console.log("gid: " + p.data("group"));
-        });
-        console.log("---");
         return this.checkWinCondition(pieces);
       }
     };
