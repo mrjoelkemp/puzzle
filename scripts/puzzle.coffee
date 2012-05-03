@@ -1,4 +1,4 @@
-class Jigsaw
+class @Jigsaw
 	# TODO: Accept strings of div IDs for video player, back canvas, and pieces canvas. This way, the id changes are limited to one location.
 	constructor: ->
 		# Prep the back canvas and video
@@ -581,7 +581,9 @@ class Jigsaw
 			
 			# Grab the list of neighbors for the current piece to be generated
 			neighbor_hash = neighbors[next_id]
-			piece = @createPiece(next_id, piece_width, piece_height, videox, videoy, neighbor_hash)
+			#piece = @createPiece(next_id, piece_width, piece_height, videox, videoy, neighbor_hash)
+			piece = Piece.createPiece(next_id, piece_width, piece_height, videox, videoy, neighbor_hash)
+			
 			# Add the current piece to the hash
 			pieces[next_id] = piece
 			
@@ -672,5 +674,3 @@ class Jigsaw
 				piece_context.drawImage(back_canvas_element, videox, videoy, width, height, 0, 0, width, height)
 			)							
 		, refresh_rate
-$ ->
-	window.jigsaw = new Jigsaw()

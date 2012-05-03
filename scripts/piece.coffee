@@ -6,7 +6,7 @@ class @Piece
 	#	@create(id, width, height, videox, videoy, neighbors)
 
 
-	createPiece: (id, width, height, videox, videoy, neighbors) ->
+	@createPiece: (id, width, height, videox, videoy, neighbors) ->
 	# Purpose: 	Initializes a subcanvas with the passed dimensions
 	# Preconds:	videox and videoy are the piece's position atop the back canvas playing the video
 	#			originx and originy are the piece's location

@@ -467,7 +467,7 @@
         videox = cur_column_left;
         videoy = cur_row_top;
         neighbor_hash = neighbors[next_id];
-        piece = this.createPiece(next_id, piece_width, piece_height, videox, videoy, neighbor_hash);
+        piece = Piece.createPiece(next_id, piece_width, piece_height, videox, videoy, neighbor_hash);
         pieces[next_id] = piece;
         next_id++;
         cur_column_left += piece_width;
