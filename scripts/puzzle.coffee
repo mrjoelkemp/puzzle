@@ -248,7 +248,7 @@ class @Jigsaw
 			left_offset = offsets.left_offset
 			top_offset 	= offsets.top_offset
 			
-			@movePieceByOffsets(current_piece, left_offset, top_offset, 0)
+			Piece.movePieceByOffsets(current_piece, left_offset, top_offset, 0)
 		)
 	
 	setPositionByOffsets: (piece, left_offset, top_offset) ->

@@ -68,5 +68,5 @@ class @PieceManager
 			circle_point= points[ind]
 			
 			# Set the top and left to the point's y and x, respectively
-			@movePiece(p, circle_point.x, circle_point.y, 400)
+			Piece.movePiece(p, circle_point.x, circle_point.y, 400)
 			

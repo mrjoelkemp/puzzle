@@ -54,7 +54,7 @@
         p = pieces[i + 1];
         ind = indices[i];
         circle_point = points[ind];
-        _results1.push(this.movePiece(p, circle_point.x, circle_point.y, 400));
+        _results1.push(Piece.movePiece(p, circle_point.x, circle_point.y, 400));
       }
       return _results1;
     };

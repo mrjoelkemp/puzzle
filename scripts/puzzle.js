@@ -191,7 +191,7 @@
         offsets = _this.getMovementOffset(points[0], points[1], points[2], points[3]);
         left_offset = offsets.left_offset;
         top_offset = offsets.top_offset;
-        return _this.movePieceByOffsets(current_piece, left_offset, top_offset, 0);
+        return Piece.movePieceByOffsets(current_piece, left_offset, top_offset, 0);
       });
     };
 
