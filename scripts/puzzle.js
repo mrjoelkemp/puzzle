@@ -56,12 +56,12 @@
       _.each(neighbors_objects, function(n) {
         return Piece.updateDetailedPosition(n);
       });
-      snappable_neighbors_ids = this.findSnappableNeighbors(piece, neighbors_objects, snapping_threshold);
+      snappable_neighbors_ids = Piece.findSnappableNeighbors(piece, neighbors_objects, snapping_threshold);
       snappable_neighbors = Piece.getNeighborObjectsFromIds(pieces, snappable_neighbors_ids);
       have_neighbors_to_snap = !_.isEmpty(snappable_neighbors);
       if (have_neighbors_to_snap) {
-        this.propagateSnap(piece, snappable_neighbors, pieces);
-        this.snapToNeighbors(piece, snappable_neighbors);
+        Piece.propagateSnap(piece, snappable_neighbors, pieces);
+        Piece.snapToNeighbors(piece, snappable_neighbors);
         return this.checkWinCondition(pieces);
       }
     };
@@ -81,104 +81,6 @@
 
     Jigsaw.prototype.updateGameStatus = function(msg) {
       return $('#game-status').html("<span>" + msg + "</span>").addClass("win");
-    };
-
-    Jigsaw.prototype.propagateSnap = function(piece, snappable_neighbors, pieces) {
-      var p_gid,
-        _this = this;
-      p_gid = piece.data("id");
-      piece.data("group", p_gid);
-      _.each(snappable_neighbors, function(n) {
-        var has_group, n_gid, n_group_members;
-        n_gid = n.data("group");
-        has_group = n_gid !== -1;
-        if (has_group) {
-          n_group_members = Piece.getGroupObjects(n_gid, n, pieces);
-          return _.each(n_group_members, function(ngm) {
-            return ngm.data("group", p_gid);
-          });
-        }
-      });
-      return _.each(snappable_neighbors, function(sn) {
-        return sn.data("group", p_gid);
-      });
-    };
-
-    Jigsaw.prototype.debug_colorObjectsFromId = function(pieces) {
-      var colors;
-      colors = ["red", "green", "blue", "yellow", "black", "pink"];
-      return _.each(pieces, function(p) {
-        var p_gid;
-        p_gid = p.data("group");
-        return p.css("border", "3px solid " + colors[p_gid]);
-      });
-    };
-
-    Jigsaw.prototype.snapToNeighbors = function(current_piece, snappable_neighbors) {
-      var neighbors_points, neighbors_relations, objects_relations,
-        _this = this;
-      neighbors_relations = Piece.getNeighborRelations(current_piece, snappable_neighbors);
-      objects_relations = _.zip(snappable_neighbors, neighbors_relations);
-      neighbors_points = _.map(objects_relations, function(arr) {
-        var neighbor, relation;
-        neighbor = arr[0];
-        relation = arr[1];
-        return _this.getSnappablePoints(current_piece, neighbor, relation);
-      });
-      return _.each(neighbors_points, function(points) {
-        var left_offset, offsets, top_offset;
-        offsets = Piece.getMovementOffset(points[0], points[1], points[2], points[3]);
-        left_offset = offsets.left_offset;
-        top_offset = offsets.top_offset;
-        return Piece.movePieceByOffsets(current_piece, left_offset, top_offset, 0);
-      });
-    };
-
-    Jigsaw.prototype.findSnappableNeighbors = function(current_piece, neighbors_objects, snapping_threshold) {
-      var i, neighbor_id, neighbor_object, neighbor_relation, neighbors_objects_ids, neighbors_relations, snappable, snaps, _i, _ref;
-      neighbors_relations = Piece.getNeighborRelations(current_piece, neighbors_objects);
-      snappable = [];
-      neighbors_objects_ids = _.map(neighbors_objects, function(n) {
-        return n.data("id");
-      });
-      for (i = _i = 0, _ref = neighbors_objects_ids.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-        neighbor_id = neighbors_objects_ids[i];
-        neighbor_object = neighbors_objects[i];
-        neighbor_relation = neighbors_relations[i];
-        snaps = this.canSnap(current_piece, neighbor_object, neighbor_relation, snapping_threshold);
-        if (snaps) {
-          snappable.push(neighbor_id);
-        }
-      }
-      return snappable;
-    };
-
-    Jigsaw.prototype.canSnap = function(current_piece, neighbor_object, neighbor_relation, snapping_threshold) {
-      var points, snappable;
-      points = this.getSnappablePoints(current_piece, neighbor_object, neighbor_relation);
-      snappable = MathHelper.isWithinThreshold(points[0], points[1], points[2], points[3], snapping_threshold);
-      return snappable;
-    };
-
-    Jigsaw.prototype.getSnappablePoints = function(current_piece, neighbor_piece, neighbor_relation) {
-      var cp, np, points;
-      cp = current_piece.data("position");
-      np = neighbor_piece.data("position");
-      points = [];
-      switch (neighbor_relation) {
-        case "right":
-          points = [cp.top_right, cp.bottom_right, np.top_left, np.bottom_left];
-          break;
-        case "left":
-          points = [cp.top_left, cp.bottom_left, np.top_right, np.bottom_right];
-          break;
-        case "top":
-          points = [cp.top_left, cp.top_right, np.bottom_left, np.bottom_right];
-          break;
-        case "bottom":
-          points = [cp.bottom_left, cp.bottom_right, np.top_left, np.top_right];
-      }
-      return points;
     };
 
     return Jigsaw;
