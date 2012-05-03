@@ -1,3 +1,11 @@
+class PieceManager
+	constructor: (board_dimensions, piece_dimensions, neighbors) ->
+		starting_id	= 1
+
+		piece_width  = piece_dimensions.width
+		piece_height = piece_dimensions.height
+
+
 class Jigsaw
 	# TODO: Accept strings of div IDs for video player, back canvas, and pieces canvas. This way, the id changes are limited to one location.
 	constructor: ->
