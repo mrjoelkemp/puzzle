@@ -183,14 +183,14 @@
         _.each(pieces, function(p) {
           return console.log("gid: " + p.data("group"));
         });
+        return this.checkWinCondition(pieces);
       }
-      return this.checkWinCondition(pieces);
     };
 
     Jigsaw.prototype.checkWinCondition = function(pieces) {
       var g_id, game_won, group_members, num_pieces;
       num_pieces = _.size(pieces);
-      g_id = pieces[0].data("group");
+      g_id = pieces[1].data("group");
       group_members = _.filter(pieces, function(p) {
         return p.data("group") === g_id;
       });

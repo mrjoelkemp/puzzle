@@ -217,8 +217,9 @@ class Jigsaw
 			@debug_colorObjectsFromId(pieces)
 
 			_.each(pieces, (p) -> console.log("gid: " + p.data("group")))
-							
-		@checkWinCondition(pieces)
+			
+			# If a snap occurs, then check for game win
+			@checkWinCondition(pieces)
 
 	checkWinCondition: (pieces) ->
 	# Purpose: 	Checks if the game's win condition has been satisfied
@@ -228,7 +229,7 @@ class Jigsaw
 
 		# Grab the group id of the first piece
 		# Since every piece has to be in the same group, this is okay
-		g_id = pieces[0].data("group")
+		g_id = pieces[1].data("group")
 
 		# Get the group members that have the same group id
 		group_members = _.filter(pieces, (p) -> return p.data("group") == g_id)
@@ -236,7 +237,7 @@ class Jigsaw
 		game_won = num_pieces == _.size(group_members)
 
 		@updateGameStatus("You Win!")
-		
+
 	updateGameStatus: (msg) ->
 	# Purpose: Updates the game status message element with the passed message
 		$('#game-status').html("<span>" + msg + "</span>")
