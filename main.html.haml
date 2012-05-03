@@ -5,14 +5,14 @@
 		%link{:rel =>"stylesheet", :type =>"text/css", :href =>"css/puzzle.css.css"}
 		%script{:src => "http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"}
 		%script{:src => "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"}		
-		%script{:src => "scripts/underscore-min.js"}
+		%script{:src => "http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.3.1/underscore-min.js"}
 		%script{:src => "scripts/puzzle.js.js"}
 	%body
 		#instructions
 			%span Reassemble the video by dragging the pieces!
 		-# Used for notifying the player of Game Win or Game Over
 		#game-status
-		
+
 		%video{:id=> "player"}
 			%source{:src => "assets/OldSpice.mp4", :type => "video/mp4"}/
 			%source{:src => "assets/OldSpice.ogv", :type => "video/ogg"}/
