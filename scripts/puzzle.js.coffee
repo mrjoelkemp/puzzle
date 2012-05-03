@@ -121,18 +121,18 @@ class Jigsaw
 	# Purpose: 	Handler for drag start event
 	# Precond: 	The ui is the helper object that's being dragged. Its positional info is more accurate than the piece's position.
 		# Remember where you are so the movement distance can be computed during drag
-		@updateOldPosition(piece, ui.helper)
+		@updateOldPosition(piece, ui.offset)
 		
 
 	onDrag: (e, ui, piece, pieces) ->
 	# Purpose: 	Handler for the drag event
 	# Note:		On drag, move the snapped pieces in the currently dragged piece's group
-	 	#console.log("UI left: " + ui.position.left + " UI top: " + ui.position.top)
-		#console.log("Old left: " + piece.data("old_left") + " Old top: " + piece.data("old_top"))
-		#console.log("P left: " + piece.position().left + " P top: " + piece.position().top)
-		#dragging_pos = ui.position
-		
+	 	#old_left =  piece.data("old_left") 
+		#old_top =  piece.data("old_top") 
+		#console.log("Before Update: left = " + old_left + " top = " + old_top)
+
 		dragging_pos = "left": parseFloat(ui.offset.left), "top": parseFloat(ui.offset.top)
+		#dragging_pos = "left": parseFloat(ui.), "top": parseFloat(piece.data("old_top"))
 		
 		# Drag every (snapped) piece in the current piece's group
 		group_id = piece.data("group")
@@ -143,11 +143,17 @@ class Jigsaw
 			@dragGroup(group_id, piece, pieces, dragging_pos)
 			
 		# Update the old position for the next update
-		@updateOldPosition(piece, ui.helper)
+		@updateOldPosition(piece, ui.offset)
+		#console.log("After Update: left = " + piece.data("old_left") + " top = " + piece.data("old_top"))
+		
+		#delta_left = piece.data("old_left") - old_left
+		#delta_top = piece.data("old_top") - old_top
+		#console.log("Deltas: left = " + delta_left + " top = " + delta_top)
+		
 	
-	updateOldPosition: (piece, ui_helper) ->
-		piece.data("old_top", parseFloat(ui_helper.css('top')))
-		piece.data("old_left", parseFloat(ui_helper.css('left')))
+	updateOldPosition: (piece, ui_offset) ->
+		piece.data("old_top", parseFloat(ui_offset.top))
+		piece.data("old_left", parseFloat(ui_offset.left))
 	
 	getGroupObjects: (group_id, piece, pieces) ->
 	# Purpose: 	Finds the pieces that belong to the group with the passed group_id. Excludes the current piece from the group.
@@ -169,7 +175,8 @@ class Jigsaw
 		# How much the piece moved within a single drag update
 		drag_top_delta 	= offset_obj.top - piece.data("old_top")
 		drag_left_delta = offset_obj.left - piece.data("old_left")
-
+		console.log("drag_top_delta: " + drag_top_delta, "drag_left_delta: " + drag_left_delta)
+		
 		# Move each of the neighbors by the new offsets
 		_.each(group_objects, (p) => 
 			ptop 	= parseFloat(p.css("top"))
