@@ -180,10 +180,26 @@
         this.propagateSnap(piece, snappable_neighbors, pieces);
         this.snapToNeighbors(piece, snappable_neighbors);
         this.debug_colorObjectsFromId(pieces);
-        return _.each(pieces, function(p) {
+        _.each(pieces, function(p) {
           return console.log("gid: " + p.data("group"));
         });
       }
+      return this.checkWinCondition(pieces);
+    };
+
+    Jigsaw.prototype.checkWinCondition = function(pieces) {
+      var g_id, game_won, group_members, num_pieces;
+      num_pieces = _.size(pieces);
+      g_id = pieces[0].data("group");
+      group_members = _.filter(pieces, function(p) {
+        return p.data("group") === g_id;
+      });
+      game_won = num_pieces === _.size(group_members);
+      return this.updateGameStatus("You Win!");
+    };
+
+    Jigsaw.prototype.updateGameStatus = function(msg) {
+      return $('#game-status').html("<span>" + msg + "</span>");
     };
 
     Jigsaw.prototype.propagateSnap = function(piece, snappable_neighbors, pieces) {

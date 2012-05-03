@@ -218,15 +218,29 @@ class Jigsaw
 
 			_.each(pieces, (p) -> console.log("gid: " + p.data("group")))
 							
-		# Check for a win condition: all pieces are in the same group
-		# TODO: Make into a function
-		#pid = piece.data("id")
-		# Pieces not in my group
-		#outcasts = _.reject(pieces, (p) -> return p.data("id") == pid)
-		# We win if there are no outcasts
-		#game_won = _.isEmpty(outcasts)
-		#if game_won then "Me win!"
+		@checkWinCondition(pieces)
+
+	checkWinCondition: (pieces) ->
+	# Purpose: 	Checks if the game's win condition has been satisfied
+	# Notes: 	Win condition occurs when every piece belongs to the same group. 
+	#			i.e., all of the pieces are snapped together.
+		num_pieces = _.size(pieces)
+
+		# Grab the group id of the first piece
+		# Since every piece has to be in the same group, this is okay
+		g_id = pieces[0].data("group")
+
+		# Get the group members that have the same group id
+		group_members = _.filter(pieces, (p) -> return p.data("group") == g_id)
+
+		game_won = num_pieces == _.size(group_members)
+
+		@updateGameStatus("You Win!")
 		
+	updateGameStatus: (msg) ->
+	# Purpose: Updates the game status message element with the passed message
+		$('#game-status').html("<span>" + msg + "</span>")
+
 	propagateSnap: (piece, snappable_neighbors, pieces) ->	
 	# Purpose:	Propagates a group id change through the current piece's neighbors 
 	#			and the neighbors of the snappable_neighbors 
