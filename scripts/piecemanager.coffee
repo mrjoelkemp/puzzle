@@ -1,5 +1,8 @@
 class @PieceManager
 	constructor: (board_dimensions, piece_dimensions, neighbors) ->
+	
+	initPieces: (board_dimensions, piece_dimensions, neighbors) ->
+
 		starting_id	= 1
 
 		piece_width  = piece_dimensions.width

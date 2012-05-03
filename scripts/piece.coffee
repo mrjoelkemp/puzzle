@@ -1,11 +1,12 @@
 class @Piece
-# Represents a subcanvas object that renders a portion of a playing video.
+# Represents a collection of static helpers for manipulating a subcanvas 
+# object that renders a portion of a playing video.
 
-	constructor: (id, width, height, videox, videoy, neighbors) ->
-		@create(id, width, height, videox, videoy, neighbors)
+	#constructor: (id, width, height, videox, videoy, neighbors) ->
+	#	@create(id, width, height, videox, videoy, neighbors)
 
 
-	create: (id, width, height, videox, videoy, neighbors) ->
+	createPiece: (id, width, height, videox, videoy, neighbors) ->
 	# Purpose: 	Initializes a subcanvas with the passed dimensions
 	# Preconds:	videox and videoy are the piece's position atop the back canvas playing the video
 	#			originx and originy are the piece's location
@@ -15,8 +16,8 @@ class @Piece
 		# 		This will mean that the pieces start randomized and don't move into place. We'd have to trigger piece creation during the
 		#		start of movie playback if we want that type of transition.
 				
-		@piece = $("<canvas></canvas>").clone()
-		@piece.attr({
+		piece = $("<canvas></canvas>").clone()
+		piece.attr({
 			'width'	: width,
 			'height': height,
 			'videox': videox,
@@ -28,3 +29,5 @@ class @Piece
 			.data("group", -1)					# Default group id. Group used for snapping multiple pieces together.
 			.appendTo('#pieces-canvas')			# FIXME: This breaks if we change the div name...
 			.addClass("piece")					# Added for ease of finding similar objects
+		return piece
+
