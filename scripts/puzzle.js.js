@@ -140,7 +140,6 @@
       group_objects = this.getGroupObjects(group_id, piece, pieces);
       drag_top_delta = offset_obj.top - piece.data("old_top");
       drag_left_delta = offset_obj.left - piece.data("old_left");
-      console.log("drag_top_delta: " + drag_top_delta, "drag_left_delta: " + drag_left_delta);
       return _.each(group_objects, function(p) {
         var new_left, new_top, pleft, ptop;
         ptop = parseFloat(p.css("top"));

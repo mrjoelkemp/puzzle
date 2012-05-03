@@ -127,9 +127,6 @@ class Jigsaw
 	onDrag: (e, ui, piece, pieces) ->
 	# Purpose: 	Handler for the drag event
 	# Note:		On drag, move the snapped pieces in the currently dragged piece's group
-	 	#old_left =  piece.data("old_left") 
-		#old_top =  piece.data("old_top") 
-		#console.log("Before Update: left = " + old_left + " top = " + old_top)
 
 		dragging_pos = "left": parseFloat(ui.offset.left), "top": parseFloat(ui.offset.top)
 		#dragging_pos = "left": parseFloat(ui.), "top": parseFloat(piece.data("old_top"))
@@ -144,11 +141,6 @@ class Jigsaw
 			
 		# Update the old position for the next update
 		@updateOldPosition(piece, ui.offset)
-		#console.log("After Update: left = " + piece.data("old_left") + " top = " + piece.data("old_top"))
-		
-		#delta_left = piece.data("old_left") - old_left
-		#delta_top = piece.data("old_top") - old_top
-		#console.log("Deltas: left = " + delta_left + " top = " + delta_top)
 		
 	
 	updateOldPosition: (piece, ui_offset) ->
@@ -175,21 +167,11 @@ class Jigsaw
 		# How much the piece moved within a single drag update
 		drag_top_delta 	= offset_obj.top - piece.data("old_top")
 		drag_left_delta = offset_obj.left - piece.data("old_left")
-		console.log("drag_top_delta: " + drag_top_delta, "drag_left_delta: " + drag_left_delta)
 		
 		# Move each of the neighbors by the new offsets
 		_.each(group_objects, (p) => 
 			ptop 	= parseFloat(p.css("top"))
 			pleft 	= parseFloat(p.css("left"))
-
-			#top_offset 	= (offset_obj.top - ptop)
-			#left_offset = (offset_obj.left - pleft)
-			
-			#console.log("LeftOffset = " + left_offset, "TopOffset = " + top_offset)
-			
-			# Neighbor's location moves over by the offset components
-			#new_top = ptop 	+ top_offset
-			#new_left= pleft + left_offset
 
 			# Add how far the piece has moved in a single update to the neighbor's position
 			new_top = ptop 	+ drag_top_delta
