@@ -66,7 +66,7 @@ class @Jigsaw
 	# Purpose: 	Handler for drag start event
 	# Precond: 	The ui is the helper object that's being dragged. Its positional info is more accurate than the piece's position.
 		# Remember where you are so the movement distance can be computed during drag
-		@updateOldPosition(piece, ui.offset)
+		Piece.updateOldPosition(piece, ui.offset)
 		
 
 	onDrag: (e, ui, piece, pieces) ->
@@ -85,29 +85,14 @@ class @Jigsaw
 			@dragGroup(group_id, piece, pieces, dragging_pos)
 			
 		# Update the old position for the next update
-		@updateOldPosition(piece, ui.offset)
+		Piece.updateOldPosition(piece, ui.offset)
 		
-	
-	updateOldPosition: (piece, ui_offset) ->
-		piece.data("old_top", parseFloat(ui_offset.top))
-		piece.data("old_left", parseFloat(ui_offset.left))
-	
-	getGroupObjects: (group_id, piece, pieces) ->
-	# Purpose: 	Finds the pieces that belong to the group with the passed group_id. Excludes the current piece from the group.
-	# Returns:	A list of pieces within the group.
-		# Find group neighbors
-		group_objects = _.filter(pieces, (p) -> return p.data("group") == group_id)
-
-		# Exclude the current piece from that group since we only want to drag neighbors
-		group_objects = _.reject(group_objects, (p) -> return p.data("id") == piece.data("id"))
-		return group_objects
-
 	dragGroup:(group_id, piece, pieces, offset_obj) ->
 	# Purpose: 	Computes the distance moved by the piece away from the neighbors and moves the neighbors to remain snapped
 	# Precond:	offset_obj = the current drag coordinates (top and left)
 
 		# Find group neighbors
-		group_objects = @getGroupObjects(group_id, piece, pieces)
+		group_objects = Piece.getGroupObjects(group_id, piece, pieces)
 
 		# How much the piece moved within a single drag update
 		drag_top_delta 	= offset_obj.top - piece.data("old_top")
@@ -197,7 +182,7 @@ class @Jigsaw
 			has_group = n_gid != -1
 			if has_group
 				# Get the group members
-				n_group_members = @getGroupObjects(n_gid, n, pieces)
+				n_group_members = Piece.getGroupObjects(n_gid, n, pieces)
 
 				# Change the group id for each member to the current piece's group id
 				_.each(n_group_members, (ngm) -> ngm.data("group", p_gid))

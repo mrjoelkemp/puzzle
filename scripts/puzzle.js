@@ -49,7 +49,7 @@
     };
 
     Jigsaw.prototype.onDragStart = function(e, ui, piece) {
-      return this.updateOldPosition(piece, ui.offset);
+      return Piece.updateOldPosition(piece, ui.offset);
     };
 
     Jigsaw.prototype.onDrag = function(e, ui, piece, pieces) {
@@ -63,29 +63,13 @@
       if (group_exists) {
         this.dragGroup(group_id, piece, pieces, dragging_pos);
       }
-      return this.updateOldPosition(piece, ui.offset);
-    };
-
-    Jigsaw.prototype.updateOldPosition = function(piece, ui_offset) {
-      piece.data("old_top", parseFloat(ui_offset.top));
-      return piece.data("old_left", parseFloat(ui_offset.left));
-    };
-
-    Jigsaw.prototype.getGroupObjects = function(group_id, piece, pieces) {
-      var group_objects;
-      group_objects = _.filter(pieces, function(p) {
-        return p.data("group") === group_id;
-      });
-      group_objects = _.reject(group_objects, function(p) {
-        return p.data("id") === piece.data("id");
-      });
-      return group_objects;
+      return Piece.updateOldPosition(piece, ui.offset);
     };
 
     Jigsaw.prototype.dragGroup = function(group_id, piece, pieces, offset_obj) {
       var drag_left_delta, drag_top_delta, group_objects,
         _this = this;
-      group_objects = this.getGroupObjects(group_id, piece, pieces);
+      group_objects = Piece.getGroupObjects(group_id, piece, pieces);
       drag_top_delta = offset_obj.top - piece.data("old_top");
       drag_left_delta = offset_obj.left - piece.data("old_left");
       return _.each(group_objects, function(p) {
@@ -146,7 +130,7 @@
         n_gid = n.data("group");
         has_group = n_gid !== -1;
         if (has_group) {
-          n_group_members = _this.getGroupObjects(n_gid, n, pieces);
+          n_group_members = Piece.getGroupObjects(n_gid, n, pieces);
           return _.each(n_group_members, function(ngm) {
             return ngm.data("group", p_gid);
           });

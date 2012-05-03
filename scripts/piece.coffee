@@ -50,6 +50,12 @@ class @Piece
 			"bottom_right"	: bottom_right
 		})
 
+	@updateOldPosition: (piece, ui_offset) ->
+	# Purpose: 	Updates the custom data field with old positional data
+	# Notes:	Used to keep track of distance travelled between drag events
+		piece.data("old_top", parseFloat(ui_offset.top))
+		piece.data("old_left", parseFloat(ui_offset.left))
+	
 	@setPositionByOffsets: (piece, left_offset, top_offset) ->
 	# Purpose: 	Simply sets the top and left css positions of the passed piece to its current location plus the offsets
 		#debugger
@@ -70,6 +76,16 @@ class @Piece
 		nleft_to_pleft 	= np2.x - cp2.x
 		 
 		return "top_offset": ntop_to_ptop, "left_offset": nleft_to_pleft
+
+	@getGroupObjects: (group_id, piece, pieces) ->
+	# Purpose: 	Finds the pieces that belong to the group with the passed group_id. Excludes the current piece from the group.
+	# Returns:	A list of pieces within the group.
+		# Find group neighbors
+		group_objects = _.filter(pieces, (p) -> return p.data("group") == group_id)
+
+		# Exclude the current piece from that group since we only want to drag neighbors
+		group_objects = _.reject(group_objects, (p) -> return p.data("id") == piece.data("id"))
+		return group_objects
 
 	@movePieceByOffsets: (piece, left_offset, top_offset, move_speed = 0) ->
 	# Purpose: 	Adds the piece offsets to the piece's current position
