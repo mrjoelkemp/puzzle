@@ -13,7 +13,7 @@
       rows = 2;
       columns = 3;
       starting_id = 1;
-      board = this.initBoard(rows, columns, starting_id);
+      board = Board.initBoard(rows, columns, starting_id);
       neighbors = this.initNeighbors(rows, columns, board);
       pieces = this.initPieces(rows, columns, back_canvas, starting_id, neighbors);
       snapping_threshold = 40;
@@ -477,20 +477,6 @@
         }
       }
       return pieces;
-    };
-
-    Jigsaw.prototype.initBoard = function(rows, columns, starting_id) {
-      var board, i, j, next_id, _i, _j, _ref, _ref1;
-      board = [];
-      next_id = starting_id;
-      for (i = _i = 0, _ref = rows - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-        board[i] = [];
-        for (j = _j = 0, _ref1 = columns - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; j = 0 <= _ref1 ? ++_j : --_j) {
-          board[i].push(next_id);
-          next_id++;
-        }
-      }
-      return board;
     };
 
     Jigsaw.prototype.renderVideoToBackCanvas = function(video_element, back_canvas_context, refresh_rate, pieces) {

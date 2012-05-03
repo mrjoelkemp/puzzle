@@ -22,7 +22,7 @@ class @Jigsaw
 		starting_id = 1		
 		
 		# Initialize a 2D board to retain neighbor information for snapping
-		board = @initBoard(rows, columns, starting_id)
+		board = Board.initBoard(rows, columns, starting_id)
 		
 		# Generate a lookup table for finding a piece's list of neighbors
 		neighbors = @initNeighbors(rows, columns, board)
@@ -598,22 +598,7 @@ class @Jigsaw
 				cur_column_left = 0
 				
 		return pieces
-				
-	initBoard: (rows, columns, starting_id) ->
-	# Purpose: 	Creates a num_rows x num_columns matrix of IDs.
-	# Notes: 	This is used to keep track of adjacency about the pieces in the game.
-	# 			IDs range from starting_id to rows * columns
-	# Returns: 	A 2D array of IDs.
-		board = []
-		next_id = starting_id
-		
-		for i in [0 .. rows - 1]
-			board[i] = []
-			for j in [0 .. columns - 1]
-				board[i].push(next_id)
-				next_id++
-		return board
-		
+					
 	renderVideoToBackCanvas: (video_element, back_canvas_context, refresh_rate, pieces)->
 	# Purpose: 	Renders the playing video (via the video_element) to the back canvas
 	# Precond:	refresh_rate is the millisecond delay between render calls.
