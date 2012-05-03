@@ -104,10 +104,10 @@
     Jigsaw.prototype.onDragStop = function(piece, pieces, snapping_threshold) {
       var have_neighbors_to_snap, neighbors_objects, snappable_neighbors, snappable_neighbors_ids,
         _this = this;
-      this.updateDetailedPosition(piece);
+      Piece.updateDetailedPosition(piece);
       neighbors_objects = this.getNeighborObjects(piece, pieces);
       _.each(neighbors_objects, function(n) {
-        return _this.updateDetailedPosition(n);
+        return Piece.updateDetailedPosition(n);
       });
       snappable_neighbors_ids = this.findSnappableNeighbors(piece, neighbors_objects, snapping_threshold);
       snappable_neighbors = this.getNeighborObjectsFromIds(pieces, snappable_neighbors_ids);
@@ -216,38 +216,6 @@
       neighbors_ids = _.compact(neighbors_ids);
       neighbors_pieces = this.getNeighborObjectsFromIds(pieces, neighbors_ids);
       return neighbors_pieces;
-    };
-
-    Jigsaw.prototype.updateDetailedPosition = function(piece) {
-      var bottom, bottom_left, bottom_right, height, left, right, top, top_left, top_right, width;
-      width = parseFloat(piece.attr("width"));
-      height = parseFloat(piece.attr("height"));
-      top = parseFloat(piece.position().top);
-      left = parseFloat(piece.position().left);
-      right = left + width;
-      bottom = top + height;
-      top_left = {
-        "x": left,
-        "y": top
-      };
-      top_right = {
-        "x": right,
-        "y": top
-      };
-      bottom_left = {
-        "x": left,
-        "y": bottom
-      };
-      bottom_right = {
-        "x": right,
-        "y": bottom
-      };
-      piece.data("position", {
-        "top_left": top_left,
-        "top_right": top_right,
-        "bottom_left": bottom_left,
-        "bottom_right": bottom_right
-      });
     };
 
     Jigsaw.prototype.findSnappableNeighbors = function(current_piece, neighbors_objects, snapping_threshold) {

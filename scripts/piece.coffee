@@ -27,6 +27,29 @@ class @Piece
 			.addClass("piece")					# Added for ease of finding similar objects
 		return piece
 
+	@updateDetailedPosition: (piece) ->
+	# Purpose: 	Updates the hidden positional (top, left, bottom, right) data of the passed piece
+		width 	= parseFloat(piece.attr("width"))
+		height	= parseFloat(piece.attr("height"))
+		
+		top 	= parseFloat(piece.position().top)
+		left 	= parseFloat(piece.position().left)
+		right 	= left + width		# Top-right
+		bottom 	= top  + height		# Bottom-left
+		
+		# Compute the four corners of the piece
+		top_left 	= "x": left, 	"y": top
+		top_right 	= "x": right, 	"y": top
+		bottom_left = "x": left, 	"y": bottom
+		bottom_right= "x": right, 	"y": bottom
+		
+		piece.data("position", {
+			"top_left"		: top_left,
+			"top_right"		: top_right,
+			"bottom_left" 	: bottom_left,
+			"bottom_right"	: bottom_right
+		})
+
 	@setPositionByOffsets: (piece, left_offset, top_offset) ->
 	# Purpose: 	Simply sets the top and left css positions of the passed piece to its current location plus the offsets
 		#debugger

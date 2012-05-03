@@ -128,14 +128,14 @@ class @Jigsaw
 	# Purpose: 	Handler for drag stop event. 
 	# Note:		On the drag stop, snap to the proper pieces and check for game completion.
 		# Update detailed positional information for current piece
-		@updateDetailedPosition(piece)
+		Piece.updateDetailedPosition(piece)
 		
 		# Grab neighboring pieces -- not expensive due to max of 4 neighbors
 		neighbors_objects = @getNeighborObjects(piece, pieces)
 							
 		# Update detailed positional info of neighboring pieces 
 		# FIXME: Should this always be a just-in-case, or do the neighbors update their own positions?
-		_.each(neighbors_objects, (n) => @updateDetailedPosition(n))
+		_.each(neighbors_objects, (n) => Piece.updateDetailedPosition(n))
 		
 		# Find and extract snappable neighbor(s)
 		snappable_neighbors_ids = @findSnappableNeighbors(piece, neighbors_objects, snapping_threshold)
@@ -283,30 +283,7 @@ class @Jigsaw
 		
 		return neighbors_pieces
 		
-	updateDetailedPosition: (piece) ->
-	# Purpose: 	Updates the hidden positional (top, left, bottom, right) data of the passed piece
-	# TODO: Move this to the piece class
-		width 	= parseFloat(piece.attr("width"))
-		height	= parseFloat(piece.attr("height"))
-		
-		top 	= parseFloat(piece.position().top)
-		left 	= parseFloat(piece.position().left)
-		right 	= left + width		# Top-right
-		bottom 	= top  + height		# Bottom-left
-		
-		# Compute the four corners of the piece
-		top_left 	= "x": left, 	"y": top
-		top_right 	= "x": right, 	"y": top
-		bottom_left = "x": left, 	"y": bottom
-		bottom_right= "x": right, 	"y": bottom
-		
-		piece.data("position", {
-			"top_left"		: top_left,
-			"top_right"		: top_right,
-			"bottom_left" 	: bottom_left,
-			"bottom_right"	: bottom_right
-		})
-		return	# Void function
+	
 	
 		
 	findSnappableNeighbors: (current_piece, neighbors_objects, snapping_threshold) ->
