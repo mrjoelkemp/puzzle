@@ -67,7 +67,7 @@ class Jigsaw
 			circle_point= points[ind]
 			
 			# Set the top and left to the point's y and x, respectively
-			@movePiece(p, circle_point.x, circle_point.y)
+			@movePiece(p, circle_point.x, circle_point.y, 400)
 			
 	generatePointsAboutCircle: (num_points, center, radius) ->
 	# Purpose: 	Generate a series of points about a circle centered at the 
@@ -148,16 +148,23 @@ class Jigsaw
 	updateOldPosition: (piece, ui_helper) ->
 		piece.data("old_top", parseFloat(ui_helper.css('top')))
 		piece.data("old_left", parseFloat(ui_helper.css('left')))
-		
-	dragGroup:(group_id, piece, pieces, offset_obj) ->
-	# Purpose: 	Computes the distance moved by the piece away from the neighbors and moves the neighbors to remain snapped
-	# Precond:	offset_obj = the current drag coordinates (top and left)
-
+	
+	getGroupObjects: (group_id, piece, pieces) ->
+	# Purpose: 	Finds the pieces that belong to the group with the passed group_id. Excludes the current piece from the group.
+	# Returns:	A list of pieces within the group.
 		# Find group neighbors
 		group_objects = _.filter(pieces, (p) -> return p.data("group") == group_id)
 
 		# Exclude the current piece from that group since we only want to drag neighbors
 		group_objects = _.reject(group_objects, (p) -> return p.data("id") == piece.data("id"))
+		return group_objects
+
+	dragGroup:(group_id, piece, pieces, offset_obj) ->
+	# Purpose: 	Computes the distance moved by the piece away from the neighbors and moves the neighbors to remain snapped
+	# Precond:	offset_obj = the current drag coordinates (top and left)
+
+		# Find group neighbors
+		group_objects = @getGroupObjects(group_id, piece, pieces)
 
 		# How much the piece moved within a single drag update
 		drag_top_delta 	= offset_obj.top - piece.data("old_top")

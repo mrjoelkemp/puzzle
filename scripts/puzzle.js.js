@@ -47,7 +47,7 @@
         p = pieces[i + 1];
         ind = indices[i];
         circle_point = points[ind];
-        _results1.push(this.movePiece(p, circle_point.x, circle_point.y));
+        _results1.push(this.movePiece(p, circle_point.x, circle_point.y, 400));
       }
       return _results1;
     };
@@ -123,15 +123,21 @@
       return piece.data("old_left", parseFloat(ui_helper.css('left')));
     };
 
-    Jigsaw.prototype.dragGroup = function(group_id, piece, pieces, offset_obj) {
-      var drag_left_delta, drag_top_delta, group_objects,
-        _this = this;
+    Jigsaw.prototype.getGroupObjects = function(group_id, piece, pieces) {
+      var group_objects;
       group_objects = _.filter(pieces, function(p) {
         return p.data("group") === group_id;
       });
       group_objects = _.reject(group_objects, function(p) {
         return p.data("id") === piece.data("id");
       });
+      return group_objects;
+    };
+
+    Jigsaw.prototype.dragGroup = function(group_id, piece, pieces, offset_obj) {
+      var drag_left_delta, drag_top_delta, group_objects,
+        _this = this;
+      group_objects = this.getGroupObjects(group_id, piece, pieces);
       drag_top_delta = offset_obj.top - piece.data("old_top");
       drag_left_delta = offset_obj.left - piece.data("old_left");
       return _.each(group_objects, function(p) {
