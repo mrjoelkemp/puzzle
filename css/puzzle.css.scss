@@ -29,7 +29,8 @@ video{
     }
 }
 
-#game-status{
+#game-status{  
+  text-align: center;
   span{
     font-size: 35px;
   }
@@ -38,5 +39,12 @@ video{
   }
   &.lose{
     color: red;
+  }
+}
+
+#instructions{
+  text-align: center;
+  span{
+    font-size: 40px;
   }
 }

@@ -15,9 +15,16 @@ video {
     border-right: 1px solid blue;
     border-bottom: 1px solid blue; }
 
-#game-status span {
-  font-size: 35px; }
-#game-status.win {
-  color: green; }
-#game-status.lose {
-  color: red; }
+#game-status {
+  text-align: center; }
+  #game-status span {
+    font-size: 35px; }
+  #game-status.win {
+    color: green; }
+  #game-status.lose {
+    color: red; }
+
+#instructions {
+  text-align: center; }
+  #instructions span {
+    font-size: 40px; }
