@@ -10,7 +10,9 @@ JSFiddle: http://jsfiddle.net/dGGcZ/1/embedded/result/
 
 ## Dependencies
 Head.js: 	Used for parallel fetching of the necessary (compiled) javascripts.
+
 Jquery UI: 	This implementation heavily leveraged the Draggable interface.
+
 Underscore.js: 	I absolutely love the expressive power of underscore!
 
 ## Abstractions
