@@ -3,13 +3,14 @@ HTML5 Video Puzzle
 Created by: Joel Kemp, @mrjoelkemp
 
 Built using: Coffeescript, Underscore.js, HTML5, HAML/SASS, JQuery UI, Head.js
+
 JSFiddle: http://jsfiddle.net/dGGcZ/1/embedded/result/
 
 # Notes
 
 ## Dependencies
-Head.js: 		Used for parallel fetching of the necessary (compiled) javascripts.
-Jquery UI: 		This implementation heavily leveraged the Draggable interface.
+Head.js: 	Used for parallel fetching of the necessary (compiled) javascripts.
+Jquery UI: 	This implementation heavily leveraged the Draggable interface.
 Underscore.js: 	I absolutely love the expressive power of underscore!
 
 ## Abstractions
