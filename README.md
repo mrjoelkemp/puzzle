@@ -25,7 +25,7 @@ Group dragging is a little buggy; I believe this is due to the timing of the eve
 
 An alternative implementation that I had in mind for group drag:
 
-1. Each piece contains a super-imposed, draggable bounding box where a clone of each snapped neighbor would be added -- and hence, draggable alongside the current piece. As more pieces snapped together, the bounding box would grow. This dynamic management of a bounding box is a headache!
+Each piece contains a super-imposed, draggable bounding box where a clone of each snapped neighbor would be added -- and hence, draggable alongside the current piece. As more pieces snapped together, the bounding box would grow. This dynamic management of a bounding box is a headache!
 
 The aforementioned solution might not work due to the fact that the pieces (subcanvases) are already appended to the pieces-canvas; hence, a clone would have to be added to a piece's bounding box. Clones would create copies of the objects and could result in significant rendering slow-downs.
 
